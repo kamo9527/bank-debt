@@ -1,0 +1,152 @@
+@keyframes circle {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@-webkit-keyframes circle {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.register_login {
+  height          : 100vh;
+  background-color: #fff;
+  font-size       : 14px;
+
+  .register_login_bg {
+    padding: 15px;
+
+    .register_login_img {
+      display: block;
+      width  : 100%;
+    }
+  }
+
+  .register_login_icon {
+    display: block;
+    width  : 50px;
+    margin : 0 auto;
+    padding: 50px 0;
+  }
+
+  .operate_input {
+    padding  : 30px;
+    font-size: 14px;
+    color    : #000;
+
+
+
+    .my_snake {
+      width      : 80px;
+      border-left: 1px solid #d4caca;
+    }
+
+    .my_ju {
+      width : 50px;
+      margin: 0 auto;
+    }
+
+    .spinner_snake {
+      display            : inline-block;
+      height             : 12px;
+      width              : 12px;
+      animation          : circle 1s infinite linear;
+      -webkit-animation  : circle 1s infinite linear;
+      border             : 2px solid transparent;
+      border-top-color   : #fe7570;
+      border-left-color  : #fe7570;
+      border-bottom-color: #fe7570;
+      border-radius      : 50%;
+    }
+
+    .my_text {
+      padding-left : 0;
+      padding-right: 0;
+      height       : 100%;
+      background   : transparent;
+      border       : none;
+    }
+  }
+
+  .my_input /deep/ .nut-textinput-label {
+    width     : 70px;
+    text-align: left;
+  }
+
+  .my_input /deep/ input {
+    padding: 0;
+  }
+
+  // .my_cell {
+  //   padding-top: 20px;
+  //   padding-left: 0;
+  //   padding-right: 0;
+  // }
+
+  // .snake {
+  //   width: 80px;
+  //   height: 24px;
+  //   border-left: 1px solid #d4caca;
+  // }
+
+
+  .need_border {
+    height       : 60px;
+    border-top   : 1px solid #d4caca;
+    border-bottom: 1px solid #d4caca;
+  }
+
+
+
+  .operate_btn {
+    padding: 0 30px;
+
+    .my_btn {
+      width        : 100%;
+      height       : 50px;
+      border-radius: 4px;
+      font-size    : 16px;
+      color        : #fff;
+      border       : 1px solid #fad09d;
+    }
+
+    .my_tips {
+      padding-top: 10px;
+      font-size  : 8px;
+
+      .my_checkbox {
+        display     : inline-block;
+        margin-right: 6px;
+      }
+
+      .contract {
+        color: #8181ea;
+      }
+
+      .middle {
+        vertical-align: middle;
+
+      }
+    }
+
+
+  }
+
+
+
+  .login_btn {
+    width        : 100%;
+    border-radius: 4px;
+    margin-top   : 25px;
+  }
+}

@@ -8,6 +8,33 @@ function changeTitle(title) {
 }
 const routes = [
   {
+    path: '/login_guide',
+    name: 'login_guide',
+    meta: {
+      title: '',
+    },
+    component: () =>
+      import(/* webpackChunkName: "login_guide" */ '../views/login/guide.vue'),
+  },
+  {
+    path: '/login_login',
+    name: 'login_login',
+    meta: {
+      title: '登录',
+    },
+    component: () =>
+      import(/* webpackChunkName: "login_login" */ '../views/login/login.vue'),
+  },
+  {
+    path: '/login_register',
+    name: 'login_register',
+    meta: {
+      title: '注册',
+    },
+    component: () =>
+      import(/* webpackChunkName: "login_register" */ '../views/login/register.vue'),
+  },
+  {
     path: '/',
     alias: '/register',
     name: 'register',

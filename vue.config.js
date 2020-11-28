@@ -8,7 +8,8 @@ module.exports = {
       postcss: {
         plugins: [
           pxtorem({
-            rootValue: 37.5,
+            // rootValue: 37.5,
+            rootValue: 75,
             propList: ['*'],
             exclude: '/node_modules/@nutui/nutui/dist/packages/picker',
           }),

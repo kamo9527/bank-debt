@@ -1,6 +1,10 @@
 <template>
   <div class="login_login">
-    <img class="page_back" src="~@/assets/images/common/black_back@2x.png" />
+    <img
+      class="page_back"
+      src="~@/assets/images/common/black_back@2x.png"
+      @click="$router.go(-1)"
+    />
     <h2 class="title">登录</h2>
     <div class="operate_input">
       <div class="input_wrap">
@@ -26,10 +30,10 @@
         </span>
       </div>
       <div class="forget">
-        <span>忘记密码？</span>
+        <span @click="$router.push('/login_findPassword')">忘记密码？</span>
       </div>
       <div class="btn login" @click="login">登录</div>
-      <div class="register">
+      <div class="register" @click="$router.push('/login_register')">
         <span>还没有账号？快速</span>
         <span class="blue">注册</span>
       </div>
@@ -41,14 +45,16 @@
 // @ is an alias to /src
 import { regexpMap } from '@/utils/common';
 // import cache from '@/utils/cache';
-// import ajax from '@/rest/ajax';
+import ajax from '@/rest/ajax';
 export default {
   name: 'login_login',
   data() {
     return {
       isEyesClose: true,
-      mobile: '',
-      password: '',
+      // mobile: '',
+      // password: '',
+      mobile: '15521220234',
+      password: '15521220234',
     };
   },
   beforeDestroy() {
@@ -68,19 +74,24 @@ export default {
         return;
       }
 
-      // const query = {
-      //   mobile: this.mobile,
-      //   verifyCode: 223322,
-      // };
-
-      // ajax.get('/getCode', query).then((res) => {
-      //   if (res.code === 0) {
-      //     this.$toast.text('成功获取验证码');
-      //     this.handleLoading();
-      //   } else {
-      //     this.$toast.text(res.message);
-      //   }
-      // });
+      const params = {
+        deviceId: '1111',
+        loginName: this.mobile,
+        password: this.password,
+        version: '1.0',
+      };
+      ajax
+        .post('http://120.79.102.97:9000/account/login', params)
+        .then((res) => {
+          if (res.code === 0) {
+            this.$toast.text('登录成功');
+            // cache.setSessionData('person_info', res.data);
+            // const url = this.nextUrl || 'home';
+            // this.$router.push(url);
+          } else {
+            this.$toast.text(res.message);
+          }
+        });
     },
 
     // handleRead(e) {

@@ -5,7 +5,7 @@
       src="~@/assets/images/common/black_back@2x.png"
       @click="$router.go(-1)"
     />
-    <h2 class="title">注册</h2>
+    <h2 class="title">忘记密码</h2>
     <div class="operate_input">
       <div class="input_wrap">
         <input type="text" placeholder="请输入手机号" v-model="mobile" />
@@ -25,7 +25,7 @@
       <div class="input_wrap">
         <input
           :type="isEyesClose ? 'password' : 'text'"
-          placeholder="请输入密码"
+          placeholder="6-20位数字字母组合密码"
           v-model="password"
         />
         <span @click="isEyesClose = !isEyesClose">
@@ -60,32 +60,8 @@
           />
         </span>
       </div>
-      <div class="input_wrap">
-        <input type="text" placeholder="请填写邀请码" v-model="mobile" />
-      </div>
-      <div class="protocol">
-        <span @click="isRead = !isRead">
-          <img
-            class="read"
-            src="~@/assets/images/login/register/checked@2x.png"
-            v-if="isRead"
-          />
-          <img
-            class="read"
-            src="~@/assets/images/login/register/uncheck@2x.png"
-            v-else
-          />
-        </span>
 
-        <span
-          >已阅读并同意<span class="blue">《账无忧用户使用协议》</span></span
-        >
-      </div>
-      <div class="btn login" @click="login">注册</div>
-      <div class="login_tips" @click="$router.push('/login_login')">
-        <span>已有账号？立即</span>
-        <span class="blue">登录</span>
-      </div>
+      <div class="btn login" @click="login">修改密码</div>
     </div>
   </div>
 </template>
@@ -285,18 +261,6 @@ export default {
       }
     }
 
-    .forget {
-      width: 100%;
-      margin-top: 9px;
-      text-align: right;
-      font-size: 0;
-      span {
-        font-size: 26px;
-        font-family: PingFang SC;
-        font-weight: 500;
-        color: #f9bb03;
-      }
-    }
     .btn {
       margin-top: 64px;
       width: 615px;
@@ -312,41 +276,6 @@ export default {
         background: url('"~@/assets/images/login/login/btn_bg@2x.png') no-repeat;
         background-size: 100% 100%;
         color: #ffffff;
-      }
-    }
-    .protocol {
-      // margin-top: 90px;
-      width: 100%;
-      font-family: PingFang SC;
-      font-weight: 500;
-      font-size: 0;
-      display: flex;
-      align-items: center;
-      .read {
-        margin-left: 20px;
-        margin-right: 14px;
-        width: 22px;
-        height: 22px;
-      }
-      span {
-        color: #999999;
-        font-size: 26px;
-      }
-      .blue {
-        color: #3574f2;
-      }
-    }
-    .login_tips {
-      margin-top: 30px;
-      font-family: PingFang SC;
-      font-weight: 500;
-      font-size: 0;
-      span {
-        color: #999999;
-        font-size: 26px;
-      }
-      .blue {
-        color: #3574f2;
       }
     }
   }

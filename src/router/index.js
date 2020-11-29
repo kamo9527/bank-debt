@@ -35,6 +35,24 @@ const routes = [
       import(/* webpackChunkName: "login_register" */ '../views/login/register.vue'),
   },
   {
+    path: '/login_findPassword',
+    name: 'login_findPassword',
+    meta: {
+      title: '找回密码',
+    },
+    component: () =>
+      import(/* webpackChunkName: "login_register" */ '../views/login/findPassword.vue'),
+  },
+  {
+    path: '/certif_index',
+    name: 'certif_index',
+    meta: {
+      title: '认证中心',
+    },
+    component: () =>
+      import(/* webpackChunkName: "login_register" */ '../views/certif/index.vue'),
+  },
+  {
     path: '/',
     alias: '/register',
     name: 'register',

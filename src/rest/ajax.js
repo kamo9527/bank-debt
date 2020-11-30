@@ -3,19 +3,23 @@
  * ajax request help
  */
 import Fly from 'flyio/dist/npm/fly';
-import cache from '@/utils/cache';
+// import cache from '@/utils/cache';
 import baseUrl from './config';
+import { addCommonParams, createParamsSign, checkApiToSign } from '@/utils/sign';
+
 let fly = new Fly();
 fly.interceptors.request.use(request => {
   // 给所有请求添加自定义header
-  const { token } = cache.getSessionData('person_info') || {};
   request.headers['X-Tag'] = 'flyio';
   request.headers['channelType'] = 'wx';
-  if (token) {
-    request.headers['token'] = token;
-    // request.headers['Cookie'] = `token=${token}`;
-  }
+
   request.baseURL = baseUrl;
+
+  const params = request.method.toUpperCase() === 'GET' ? request.params : request.body;
+  // 添加公共参数
+  addCommonParams(params);
+  // 签名
+  createParamsSign(params, checkApiToSign(request.url));
   return request;
 });
 fly.interceptors.response.use(
@@ -51,4 +55,5 @@ fly.interceptors.response.use(
     return Promise.resolve(err);
   }
 );
+
 export default fly;

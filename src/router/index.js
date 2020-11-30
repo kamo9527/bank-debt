@@ -41,16 +41,25 @@ const routes = [
       title: '找回密码',
     },
     component: () =>
-      import(/* webpackChunkName: "login_register" */ '../views/login/findPassword.vue'),
+      import(/* webpackChunkName: "login_findPassword" */ '../views/login/findPassword.vue'),
   },
   {
-    path: '/certif_index',
-    name: 'certif_index',
+    path: '/certif_step1',
+    name: 'certif_step1',
     meta: {
       title: '认证中心',
     },
     component: () =>
-      import(/* webpackChunkName: "login_register" */ '../views/certif/index.vue'),
+      import(/* webpackChunkName: "certif_step1" */ '../views/certif/step1.vue'),
+  },
+  {
+    path: '/certif_step2',
+    name: 'certif_step2',
+    meta: {
+      title: '认证中心',
+    },
+    component: () =>
+      import(/* webpackChunkName: "certif_step2" */ '../views/certif/step2.vue'),
   },
   {
     path: '/',

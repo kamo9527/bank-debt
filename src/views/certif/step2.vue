@@ -7,9 +7,7 @@
     />
     <h2 class="header">认证中心</h2>
     <div class="step">
-      <span class="num1">1</span>
-      <span class="num2">2</span>
-      <img class="step_img" src="~@/assets/images/certif/index/step@2x.png" />
+      <img class="step_img" src="~@/assets/images/certif/step2/step@2x.png" />
     </div>
     <div class="step_desc">
       <span>身份证认证</span>
@@ -19,17 +17,17 @@
     <div class="content">
       <div class="card_line">
         <div class="card">
-          <img src="~@/assets/images/certif/index/camera@2x.png" />
+          <img src="~@/assets/images/certif/step1/camera@2x.png" />
           <span>身份证正面照</span>
         </div>
         <div class="card">
-          <img src="~@/assets/images/certif/index/camera@2x.png" />
+          <img src="~@/assets/images/certif/step1/camera@2x.png" />
           <span>身份证背面照</span>
         </div>
       </div>
       <div class="card_line">
         <div class="card">
-          <img src="~@/assets/images/certif/index/camera@2x.png" />
+          <img src="~@/assets/images/certif/step1/camera@2x.png" />
           <span>手持身份证</span>
         </div>
       </div>
@@ -77,7 +75,7 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
-  background: url('"~@/assets/images/certif/index/bg@2x.png') no-repeat;
+  background: url('"~@/assets/images/certif/step1/bg@2x.png') no-repeat;
   // background-size: 100% auto;
   background-size: 100% 394px;
   background-color: #fff;
@@ -98,28 +96,11 @@ export default {
     z-index: 9;
   }
   .step {
-    margin-right: 60px;
     margin-top: 44px;
     position: relative;
     .step_img {
-      width: 440px;
+      width: 504px;
       height: 64px;
-    }
-    .num1 {
-      position: absolute;
-      left: 86px;
-      top: 16px;
-      font-size: 37px;
-      color: #3574f2;
-      line-height: 1;
-    }
-    .num2 {
-      position: absolute;
-      left: 396px;
-      top: 16px;
-      font-size: 37px;
-      color: #eef1fe;
-      line-height: 1;
     }
   }
 
@@ -162,7 +143,7 @@ export default {
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        background: url('"~@/assets/images/certif/index/card_bg@2x.png')
+        background: url('"~@/assets/images/certif/step1/card_bg@2x.png')
           no-repeat;
         background-size: 100% 100%;
         img {

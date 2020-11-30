@@ -46,6 +46,8 @@
 import { regexpMap } from '@/utils/common';
 // import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
+import md5 from '@/utils/md5';
+
 export default {
   name: 'login_login',
   data() {
@@ -53,8 +55,10 @@ export default {
       isEyesClose: true,
       // mobile: '',
       // password: '',
-      mobile: '15521220234',
-      password: '15521220234',
+      mobile: '18520249272', // 不可发短信
+      password: '123456',
+      // mobile: '13528853680', // 可发短信
+      // password: '123456',
     };
   },
   beforeDestroy() {
@@ -77,21 +81,23 @@ export default {
       const params = {
         deviceId: '1111',
         loginName: this.mobile,
-        password: this.password,
+        password: md5.hex_md5(this.password),
         version: '1.0',
       };
-      ajax
-        .post('http://120.79.102.97:9000/account/login', params)
-        .then((res) => {
-          if (res.code === 0) {
-            this.$toast.text('登录成功');
-            // cache.setSessionData('person_info', res.data);
-            // const url = this.nextUrl || 'home';
-            // this.$router.push(url);
-          } else {
-            this.$toast.text(res.message);
-          }
-        });
+      ajax.post('http://120.79.102.97:9000/account/login', params).then(res => {
+        if (res.code === 0) {
+          this.$toast.text('登录成功');
+          localStorage.setItem('person_info', res.data);
+          localStorage.setItem('signKey', res.data.signKey);
+
+          // cache.setSessionData('person_info', res.data);
+          // cache.setSessionData('signKey', res.data.signKey);
+          // const url = this.nextUrl || 'home';
+          // this.$router.push(url);
+        } else {
+          this.$toast.text(res.message);
+        }
+      });
     },
 
     // handleRead(e) {

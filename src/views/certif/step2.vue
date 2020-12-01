@@ -47,10 +47,10 @@ export default {
 <style lang="less">
 .page_back {
   position: fixed;
-  top: 72px;
-  left: 30px;
-  width: 16px;
-  height: 29px;
+  top: 36px;
+  left: 15px;
+  width: 8px;
+  height: 14.5px;
   z-index: 9;
 }
 .certif_index {
@@ -60,54 +60,51 @@ export default {
   flex-direction: column;
   background: url('"~@/assets/images/certif/step1/bg@2x.png') no-repeat;
   // background-size: 100% auto;
-  background-size: 100% 394px;
+  background-size: 100% 197px;
   background-color: #fff;
-  padding-top: 102px;
-  padding-bottom: 57px;
+  padding-top: 51px;
+  padding-bottom: 28.5px;
   div {
     line-height: 1;
   }
   .header {
     position: fixed;
-    top: 67px;
+    top: 33.5px;
     left: 0;
     width: 100%;
-    font-size: 36px;
+    font-size: 18px;
     color: #ffffff;
     text-align: center;
     line-height: 1;
     z-index: 9;
   }
   .step {
-    margin-top: 44px;
+    margin-top: 22px;
     position: relative;
     .step_img {
-      width: 504px;
-      height: 64px;
+      width: 252px;
+      height: 32px;
     }
   }
 
   .step_desc {
-    margin-top: 26px;
-    width: 434px;
-    font-size: 24px;
+    margin-top: 13px;
+    width: 217px;
+    font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-family: PingFang SC;
     font-weight: bold;
     color: #ffffff;
   }
   .tips {
-    margin-top: 32px;
-    font-size: 18px;
-    font-family: PingFang SC;
-    font-weight: 500;
+    margin-top: 16px;
+    font-size: 9px;
     color: #ffffff;
   }
   .content {
-    margin-top: 120px;
-    width: 580px;
+    margin-top: 60px;
+    width: 290px;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -117,8 +114,8 @@ export default {
       align-items: center;
       justify-content: space-between;
       .card {
-        width: 600px;
-        height: 248px;
+        width: 300px;
+        height: 124px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -128,43 +125,43 @@ export default {
         //   no-repeat;
         // background-size: 100% 100%;
         img {
-          width: 125px;
-          height: 125px;
-          border: dashed 1px #888888;
-          padding: 2px;
+          width: 62px;
+          height: 62px;
+          border: dashed 0.5px #888888;
+          padding: 1px;
         }
         span {
-          margin-top: 20px;
-          font-size: 24px;
+          margin-top: 10px;
+          font-size: 12px;
           color: #333;
         }
       }
     }
     .input_wrap {
-      margin-top: 23px;
+      margin-top: 11.5px;
       width: 100%;
       display: flex;
       align-items: center;
       span {
-        font-size: 22px;
+        font-size: 11px;
         color: #333333;
       }
       input {
-        height: 40px;
-        width: 407px;
+        height: 20px;
+        width: 203.5px;
         text-align: center;
-        border-bottom: 1px solid #999999;
+        border-bottom: 0.5px solid #999999;
         outline: none;
       }
     }
     .btn {
-      margin-top: 38px;
-      width: 354px;
-      height: 67px;
+      margin-top: 19px;
+      width: 177px;
+      height: 33.5px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
+      font-size: 13px;
       background: url('~@/assets/images/login/login/btn_bg@2x.png') no-repeat;
       background-size: 100% 100%;
       color: #ffffff;

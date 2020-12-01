@@ -168,10 +168,10 @@ export default {
 <style lang="less">
 .page_back {
   position: fixed;
-  top: 72px;
-  left: 30px;
-  width: 16px;
-  height: 29px;
+  top: 36px;
+  left: 15px;
+  width: 8px;
+  height: 14.5px;
 }
 .login_login {
   height: 100vh;
@@ -180,65 +180,59 @@ export default {
   flex-direction: column;
   background-color: #fff;
   .title {
-    margin-top: 288px;
-    margin-bottom: 42px;
-    font-size: 40px;
-    font-family: PingFang SC;
-    font-weight: 500;
+    margin-top: 144px;
+    margin-bottom: 21px;
+    font-size: 20px;
     color: #000000;
   }
   .operate_input {
-    width: 641px;
+    width: 320.5px;
     display: flex;
     align-items: center;
     flex-direction: column;
     .input_wrap {
       width: 100%;
-      height: 141px;
+      height: 70.5px;
       background: url('"~@/assets/images/login/login/input_bg@2x.png') no-repeat;
       background-size: 100% 100%;
-      padding: 0 61px;
+      padding: 0 30.5px;
       box-sizing: border-box;
       display: flex;
       align-items: center;
       justify-content: space-between;
       input {
         width: 100%;
-        height: 43px;
+        height: 21.5px;
         border: none;
         outline: none;
       }
       .icon {
-        width: 43px;
-        height: 43px;
+        width: 21.5px;
+        height: 21.5px;
       }
       & + .input_wrap {
-        margin-top: -10px;
+        margin-top: -5px;
       }
     }
     .forget {
       width: 100%;
-      margin-top: 9px;
+      margin-top: 4.5px;
       text-align: right;
       font-size: 0;
       span {
-        font-size: 26px;
-        font-family: PingFang SC;
-        font-weight: 500;
+        font-size: 13px;
         color: #f9bb03;
       }
     }
     .btn {
-      margin-top: 78px;
-      width: 615px;
-      height: 105px;
+      margin-top: 39px;
+      width: 307.5px;
+      height: 52.5px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
-      font-family: PingFang SC;
-      font-weight: 500;
-      border-radius: 45px;
+      font-size: 15px;
+      border-radius: 22.5px;
       &.login {
         background: url('"~@/assets/images/login/login/btn_bg@2x.png') no-repeat;
         background-size: 100% 100%;
@@ -246,13 +240,11 @@ export default {
       }
     }
     .register {
-      margin-top: 90px;
-      font-family: PingFang SC;
-      font-weight: 500;
+      margin-top: 45px;
       font-size: 0;
       span {
         color: #999999;
-        font-size: 26px;
+        font-size: 13px;
       }
       .blue {
         color: #3574f2;

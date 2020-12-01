@@ -66,10 +66,10 @@ export default {
 <style lang="less">
 .page_back {
   position: fixed;
-  top: 72px;
-  left: 30px;
-  width: 16px;
-  height: 29px;
+  top: 36px;
+  left: 15px;
+  width: 8px;
+  height: 14.5px;
   z-index: 9;
 }
 .certif_index {
@@ -79,71 +79,68 @@ export default {
   flex-direction: column;
   background: url('"~@/assets/images/certif/step1/bg@2x.png') no-repeat;
   // background-size: 100% auto;
-  background-size: 100% 394px;
+  background-size: 100% 197px;
   background-color: #fff;
-  padding-top: 102px;
-  padding-bottom: 57px;
+  padding-top: 51px;
+  padding-bottom: 28.5px;
   div {
     line-height: 1;
   }
   .header {
     position: fixed;
-    top: 67px;
+    top: 33.5px;
     left: 0;
     width: 100%;
-    font-size: 36px;
+    font-size: 18px;
     color: #ffffff;
     text-align: center;
     line-height: 1;
     z-index: 9;
   }
   .step {
-    margin-right: 60px;
-    margin-top: 44px;
+    margin-right: 30px;
+    margin-top: 22px;
     position: relative;
     .step_img {
-      width: 440px;
-      height: 64px;
+      width: 220px;
+      height: 32px;
     }
     .num1 {
       position: absolute;
-      left: 86px;
-      top: 16px;
-      font-size: 37px;
+      left: 43px;
+      top: 8px;
+      font-size: 38.5px;
       color: #3574f2;
       line-height: 1;
     }
     .num2 {
       position: absolute;
-      left: 396px;
-      top: 16px;
-      font-size: 37px;
+      left: 198px;
+      top: 8px;
+      font-size: 18.5px;
       color: #eef1fe;
       line-height: 1;
     }
   }
 
   .step_desc {
-    margin-top: 26px;
-    width: 434px;
-    font-size: 24px;
+    margin-top: 13px;
+    width: 217px;
+    font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-family: PingFang SC;
     font-weight: bold;
     color: #ffffff;
   }
   .tips {
-    margin-top: 32px;
-    font-size: 18px;
-    font-family: PingFang SC;
-    font-weight: 500;
+    margin-top: 16px;
+    font-size: 9px;
     color: #ffffff;
   }
   .content {
-    margin-top: 190px;
-    width: 580px;
+    margin-top: 95px;
+    width: 290px;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -153,11 +150,11 @@ export default {
       align-items: center;
       justify-content: space-between;
       & + .card_line {
-        margin-top: 40px;
+        margin-top: 20px;
       }
       .card {
-        width: 267px;
-        height: 166px;
+        width: 133.5px;
+        height: 83px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -166,62 +163,62 @@ export default {
           no-repeat;
         background-size: 100% 100%;
         img {
-          width: 80px;
-          height: 80px;
+          width: 40px;
+          height: 40px;
         }
         span {
-          margin-top: 10px;
-          font-size: 22px;
+          margin-top: 5px;
+          font-size: 11px;
           color: #999999;
         }
       }
     }
     .claim {
-      margin-top: 58px;
+      margin-top: 29px;
       width: 100%;
       text-align: left;
-      font-size: 24px;
+      font-size: 12px;
       color: #333333;
     }
     .claim_desc {
       width: 100%;
       text-align: left;
-      margin-top: 20px;
-      font-size: 20px;
+      margin-top: 10px;
+      font-size: 10px;
       color: #999999;
     }
     .info {
       width: 100%;
       text-align: left;
-      margin-top: 38px;
-      font-size: 24px;
+      margin-top: 19px;
+      font-size: 12px;
       color: #333333;
     }
     .input_wrap {
-      margin-top: 23px;
+      margin-top: 11.5px;
       width: 100%;
       display: flex;
       align-items: center;
       span {
-        font-size: 22px;
+        font-size: 11px;
         color: #333333;
       }
       input {
-        height: 40px;
-        width: 407px;
+        height: 20px;
+        width: 203.5px;
         text-align: center;
-        border-bottom: 1px solid #999999;
+        border-bottom: 0.5px solid #999999;
         outline: none;
       }
     }
     .btn {
-      margin-top: 38px;
-      width: 354px;
-      height: 67px;
+      margin-top: 19px;
+      width: 177px;
+      height: 38.5px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
+      font-size: 13px;
       background: url('~@/assets/images/login/login/btn_bg@2x.png') no-repeat;
       background-size: 100% 100%;
       color: #ffffff;

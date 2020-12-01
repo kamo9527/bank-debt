@@ -132,7 +132,7 @@ export default {
         mobile: this.mobile,
         verifyCode: 223322,
       };
-      ajax.get('/getCode', query).then((res) => {
+      ajax.get('/getCode', query).then(res => {
         if (res.code === 0) {
           this.$toast.text('成功获取验证码');
           this.handleLoading();
@@ -186,10 +186,10 @@ export default {
 <style lang="less">
 .page_back {
   position: fixed;
-  top: 72px;
-  left: 30px;
-  width: 16px;
-  height: 29px;
+  top: 36px;
+  left: 15px;
+  width: 8px;
+  height: 14.5px;
 }
 .login_login {
   height: 100vh;
@@ -198,62 +198,60 @@ export default {
   flex-direction: column;
   background-color: #fff;
   .title {
-    margin-top: 188px;
-    margin-bottom: 42px;
-    font-size: 40px;
-    font-family: PingFang SC;
-    font-weight: 500;
+    margin-top: 94px;
+    margin-bottom: 21px;
+    font-size: 20px;
     color: #000000;
   }
   .operate_input {
-    width: 641px;
+    width: 320.5px;
     display: flex;
     align-items: center;
     flex-direction: column;
     .input_wrap {
       width: 100%;
-      height: 141px;
+      height: 70.5px;
       background: url('"~@/assets/images/login/login/input_bg@2x.png') no-repeat;
       background-size: 100% 100%;
-      padding: 0 61px;
+      padding: 0 30.5px;
       box-sizing: border-box;
       display: flex;
       align-items: center;
       justify-content: space-between;
       input {
         width: 100%;
-        height: 43px;
+        height: 21.5px;
         border: none;
         outline: none;
       }
       .icon {
-        width: 43px;
-        height: 43px;
+        width: 21.5px;
+        height: 21.5px;
       }
       & + .input_wrap {
-        margin-top: -10px;
+        margin-top: -5px;
       }
     }
     .my_snake {
-      width: 196px;
-      height: 60px;
+      width: 98px;
+      height: 30px;
       border-left: 1px solid #d4caca;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      font-size: 28px;
+      font-size: 14px;
       font-family: PingFang SC;
       font-weight: 500;
       color: #333333;
       .spinner_snake {
-        margin-right: 10px;
+        margin-right: 5px;
         display: inline-block;
-        height: 12px;
-        width: 12px;
+        height: 6px;
+        width: 6px;
         animation: circle 1s infinite linear;
         -webkit-animation: circle 1s infinite linear;
-        border: 2px solid transparent;
+        border: 1px solid transparent;
         border-top-color: #3574f2;
         border-left-color: #3574f2;
         border-bottom-color: #3574f2;
@@ -262,16 +260,16 @@ export default {
     }
 
     .btn {
-      margin-top: 64px;
-      width: 615px;
-      height: 105px;
+      margin-top: 32px;
+      width: 307.5px;
+      height: 52.5px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
+      font-size: 15px;
       font-family: PingFang SC;
       font-weight: 500;
-      border-radius: 45px;
+      border-radius: 22.5px;
       &.login {
         background: url('"~@/assets/images/login/login/btn_bg@2x.png') no-repeat;
         background-size: 100% 100%;

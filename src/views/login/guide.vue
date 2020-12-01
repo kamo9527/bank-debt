@@ -27,42 +27,42 @@ export default {
   align-items: center;
   flex-direction: column;
   .bannar {
-    margin-top: 126px;
-    margin-bottom: 57px;
-    width: 608px;
-    height: 495px;
+    margin-top: 63px;
+    margin-bottom: 28.5px;
+    width: 304px;
+    height: 297.5px;
   }
   .img1 {
-    width: 300px;
-    height: 32px;
+    width: 150px;
+    height: 16px;
   }
   .img2 {
-    margin-top: 41px;
-    margin-bottom: 85px;
-    width: 437px;
-    height: 46px;
+    margin-top: 2.05px;
+    margin-bottom: 42.5px;
+    width: 218.5px;
+    height: 23px;
   }
   .btn {
-    width: 476px;
-    height: 86px;
+    width: 238px;
+    height: 43px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
+    font-size: 15px;
     font-family: PingFang SC;
     font-weight: 500;
-    border-radius: 45px;
+    border-radius: 22.5px;
     &.login {
-      width: 487px;
-      height: 97px;
+      width: 243.5px;
+      height: 48.5px;
       background: url('"~@/assets/images/login/guide/btn_bg@2x.png') no-repeat;
       background-size: 100% 100%;
       color: #ffffff;
     }
     &.register {
-      margin-top: 25px;
+      margin-top: 12.5px;
       color: #3574f2;
-      border: 2px solid #3574f2;
+      border: 1px solid #3574f2;
     }
   }
 }

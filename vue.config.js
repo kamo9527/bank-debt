@@ -8,8 +8,8 @@ module.exports = {
       postcss: {
         plugins: [
           pxtorem({
-            // rootValue: 37.5,
-            rootValue: 75,
+            rootValue: 37.5,
+            // rootValue: 75,
             propList: ['*'],
             exclude: '/node_modules/@nutui/nutui/dist/packages/picker',
           }),
@@ -20,7 +20,6 @@ module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   devServer: {
     open: true, // 配置自动启动浏览器
-    // proxy: 'http://ydtapi.kuaikuaifu.net:9087', // 配置跨域处理,只有一个代理
     proxy: 'http://120.79.102.97:9000/', // 配置跨域处理,只有一个代理
   },
   chainWebpack: config => {

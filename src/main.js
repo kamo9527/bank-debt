@@ -5,8 +5,16 @@ import router from './router';
 import 'amfe-flexible/index.js';
 import './assets/css/reset.less';
 import initApp from '@/utils/initApp';
-import { TextInput, Toast, Scroller, Dialog, Picker } from '@nutui/nutui';
-
+import {
+  TextInput,
+  Toast,
+  Scroller,
+  Dialog,
+  Picker,
+  Swiper,
+  Tabbar,
+  Cell,
+} from '@nutui/nutui';
 // 运行时动态加载
 import('./utils/fastclickHack');
 // 初始化一些配置
@@ -23,6 +31,9 @@ Toast.install(Vue);
 Scroller.install(Vue);
 Dialog.install(Vue);
 Picker.install(Vue);
+Swiper.install(Vue);
+Tabbar.install(Vue);
+Cell.install(Vue);
 
 Vue.config.productionTip = false;
 Vue.filter('toThousandsText', num => {

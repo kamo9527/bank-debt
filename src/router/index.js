@@ -8,13 +8,23 @@ function changeTitle(title) {
 }
 const routes = [
   {
+    path: '/',
+    alias: '/login_guide',
+    name: 'login_guide',
+    meta: {
+      title: '引导页',
+    },
+    component: () =>
+      import(/* webpackChunkName: "login_pack" */ '../views/login/guide.vue'),
+  },
+  {
     path: '/login_guide',
     name: 'login_guide',
     meta: {
-      title: '',
+      title: '引导页',
     },
     component: () =>
-      import(/* webpackChunkName: "login_guide" */ '../views/login/guide.vue'),
+      import(/* webpackChunkName: "login_pack" */ '../views/login/guide.vue'),
   },
   {
     path: '/login_login',
@@ -23,7 +33,7 @@ const routes = [
       title: '登录',
     },
     component: () =>
-      import(/* webpackChunkName: "login_login" */ '../views/login/login.vue'),
+      import(/* webpackChunkName: "login_pack" */ '../views/login/login.vue'),
   },
   {
     path: '/login_register',
@@ -32,7 +42,9 @@ const routes = [
       title: '注册',
     },
     component: () =>
-      import(/* webpackChunkName: "login_register" */ '../views/login/register.vue'),
+      import(
+        /* webpackChunkName: "login_pack" */ '../views/login/register.vue'
+      ),
   },
   {
     path: '/login_findPassword',
@@ -41,7 +53,9 @@ const routes = [
       title: '找回密码',
     },
     component: () =>
-      import(/* webpackChunkName: "login_findPassword" */ '../views/login/findPassword.vue'),
+      import(
+        /* webpackChunkName: "login_pack" */ '../views/login/findPassword.vue'
+      ),
   },
   {
     path: '/certif_step1',
@@ -50,7 +64,7 @@ const routes = [
       title: '认证中心',
     },
     component: () =>
-      import(/* webpackChunkName: "certif_step1" */ '../views/certif/step1.vue'),
+      import(/* webpackChunkName: "certif_pack" */ '../views/certif/step1.vue'),
   },
   {
     path: '/certif_step2',
@@ -59,112 +73,132 @@ const routes = [
       title: '认证中心',
     },
     component: () =>
-      import(/* webpackChunkName: "certif_step2" */ '../views/certif/step2.vue'),
-  },
-  {
-    path: '/',
-    alias: '/register',
-    name: 'register',
-    meta: {
-      title: '登录',
-    },
-    component: () =>
-      import(/* webpackChunkName: "register" */ '../views/Register.vue'),
+      import(/* webpackChunkName: "certif_pack" */ '../views/certif/step2.vue'),
   },
   {
     path: '/home',
-    name: 'home',
+    name: 'homePage',
     meta: {
-      title: '债惠',
+      title: '账无忧',
     },
     component: () =>
-      import(/* webpackChunkName: "debt_list" */ '../views/Home.vue'),
+      import(/* webpackChunkName: "bebt_home" */ '../views/home/index.vue'),
   },
   {
-    path: '/debt_detail',
-    name: 'debt_detail',
+    path: '/person_info',
+    name: 'personInfoPage',
     meta: {
-      title: '负债详情',
-    },
-    component: () =>
-      import(/* webpackChunkName: "debt_list" */ '../views/DebtDetail.vue'),
-  },
-  {
-    path: '/add_new_debt',
-    name: 'add_new_debt',
-    meta: {
-      title: '添加负债信息',
-    },
-    component: () =>
-      import(/* webpackChunkName: "new_debt" */ '../views/AddDebt.vue'),
-  },
-  {
-    path: '/upload_debt_pic',
-    name: 'upload_debt_pic',
-    meta: {
-      title: '上传合同照片',
-    },
-    component: () =>
-      import(/* webpackChunkName: "new_debt" */ '../views/AddDebtPic.vue'),
-  },
-  {
-    path: '/personal_info',
-    name: 'personal_info',
-    meta: {
-      title: '个人信息',
-      // keepAlive: true,
-    },
-    component: () =>
-      import(/* webpackChunkName: "person_info" */ '../views/PersonalInfo.vue'),
-  },
-  {
-    path: '/personal_certify',
-    name: 'personal_certify',
-    meta: {
-      title: '实名认证',
-      // keepAlive: true,
+      title: '个人中心',
     },
     component: () =>
       import(
-        /* webpackChunkName: "person_info" */ '../views/PersonalCertify.vue'
+        /* webpackChunkName: "person_info" */ '../views/personInfo/index.vue'
       ),
   },
-  {
-    path: '/agreement1',
-    name: 'agreement1',
-    meta: {
-      title: '用户协议',
-    },
-    component: () =>
-      import(/* webpackChunkName: "agreement" */ '../views/Agreement1.vue'),
-  },
-  {
-    path: '/agreement2',
-    name: 'agreement2',
-    meta: {
-      title: '隐私协议',
-    },
-    component: () =>
-      import(/* webpackChunkName: "agreement" */ '../views/Agreement2.vue'),
-  },
-  {
-    path: '/agreement3',
-    name: 'agreement3',
-    meta: {
-      title: '服务委托协议书',
-    },
-    component: () =>
-      import(/* webpackChunkName: "agreement3" */ '../views/Agreement3.vue'),
-  },
-  {
-    path: '/success',
-    name: 'success',
-    meta: {
-      title: '提交成功',
-    },
-    component: () =>
-      import(/* webpackChunkName: "success" */ '../views/Success.vue'),
-  },
+  // {
+  //   path: '/',
+  //   alias: '/register',
+  //   name: 'register',
+  //   meta: {
+  //     title: '登录',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "register" */ '../views/Register.vue'),
+  // },
+  // {
+  //   path: '/home',
+  //   name: 'home',
+  //   meta: {
+  //     title: '债惠',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "debt_list" */ '../views/Home.vue'),
+  // },
+  // {
+  //   path: '/debt_detail',
+  //   name: 'debt_detail',
+  //   meta: {
+  //     title: '负债详情',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "debt_list" */ '../views/DebtDetail.vue'),
+  // },
+  // {
+  //   path: '/add_new_debt',
+  //   name: 'add_new_debt',
+  //   meta: {
+  //     title: '添加负债信息',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "new_debt" */ '../views/AddDebt.vue'),
+  // },
+  // {
+  //   path: '/upload_debt_pic',
+  //   name: 'upload_debt_pic',
+  //   meta: {
+  //     title: '上传合同照片',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "new_debt" */ '../views/AddDebtPic.vue'),
+  // },
+  // {
+  //   path: '/personal_info',
+  //   name: 'personal_info',
+  //   meta: {
+  //     title: '个人信息',
+  //     // keepAlive: true,
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "person_info" */ '../views/PersonalInfo.vue'),
+  // },
+  // {
+  //   path: '/personal_certify',
+  //   name: 'personal_certify',
+  //   meta: {
+  //     title: '实名认证',
+  //     // keepAlive: true,
+  //   },
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "person_info" */ '../views/PersonalCertify.vue'
+  //     ),
+  // },
+  // {
+  //   path: '/agreement1',
+  //   name: 'agreement1',
+  //   meta: {
+  //     title: '用户协议',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "agreement" */ '../views/Agreement1.vue'),
+  // },
+  // {
+  //   path: '/agreement2',
+  //   name: 'agreement2',
+  //   meta: {
+  //     title: '隐私协议',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "agreement" */ '../views/Agreement2.vue'),
+  // },
+  // {
+  //   path: '/agreement3',
+  //   name: 'agreement3',
+  //   meta: {
+  //     title: '服务委托协议书',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "agreement3" */ '../views/Agreement3.vue'),
+  // },
+  // {
+  //   path: '/success',
+  //   name: 'success',
+  //   meta: {
+  //     title: '提交成功',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "success" */ '../views/Success.vue'),
+  // },
   {
     path: '*',
     name: 'register',

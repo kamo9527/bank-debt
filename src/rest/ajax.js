@@ -5,7 +5,11 @@
 import Fly from 'flyio/dist/npm/fly';
 // import cache from '@/utils/cache';
 import baseUrl from './config';
-import { addCommonParams, createParamsSign, checkApiToSign } from '@/utils/sign';
+import {
+  addCommonParams,
+  createParamsSign,
+  checkApiToSign,
+} from '@/utils/sign';
 
 let fly = new Fly();
 fly.interceptors.request.use(request => {
@@ -15,7 +19,8 @@ fly.interceptors.request.use(request => {
 
   request.baseURL = baseUrl;
 
-  const params = request.method.toUpperCase() === 'GET' ? request.params : request.body;
+  const params =
+    request.method.toUpperCase() === 'GET' ? request.params : request.body;
   // 添加公共参数
   addCommonParams(params);
   // 签名

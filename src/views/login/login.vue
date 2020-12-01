@@ -89,7 +89,7 @@ export default {
           this.$toast.text('登录成功');
           localStorage.setItem('person_info', res.data);
           localStorage.setItem('signKey', res.data.signKey);
-
+          this.$router.push('/home');
           // cache.setSessionData('person_info', res.data);
           // cache.setSessionData('signKey', res.data.signKey);
           // const url = this.nextUrl || 'home';

@@ -17,6 +17,10 @@ export default {
   data() {
     return {};
   },
+  mounted() {
+    const signKey = localStorage.getItem('signKey') || '';
+    if (signKey) this.$router.push('/home');
+  },
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -22,12 +22,45 @@
         </div>
       </div>
       <div class="input_wrap">
-        <span>证件姓名：</span>
-        <input type="text" placeholder="请输入真实姓名" />
+        <span>储蓄卡卡号</span>
+        <input type="text" placeholder="请输入储蓄卡卡号" />
       </div>
       <div class="input_wrap">
-        <span>证件号码：</span>
-        <input type="text" placeholder="请输入真实号码" />
+        <span>所属银行</span>
+        <input type="text" placeholder="请输入银行名称" />
+      </div>
+      <div class="input_wrap">
+        <span>开户城市</span>
+        <input type="text" placeholder="请输入开户城市" />
+        <img
+          class="triangle"
+          src="~@/assets/images/certif/step2/triangle@2x.png"
+        />
+      </div>
+      <div class="input_wrap">
+        <span>开户支行</span>
+        <input type="text" placeholder="请输入开户支行" />
+        <img
+          class="triangle"
+          src="~@/assets/images/certif/step2/triangle@2x.png"
+        />
+      </div>
+      <div class="input_wrap">
+        <span>常驻地址</span>
+        <input type="text" placeholder="请输入常驻地址" />
+        <img
+          class="triangle"
+          src="~@/assets/images/certif/step2/triangle@2x.png"
+        />
+      </div>
+      <div class="input_wrap">
+        <span>银行预留手机号</span>
+        <input type="text" placeholder="请输入银行预留手机号" />
+      </div>
+      <div class="input_wrap">
+        <span>验证码</span>
+        <input type="text" placeholder="请输入验证码" />
+        <div class="smcode">获取验证码</div>
       </div>
       <div class="btn">下一步</div>
     </div>
@@ -104,15 +137,16 @@ export default {
   }
   .content {
     margin-top: 60px;
-    width: 290px;
+    width: 330px;
     display: flex;
     align-items: center;
     flex-direction: column;
     .card_line {
+      margin-bottom: 30px;
       width: 100%;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       .card {
         width: 300px;
         height: 124px;
@@ -121,9 +155,6 @@ export default {
         justify-content: center;
         flex-direction: column;
         background: #f5f5f5;
-        // background: url('"~@/assets/images/certif/step1/card_bg@2x.png')
-        //   no-repeat;
-        // background-size: 100% 100%;
         img {
           width: 62px;
           height: 62px;
@@ -138,26 +169,46 @@ export default {
       }
     }
     .input_wrap {
-      margin-top: 11.5px;
-      width: 100%;
+      margin-top: 5px;
+      width: 330px;
+      height: 25px;
       display: flex;
       align-items: center;
+      border-bottom: 0.5px solid #999999;
       span {
+        width: 115px;
         font-size: 11px;
         color: #333333;
+        flex-shrink: 0;
       }
       input {
-        height: 20px;
+        height: 18px;
         width: 203.5px;
-        text-align: center;
-        border-bottom: 0.5px solid #999999;
         outline: none;
+      }
+      .triangle {
+        margin-right: 35px;
+        width: 18.5px;
+        height: 11px;
+        flex-shrink: 0;
+      }
+      .smcode {
+        margin-right: 18.5px;
+        width: 52px;
+        height: 21px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        color: #ffffff;
+        flex-shrink: 0;
+        background: #3574f2;
       }
     }
     .btn {
-      margin-top: 19px;
-      width: 177px;
-      height: 33.5px;
+      margin-top: 28px;
+      width: 242.5px;
+      height: 42.5px;
       display: flex;
       align-items: center;
       justify-content: center;

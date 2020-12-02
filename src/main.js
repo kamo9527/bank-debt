@@ -14,6 +14,8 @@ import {
   Swiper,
   Tabbar,
   Cell,
+  Popup,
+  Circleprogress,
 } from '@nutui/nutui';
 // 运行时动态加载
 import('./utils/fastclickHack');
@@ -34,6 +36,8 @@ Picker.install(Vue);
 Swiper.install(Vue);
 Tabbar.install(Vue);
 Cell.install(Vue);
+Popup.install(Vue);
+Circleprogress.install(Vue);
 
 Vue.config.productionTip = false;
 Vue.filter('toThousandsText', num => {

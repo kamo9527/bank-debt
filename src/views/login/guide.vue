@@ -17,7 +17,7 @@ export default {
   data() {
     return {};
   },
-  mounted() {
+  beforeCreate() {
     const signKey = localStorage.getItem('signKey') || '';
     if (signKey) this.$router.push('/home');
   },

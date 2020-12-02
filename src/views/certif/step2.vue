@@ -62,8 +62,11 @@
         <input type="text" placeholder="请输入验证码" />
         <div class="smcode">获取验证码</div>
       </div>
-      <div class="btn">下一步</div>
+      <div class="btn" @click="show = true">下一步</div>
     </div>
+    <nut-popup position="right" v-model="show">
+      <div class="bank"></div>
+    </nut-popup>
   </div>
 </template>
 
@@ -72,7 +75,9 @@
 export default {
   name: 'certif_index',
   data() {
-    return {};
+    return {
+      show: false,
+    };
   },
 };
 </script>
@@ -217,6 +222,11 @@ export default {
       background-size: 100% 100%;
       color: #ffffff;
     }
+  }
+  .bank {
+    width: 375px;
+    height: 100vh;
+    background: #fff;
   }
 }
 </style>

@@ -76,6 +76,26 @@ const routes = [
       import(/* webpackChunkName: "certif_pack" */ '../views/certif/step2.vue'),
   },
   {
+    path: '/certif_bank',
+    name: 'certif_bank',
+    meta: {
+      title: '认证中心',
+    },
+    component: () =>
+      import(/* webpackChunkName: "certif_pack" */ '../views/certif/bank.vue'),
+  },
+  {
+    path: '/payback_list',
+    name: 'payback_list',
+    meta: {
+      title: '认证中心',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "payback_pack" */ '../views/payback/list.vue'
+      ),
+  },
+  {
     path: '/home',
     name: 'homePage',
     meta: {

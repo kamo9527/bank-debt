@@ -1,0 +1,197 @@
+<template>
+  <div class="payback_list">
+    <div class="title">
+      <img
+        class="page_back"
+        src="~@/assets/images/common/white_back@2x.png"
+        @click="$router.go(-1)"
+      />
+      <span>还款记录</span>
+    </div>
+    <div class="time">2020年04月</div>
+    <ul class="card_list">
+      <li class="item" v-for="i in 3" :key="i">
+        <div class="header">
+          <img
+            class="bank_icon"
+            src="~@/assets/images/common/white_back@2x.png"
+          />
+          <span class="bank_name">广东发展银行</span>
+          <span class="bank_no">尾号:6587</span>
+        </div>
+        <div class="body">
+          <span class="body_left">
+            <p>10000.00</p>
+            <p class="desc">还款总额</p>
+          </span>
+          <span class="body_right">
+            <p>2020-04-15</p>
+            <p class="desc">完成还款时间</p>
+          </span>
+        </div>
+        <span class="lable">分期还款终止</span>
+        <div class="process">
+          <nut-circleprogress
+            progress="10"
+            :is-auto="true"
+            strokeInnerWidth="6"
+            :progress-option="{
+              radius: 48,
+              strokeOutWidth: 6,
+              backColor: '#f0f0f0',
+              progressColor: 'red',
+            }"
+          >
+            <div class="inner">
+              <p>已还款</p>
+              <p>0.00</p>
+              <p>0/0期</p>
+            </div>
+          </nut-circleprogress>
+        </div>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+// @ is an alias to /src
+export default {
+  name: 'payback_list',
+  data() {
+    return {
+      show: false,
+    };
+  },
+};
+</script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="less">
+.payback_list {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: #f2f2f2;
+  padding: 63.5px 15px 0;
+  // padding-bottom: 28.5px;
+  box-sizing: border-box;
+  .title {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 63.5px;
+    padding-top: 33.5px;
+    overflow: hidden;
+    font-size: 18px;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1;
+    z-index: 9;
+    background: url('~@/assets/images/certif/bank/title_bg@2x.png') no-repeat;
+    background-size: 100% 63.5px;
+    box-sizing: border-box;
+    .page_back {
+      position: absolute;
+      top: 36px;
+      left: 15px;
+      width: 8px;
+      height: 14.5px;
+      z-index: 9;
+    }
+  }
+  .time {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    width: 100%;
+    font-size: 14px;
+    color: #333333;
+  }
+  .card_list {
+    .item {
+      position: relative;
+      width: 348.5px;
+      height: 163px;
+      background: #fff;
+      border-radius: 8px;
+      padding-left: 22.5px;
+      padding-top: 11.5px;
+      box-sizing: border-box;
+      & + .item {
+        margin-top: 11.5px;
+      }
+      .header {
+        display: flex;
+        align-items: flex-end;
+        font-size: 15px;
+        color: #333333;
+        .bank_icon {
+          width: 28px;
+          height: 24px;
+          background: #ff0;
+        }
+        .bank_name {
+          margin-left: 11px;
+          margin-right: 7px;
+        }
+        .bank_no {
+          font-size: 12px;
+          color: #999999;
+        }
+      }
+      .body {
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+        color: #333333;
+        .body_left {
+          width: 90px;
+          text-align: center;
+          .desc {
+            margin-top: 7.5px;
+          }
+        }
+        .body_right {
+          width: 110px;
+          text-align: center;
+          .desc {
+            margin-top: 7.5px;
+          }
+        }
+      }
+      .lable {
+        position: absolute;
+        top: 17px;
+        right: 30px;
+        font-size: 15px;
+        color: #4574f2;
+      }
+      .process {
+        position: absolute;
+        bottom: 17px;
+        right: 25.5px;
+        width: 99px;
+        height: 99px;
+        .inner {
+          text-align: center;
+          p:nth-child(1) {
+            font-size: 15px;
+            color: #333333;
+          }
+          p:nth-child(2) {
+            font-size: 14px;
+            font-weight: bold;
+            color: #f0aa01;
+          }
+          p:nth-child(3) {
+            font-size: 15px;
+            color: #d51523;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

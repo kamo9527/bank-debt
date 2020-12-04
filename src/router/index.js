@@ -88,11 +88,33 @@ const routes = [
     path: '/payback_list',
     name: 'payback_list',
     meta: {
-      title: '认证中心',
+      title: '还款记录',
     },
     component: () =>
       import(
         /* webpackChunkName: "payback_pack" */ '../views/payback/list.vue'
+      ),
+  },
+  {
+    path: '/payback_detail',
+    name: 'payback_detail',
+    meta: {
+      title: '还款详情',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "payback_pack" */ '../views/payback/detail.vue'
+      ),
+  },
+  {
+    path: '/payback_stopResult',
+    name: 'payback_stopResult',
+    meta: {
+      title: '我要还款',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "payback_pack" */ '../views/payback/stopResult.vue'
       ),
   },
   {

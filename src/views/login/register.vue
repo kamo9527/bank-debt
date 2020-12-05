@@ -1,5 +1,5 @@
 <template>
-  <div class="login_login">
+  <div class="login_register">
     <img
       class="page_back"
       src="~@/assets/images/common/black_back@2x.png"
@@ -9,14 +9,14 @@
     <div class="operate_input">
       <div class="input_wrap">
         <input
-          type="text"
+          type="number"
           placeholder="请输入手机号"
           maxlength="11"
           v-model="mobile"
         />
       </div>
       <div class="input_wrap">
-        <input type="text" placeholder="请输入验证码" v-model="mobile" />
+        <input type="text" placeholder="请输入验证码" v-model="smCode" />
         <div class="my_snake">
           <div v-if="loading" class="my_flex my_ju">
             <span class="spinner_snake" />
@@ -29,15 +29,15 @@
       </div>
       <div class="input_wrap">
         <input
-          :type="isEyesClose ? 'password' : 'text'"
+          :type="isEyesClose1 ? 'password' : 'text'"
           placeholder="请输入密码"
           v-model="password"
         />
-        <span @click="isEyesClose = !isEyesClose">
+        <span @click="isEyesClose1 = !isEyesClose1">
           <img
             class="icon"
             src="~@/assets/images/login/login/eyes_close@2x.png"
-            v-if="isEyesClose"
+            v-if="isEyesClose1"
           />
           <img
             class="icon"
@@ -48,15 +48,15 @@
       </div>
       <div class="input_wrap">
         <input
-          :type="isEyesClose ? 'password' : 'text'"
+          :type="isEyesClose2 ? 'password' : 'text'"
           placeholder="再次确认密码"
-          v-model="password"
+          v-model="confirmPassword"
         />
-        <span @click="isEyesClose = !isEyesClose">
+        <span @click="isEyesClose2 = !isEyesClose2">
           <img
             class="icon"
             src="~@/assets/images/login/login/eyes_close@2x.png"
-            v-if="isEyesClose"
+            v-if="isEyesClose2"
           />
           <img
             class="icon"
@@ -66,7 +66,7 @@
         </span>
       </div>
       <div class="input_wrap">
-        <input type="text" placeholder="请填写邀请码" v-model="mobile" />
+        <input type="text" placeholder="请填写邀请码" v-model="agentMobile" />
       </div>
       <div class="protocol">
         <span @click="isRead = !isRead">
@@ -86,7 +86,7 @@
           >已阅读并同意<span class="blue">《账无忧用户使用协议》</span></span
         >
       </div>
-      <div class="btn login" @click="login">注册</div>
+      <div class="btn login" @click="handleRegister">注册</div>
       <div class="login_tips" @click="$router.push('/login_login')">
         <span>已有账号？立即</span>
         <span class="blue">登录</span>
@@ -98,17 +98,20 @@
 <script>
 // @ is an alias to /src
 import { regexpMap } from '@/utils/common';
-// import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
+import md5 from '@/utils/md5';
 export default {
   name: 'login_register',
   data() {
     return {
-      isEyesClose: true,
+      isEyesClose1: true,
+      isEyesClose2: true,
       mobile: '',
-      password: '',
-
       smCode: '',
+      password: '',
+      confirmPassword: '',
+      agentMobile: '',
+
       loading: false,
       secend: 60,
       isRead: true,
@@ -122,31 +125,6 @@ export default {
     // this.nextUrl = this.$route.query.next;
   },
   methods: {
-    login() {
-      if (!regexpMap.regexp_mobile.test(this.mobile)) {
-        this.$toast.text('请输入正确的手机号码');
-        return;
-      }
-      if (this.password.trim() === '') {
-        this.$toast.text('请输入密码');
-        return;
-      }
-
-      // const query = {
-      //   mobile: this.mobile,
-      //   verifyCode: 223322,
-      // };
-
-      // ajax.get('/getCode', query).then((res) => {
-      //   if (res.code === 0) {
-      //     this.$toast.text('成功获取验证码');
-      //     this.handleLoading();
-      //   } else {
-      //     this.$toast.text(res.message);
-      //   }
-      // });
-    },
-
     handleRead(e) {
       this.isRead = e.target.checked;
     },
@@ -157,11 +135,11 @@ export default {
         this.$toast.text('请输入正确的手机号码');
         return;
       }
-      const query = {
+      const params = {
         mobile: this.mobile,
-        verifyCode: 223322,
+        type: '101',
       };
-      ajax.get('/getCode', query).then((res) => {
+      ajax.post(`/sm/getCode`, params).then((res) => {
         if (res.code === 0) {
           this.$toast.text('成功获取验证码');
           this.handleLoading();
@@ -183,31 +161,46 @@ export default {
         }
       }, 1000);
     },
-    // handleRegister() {
-    //   if (!regexpMap.regexp_mobile.test(this.mobile)) {
-    //     this.$toast.text('请输入正确的手机号码');
-    //     return;
-    //   }
-    //   if (!regexpMap.regexp_captcha.test(this.smCode)) {
-    //     this.$toast.text('请输入正确的验证码');
-    //     return;
-    //   }
-    //   if (!this.isRead) {
-    //     this.$toast.text('请阅读并同意本债惠协议');
-    //     return;
-    //   }
-    //   const params = { mobile: this.mobile, smCode: this.smCode };
-    //   ajax.post('/login', params).then((res) => {
-    //     if (res.code === 0) {
-    //       this.$toast.text('登录成功');
-    //       cache.setSessionData('person_info', res.data);
-    //       const url = this.nextUrl || 'home';
-    //       this.$router.push(url);
-    //     } else {
-    //       this.$toast.text(res.message);
-    //     }
-    //   });
-    // },
+    handleRegister() {
+      if (!regexpMap.regexp_mobile.test(this.mobile)) {
+        this.$toast.text('请输入正确的手机号码');
+        return;
+      }
+      if (!regexpMap.regexp_captcha.test(this.smCode)) {
+        this.$toast.text('请输入正确的验证码');
+        return;
+      }
+      if (this.password !== this.confirmPassword) {
+        this.$toast.text('您输入的两次密码不相同');
+        return;
+      }
+      if (!regexpMap.regexp_password.test(this.password)) {
+        this.$toast.text('请输入正确的密码');
+        return;
+      }
+      if (this.agentMobile.trim() == '') {
+        this.$toast.text('请输入邀请码');
+        return;
+      }
+      if (!this.isRead) {
+        this.$toast.text('请阅读用户使用协议并同意才能注册');
+        return;
+      }
+      const params = { 
+        mobile: this.mobile, 
+        smCode: this.smCode,
+        password: md5.hex_md5(this.password),
+        agentMobile: this.agentMobile,
+      };
+      ajax.post('/account/register', params).then((res) => {
+        if (res.code === 0) {
+          this.$toast.text('注册成功');
+          this.$router.push('/login_login');
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    },
   },
 };
 </script>
@@ -220,7 +213,7 @@ export default {
   width: 8px;
   height: 14.5px;
 }
-.login_login {
+.login_register {
   height: 100vh;
   display: flex;
   align-items: center;

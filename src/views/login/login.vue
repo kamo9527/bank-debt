@@ -53,9 +53,6 @@ import { regexpMap } from '@/utils/common';
 import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 import md5 from '@/utils/md5';
-
-console.log('md5', md5.hex_md5);
-
 export default {
   name: 'login_login',
   data() {
@@ -90,18 +87,15 @@ export default {
         password: md5.hex_md5(this.password),
       };
       ajax
-        .post('http://120.79.102.97:9000/account/login', params)
+        .post('/account/login', params)
         .then((res) => {
           if (res.code === 0) {
             this.$toast.text('登录成功');
             cache.setLocalStorageData('person_info', res.data);
             cache.setLocalStorageData('signKey', res.data.signKey);
             this.$router.push('/home');
-
-            // const url = this.nextUrl || 'home';
-            // this.$router.push(url);
           } else {
-            this.$toast.text(res.message);
+            this.$toast.text(res.msg);
           }
         });
     },

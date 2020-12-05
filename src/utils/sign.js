@@ -6,7 +6,11 @@ import cache from '@/utils/cache';
 /**
  * 不需要登陆状态 签名接口列表 (所有接口默认 有登陆状态 签名)
  **/
-const noLoginApiList = ['account/login'];
+const noLoginApiList = [
+  '/account/login',
+  '/sm/getCode',
+  '/account/register',
+];
 
 export function addCommonParams(params) {
   const personInfo = cache.getLocalStorageData('person_info') || '';

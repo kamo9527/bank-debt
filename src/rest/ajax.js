@@ -16,6 +16,7 @@ fly.interceptors.request.use(request => {
   // 给所有请求添加自定义header
   request.headers['X-Tag'] = 'flyio';
   request.headers['channelType'] = 'wx';
+  request.headers['Content-Type'] = 'application/x-www-form-urlencoded ';
 
   request.baseURL = baseUrl;
 

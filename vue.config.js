@@ -20,7 +20,7 @@ module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   devServer: {
     open: true, // 配置自动启动浏览器
-    proxy: 'http://120.79.102.97:9000/', // 配置跨域处理,只有一个代理
+    proxy: 'http://120.79.102.97:9000', // 配置跨域处理,只有一个代理
   },
   chainWebpack: config => {
     // 当处于开发环境时，删除prefetch特性：prefetch会使macbook中的clarles无法正常工作。

@@ -50,27 +50,28 @@ class Cache {
     }
   }
 
-  // setLocalStorageData(key, val) {
-  //   if (!this.nonMark && window.localStorage.setItem) {
-  //     try {
-  //       window.localStorage.setItem(key, JSON.stringify(val))
-  //     } catch (e) {
-  //       this.nonMark = true
-  //       this.localData[key] = val
-  //     }
-  //   } else {
-  //     this.localData[key] = val
-  //   }
-  // }
+  setLocalStorageData(key, val) {
+    if (!this.nonMark && window.localStorage.setItem) {
+      try {
+        window.localStorage.setItem(key, JSON.stringify(val));
+      } catch (e) {
+        this.nonMark = true;
+        this.localData[key] = val;
+      }
+    } else {
+      this.localData[key] = val;
+    }
+  }
 
-  // getLocalStorageData(key) {
-  //   if (!this.nonMark && window.localStorage.getItem) {
-  //     const val = window.localStorage.getItem(key)
-  //     return (val === null || val === '') ? val : JSON.parse(val)
-  //   } else {
-  //     return this.localData[key]
-  //   }
-  // }
+  getLocalStorageData(key) {
+    if (!this.nonMark && window.localStorage.getItem) {
+      const val = window.localStorage.getItem(key);
+      console.log('val', val);
+      return (val === null || val === '') ? val : JSON.parse(val)
+    } else {
+      return this.localData[key];
+    }
+  }
 
   clearSessionData(key) {
     if (window.sessionStorage.removeItem && !this.nonMark) {
@@ -80,12 +81,12 @@ class Cache {
     }
   }
 
-  // clearLocalStorageData(key) {
-  //   if (window.localStorage.removeItem && !this.nonMark) {
-  //     window.localStorage.removeItem(key)
-  //   } else {
-  //     this.localData[key] = []
-  //   }
-  // }
+  clearLocalStorageData(key) {
+    if (window.localStorage.removeItem && !this.nonMark) {
+      window.localStorage.removeItem(key);
+    } else {
+      this.localData[key] = [];
+    }
+  }
 }
 export default new Cache();

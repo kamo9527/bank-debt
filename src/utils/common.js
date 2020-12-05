@@ -4,6 +4,7 @@ export const regexpMap = {
   regexp_Identification_card: /^\d{13,17}[0-9xX]$/, // 身份证号码格式校验
   regexp_captcha: /^\d{6}$/, // 验证码校验
   regexp_thousand: /^(([1-9][0-9]{0,2}(,\d{3})*)|0)(\.\d+)?$/, // 检验千位符
+  regexp_password: /^(?=.*\d)(?=.*[a-zA-Z])[\da-zA-Z~!@#$%^&*]{6,20}$/, // 密码限制最长6-20位可以为特殊字符， 但不能空格
 };
 /**
  * 时间格式化

@@ -2,22 +2,21 @@
  * 签名
  **/
 import md5 from '@/utils/md5';
-
+import cache from '@/utils/cache';
 /**
  * 不需要登陆状态 签名接口列表 (所有接口默认 有登陆状态 签名)
  **/
 const noLoginApiList = ['account/login'];
 
 export function addCommonParams(params) {
-  const personInfo = localStorage.getItem('person_info') || '';
-  if (!personInfo) return;
+  const personInfo = cache.getLocalStorageData('person_info') || '';
   if (personInfo) {
-    if (!params.version) params.version = '1.0.0';
-    if (!params.deviceId)
-      params.deviceId = localStorage.getItem('deviceId') || '';
     if (!params.loginName) params.loginName = personInfo.loginName || '';
     if (!params.merchantId) params.merchantId = personInfo.merchantId || '';
   }
+  const deviceId = cache.getLocalStorageData('deviceId') || '';
+  if (deviceId && !params.deviceId) params.deviceId = deviceId;
+  if (!params.version) params.version = '1.0.0';
 }
 
 export function checkApiToSign(url) {
@@ -54,7 +53,7 @@ export function createParamsSign(params, noLogin) {
   });
   paramsStr = paramsStr.slice(1);
 
-  const saltKey = localStorage.getItem('saltKey');
+  const saltKey = cache.getLocalStorageData('saltKey');
   // 区分 是否有登陆状态 1、没登陆`${timestamp}#${nonce}` 2、有登陆`${timestamp}#${nonce}#${saltKey}`
   const hexMd5Str = noLogin
     ? `${timestamp}#${nonce}`

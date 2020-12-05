@@ -12,13 +12,14 @@
 
 <script>
 // @ is an alias to /src
+import cache from '@/utils/cache';
 export default {
   name: 'login_guide',
   data() {
     return {};
   },
   beforeCreate() {
-    const signKey = localStorage.getItem('signKey') || '';
+    const signKey = cache.getLocalStorageData('signKey') || '';
     if (signKey) this.$router.push('/home');
   },
 };

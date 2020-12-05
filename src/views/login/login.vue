@@ -8,12 +8,18 @@
     <h2 class="title">登录</h2>
     <div class="operate_input">
       <div class="input_wrap">
-        <input type="text" placeholder="请输入手机号" v-model="mobile" />
+        <input
+          type="text"
+          placeholder="请输入手机号"
+          maxlength="11"
+          v-model="mobile"
+        />
       </div>
       <div class="input_wrap">
         <input
           :type="isEyesClose ? 'password' : 'text'"
           placeholder="请输入密码"
+          maxlength="20"
           v-model="password"
         />
         <span @click="isEyesClose = !isEyesClose">
@@ -44,9 +50,11 @@
 <script>
 // @ is an alias to /src
 import { regexpMap } from '@/utils/common';
-// import cache from '@/utils/cache';
+import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 import md5 from '@/utils/md5';
+
+console.log('md5', md5.hex_md5);
 
 export default {
   name: 'login_login',
@@ -73,33 +81,30 @@ export default {
         this.$toast.text('请输入正确的手机号码');
         return;
       }
-      if (this.password.trim() === '') {
-        this.$toast.text('请输入密码');
-        return;
-      }
-
+      // if (!regexpMap.regexp_password.test(this.password)) {
+      //   this.$toast.text('请输入正确的密码');
+      //   return;
+      // }
       const params = {
-        deviceId: '1111',
         loginName: this.mobile,
         password: md5.hex_md5(this.password),
-        version: '1.0',
       };
-      ajax.post('http://120.79.102.97:9000/account/login', params).then(res => {
-        if (res.code === 0) {
-          this.$toast.text('登录成功');
-          localStorage.setItem('person_info', res.data);
-          localStorage.setItem('signKey', res.data.signKey);
-          this.$router.push('/home');
-          // cache.setSessionData('person_info', res.data);
-          // cache.setSessionData('signKey', res.data.signKey);
-          // const url = this.nextUrl || 'home';
-          // this.$router.push(url);
-        } else {
-          this.$toast.text(res.message);
-        }
-      });
-    },
+      ajax
+        .post('http://120.79.102.97:9000/account/login', params)
+        .then((res) => {
+          if (res.code === 0) {
+            this.$toast.text('登录成功');
+            cache.setLocalStorageData('person_info', res.data);
+            cache.setLocalStorageData('signKey', res.data.signKey);
+            this.$router.push('/home');
 
+            // const url = this.nextUrl || 'home';
+            // this.$router.push(url);
+          } else {
+            this.$toast.text(res.message);
+          }
+        });
+    },
     // handleRead(e) {
     //   this.isRead = e.target.checked;
     // },

@@ -8,7 +8,12 @@
     <h2 class="title">注册</h2>
     <div class="operate_input">
       <div class="input_wrap">
-        <input type="text" placeholder="请输入手机号" v-model="mobile" />
+        <input
+          type="text"
+          placeholder="请输入手机号"
+          maxlength="11"
+          v-model="mobile"
+        />
       </div>
       <div class="input_wrap">
         <input type="text" placeholder="请输入验证码" v-model="mobile" />
@@ -156,7 +161,7 @@ export default {
         mobile: this.mobile,
         verifyCode: 223322,
       };
-      ajax.get('/getCode', query).then(res => {
+      ajax.get('/getCode', query).then((res) => {
         if (res.code === 0) {
           this.$toast.text('成功获取验证码');
           this.handleLoading();

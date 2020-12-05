@@ -1,15 +1,17 @@
 <template>
   <section class="page_w home_page">
-    <div class="home_top">
+    <router-link to="/my_refund" class="home_image">
       <img
-        class="home_image"
-        src="~@/assets/images/home/collection_image@2x.png"
-      />
-      <img
-        class="home_image is_top"
+        class="home_image_item"
         src="~@/assets/images/home/refund_image@2x.png"
       />
-    </div>
+    </router-link>
+    <router-link to="/my_refund" class="home_image">
+      <img
+        class="home_image_item"
+        src="~@/assets/images/home/collection_image@2x.png"
+      />
+    </router-link>
     <div class="home_entrance">
       <router-link
         v-for="item in entranceList"
@@ -41,7 +43,7 @@
         />
       </div>
     </nut-swiper>
-    <div class="home_tips">
+    <!-- <div class="home_tips">
       <div class="home_tips_icon" />
       <div class="home_tips_title">使用攻略</div>
     </div>
@@ -55,8 +57,8 @@
       >
         {{ item }}
       </div>
-    </div>
-    <collapse v-model="activeNames" :accordion="true">
+    </div> 
+     <collapse v-model="activeNames" :accordion="true">
       <collapse-item title="标题1" :name="1">
         京东“厂直优品计划”首推“政府优品馆” 3年覆盖80%镇级政府
       </collapse-item>
@@ -66,7 +68,7 @@
       <collapse-item title="标题3" :name="3"
         >京东不回家：教师节期间 创意花束销量增长53倍
       </collapse-item>
-    </collapse>
+    </collapse> -->
     <nut-tabbar
       class="my_tabs"
       @tab-switch="tabSwitch3"
@@ -79,14 +81,12 @@
 
 <script>
 // @ is an alias to /src
-import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
-import Collapse from '@/components/Collapse.vue';
-import CollapseItem from '@/components/CollapseItem.vue';
+// import Collapse from '@/components/Collapse.vue';
+// import CollapseItem from '@/components/CollapseItem.vue';
 import deal_record_icon from '@/assets/images/home/deal_record_icon@2x.png';
 import refund_record_icon from '@/assets/images/home/refund_record_icon@2x.png';
 import name_register_icon from '@/assets/images/home/name_register_icon@2x.png';
-import new_boy_icon from '@/assets/images/home/new_boy_icon@2x.png';
 import ad_image_1 from '@/assets/images/home/adv_image_1@2x.png';
 import ad_image_2 from '@/assets/images/home/adv_image_2@2x.png';
 import home_icon from '@/assets/images/person_icon@2x.png';
@@ -95,10 +95,6 @@ import person_icon from '@/assets/images/person_icon@2x.png';
 import person_active_icon from '@/assets/images/person_active_icon@2x.png';
 export default {
   name: 'homePage',
-  components: {
-    Collapse,
-    CollapseItem,
-  },
   data() {
     return {
       isTip: 1,
@@ -114,21 +110,8 @@ export default {
       },
       entranceList: [
         { icon: deal_record_icon, text: '交易记录', link: '/agreement4' },
-        {
-          icon: refund_record_icon,
-          text: '还款记录',
-          link: '/agreement1',
-        },
-        {
-          icon: name_register_icon,
-          text: '实名认证',
-          link: '/agreement2',
-        },
-        {
-          icon: new_boy_icon,
-          text: '新手教程',
-          link: '/agreement3',
-        },
+        { icon: refund_record_icon, text: '还款记录', link: '/agreement1' },
+        { icon: name_register_icon, text: '实名认证', link: '/agreement2' },
       ],
       dataItem: [
         {
@@ -140,7 +123,6 @@ export default {
           image: ad_image_2,
         },
       ],
-      tipsList: ['无卡收款', '实名认证', '绑定卡片'],
       tabList3: [
         {
           tabTitle: '首页',
@@ -161,10 +143,37 @@ export default {
     };
   },
   mounted() {
-    const sessionData = cache.getSessionData('new_debt_data');
-    if (sessionData) {
-      this.newDebtData = sessionData;
-    }
+    this.$dialog({
+      id: 'my-dialog',
+      title: '允许“帐无忧”在您使用该应用时访问您的位置吗？',
+      content: '为了保障持卡人的交易安全，交易过程中需要使用您的位置信息。',
+      onOkBtn(event) {
+        //确定按钮点击事件
+        console.log(event);
+        this.close(); //关闭对话框
+        this.$dialog({
+          id: 'my-dialogxxx',
+          title: '温馨提示',
+          content: '您还未实名认证，请先完成实名认证',
+          onOkBtn(event) {
+            //确定按钮点击事件
+            console.log(event);
+            this.close(); //关闭对话框
+          },
+          onCancelBtn(event) {
+            console.log(event);
+            //取消按钮点击事件，默认行为关闭对话框
+            //return false;  //阻止默认“关闭对话框”的行为
+          },
+        });
+      },
+      onCancelBtn(event) {
+        this.close(); //关闭对话框
+        console.log(event);
+        //取消按钮点击事件，默认行为关闭对话框
+        //return false;  //阻止默认“关闭对话框”的行为
+      },
+    });
     ajax.get('/repay/confirmSm').then(res => {
       console.log(res);
     });
@@ -185,34 +194,34 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .home_page {
-  padding-top: 20px;
-  padding-bottom: 200px;
-  .home_top {
-    position: relative;
-    .home_image {
+  .home_image {
+    margin-top: 20px;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 12px;
+    .home_image_item {
       display: block;
-      box-sizing: border-box;
-      width: 100%;
-      padding: 0 12px;
-    }
-    .is_top {
-      position: absolute;
-      top: 40px;
       width: 100%;
     }
+  }
+  .is_top {
+    position: absolute;
+    top: 40px;
+    width: 100%;
   }
   .my_swiper {
     height: 100px;
   }
   .home_entrance {
-    margin: 60px 0 30px;
+    margin: 15px 0 30px;
     padding: 0 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     &_item {
-      margin: 0 15px;
-      flex: 1;
+      margin: 0 auto;
+      width: 64px;
     }
     .icon {
       display: block;

@@ -18,15 +18,6 @@ const routes = [
       import(/* webpackChunkName: "login_pack" */ '../views/login/guide.vue'),
   },
   {
-    path: '/login_guide',
-    name: 'login_guide',
-    meta: {
-      title: '引导页',
-    },
-    component: () =>
-      import(/* webpackChunkName: "login_pack" */ '../views/login/guide.vue'),
-  },
-  {
     path: '/login_login',
     name: 'login_login',
     meta: {
@@ -121,10 +112,32 @@ const routes = [
     path: '/home',
     name: 'homePage',
     meta: {
-      title: '账无忧',
+      title: '首页',
     },
     component: () =>
       import(/* webpackChunkName: "bebt_home" */ '../views/home/index.vue'),
+  },
+  {
+    path: '/my_refund',
+    name: 'refundPage',
+    meta: {
+      title: '我要还款',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "refund_pack" */ '../views/refundPack/index.vue'
+      ),
+  },
+  {
+    path: '/my_refund_chanel',
+    name: 'refundChannelPage',
+    meta: {
+      title: '还款渠道',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "refund_pack" */ '../views/refundPack/refundChannel.vue'
+      ),
   },
   {
     path: '/person_info',

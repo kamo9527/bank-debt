@@ -10,6 +10,7 @@ const noLoginApiList = [
   '/account/login',
   '/sm/getCode',
   '/account/register',
+  '/account/resetPassword',
 ];
 
 export function addCommonParams(params) {

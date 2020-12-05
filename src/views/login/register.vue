@@ -16,7 +16,7 @@
         />
       </div>
       <div class="input_wrap">
-        <input type="text" placeholder="请输入验证码" v-model="smCode" />
+        <input type="number" placeholder="请输入验证码" v-model="smCode" maxlength="6"/>
         <div class="my_snake">
           <div v-if="loading" class="my_flex my_ju">
             <span class="spinner_snake" />
@@ -111,6 +111,11 @@ export default {
       password: '',
       confirmPassword: '',
       agentMobile: '',
+      // mobile: '15521220234',
+      // smCode: '123456',
+      // password: 'qq123456',
+      // confirmPassword: 'qq123456',
+      // agentMobile: '15521220234',
 
       loading: false,
       secend: 60,
@@ -144,7 +149,7 @@ export default {
           this.$toast.text('成功获取验证码');
           this.handleLoading();
         } else {
-          this.$toast.text(res.message);
+          this.$toast.text(res.msg);
         }
       });
     },

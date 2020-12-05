@@ -140,6 +140,17 @@ const routes = [
       ),
   },
   {
+    path: '/my_return_information',
+    name: 'refundReturnInformationPage',
+    meta: {
+      title: '填写代还信息',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "refund_pack" */ '../views/refundPack/refundReturnInformation.vue'
+      ),
+  },
+  {
     path: '/person_info',
     name: 'personInfoPage',
     meta: {

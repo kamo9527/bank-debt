@@ -5,7 +5,7 @@
       class="my_chanel"
       v-for="item in refundChannelList"
       :key="item.link"
-      @click="handleGo(item.link)"
+      @click="handleGo(item)"
     >
       <div class="my_chanel_flex">
         <div class="my_chanel_title">{{ item.title }}</div>
@@ -31,19 +31,19 @@ export default {
           title: 'I入口',
           detail:
             '费率0.8%+1，该入口是大额分期入口，可单笔1000以 上，当天单卡5000元内，当天单卡最多五笔消费',
-          link: '/xxxx1',
+          link: '/my_return_information?cardId=3333',
         },
         {
           title: 'G入口',
           detail:
             '费率0.8%+1，该入口是大额分期入口，可单笔1000以 上，当天单卡20000元内，当天单卡最多五笔消费,能短 时间还大额账',
-          link: '/xxxx2',
+          link: '/my_return_information?cardId=1111',
         },
         {
           title: 'H入口',
           detail:
             '费率0.7%+1，该入口是小额分期入口，可单笔1000以 内，当天单卡5000元内，当天单卡最多五笔消费。',
-          link: '/xxxx3',
+          link: '/my_return_information?cardId=123',
         },
       ],
     };
@@ -51,6 +51,7 @@ export default {
   mounted() {},
   methods: {
     handleGo(info) {
+      // 交互说明：选择渠道需判断是否要开通业务，需开通跳到开通业务界面，不需要开通业务跳到填写代还信息页
       this.$router.push(info.link);
     },
   },
@@ -63,9 +64,9 @@ export default {
   background-color: #f5f5f5;
   .my_cell {
     border-radius: 10px;
-    height: 105px;
-    line-height: 105px;
-    margin-bottom: 20px;
+    height: 100px;
+    line-height: 100px;
+    margin-bottom: 15px;
     background: url('../../assets/images/refund/refund_channel@2x.png');
     background-size: cover;
     .my_link {
@@ -84,6 +85,7 @@ export default {
     }
     .nut-cell-sub-title {
       color: #fff;
+      font-size: 15px;
     }
     .nut-cell-desc {
       color: #fff;
@@ -91,9 +93,9 @@ export default {
   }
   .my_chanel {
     border-radius: 10px;
-    height: 90px;
-    line-height: 90px;
-    margin-bottom: 20px;
+    height: 75px;
+    line-height: 75px;
+    margin-bottom: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;

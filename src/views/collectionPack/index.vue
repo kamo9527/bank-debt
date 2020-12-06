@@ -74,17 +74,8 @@ export default {
       display: block;
       width: 100%;
     }
-    .nut-cell-title {
-      color: #fff;
-      font-size: 15px;
-    }
     .nut-cell-desc {
       color: #fff;
-      font-size: 15px;
-    }
-    .nut-cell-sub-title {
-      color: #fff;
-      font-size: 15px;
     }
   }
 }

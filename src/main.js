@@ -15,6 +15,7 @@ import {
   Tabbar,
   Cell,
   Popup,
+  Calendar,
   Circleprogress,
 } from '@nutui/nutui';
 // 运行时动态加载
@@ -37,6 +38,7 @@ Swiper.install(Vue);
 Tabbar.install(Vue);
 Cell.install(Vue);
 Popup.install(Vue);
+Calendar.install(Vue);
 Circleprogress.install(Vue);
 
 Vue.config.productionTip = false;

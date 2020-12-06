@@ -26,6 +26,11 @@
         <img class="my_icon" :src="item.icon" alt="" />
       </div>
     </nut-cell>
+    <div class="logout_btn">
+      <button @click="handleCancle" class="my_btn my_btn_xx">
+        退出登录
+      </button>
+    </div>
     <nut-popup
       class="my_popup"
       v-model="showService"
@@ -158,20 +163,22 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .person_page {
-  background-color: #fff;
+  // background-color: #fff;
+  background-color: #f5f5f5;
+  padding-bottom: 70px;
   .person_top {
-    height: 214px;
+    height: 170px;
     background: url('../../assets/images/personInfo/page_bg@2x.png') center
       no-repeat;
     background-size: cover;
     .person_title {
-      padding-top: 40px;
+      padding-top: 20px;
       color: #fff;
       font-size: 18px;
       text-align: center;
     }
     .person_detail {
-      padding: 40px 15px 0;
+      padding: 20px 15px 0;
       display: flex;
       justify-content: flex-start;
       align-items: center;
@@ -210,6 +217,13 @@ export default {
   }
   .service_list {
     padding: 0 40px;
+  }
+  .logout_btn {
+    padding: 15px 30px;
+    .my_btn_xx {
+      border-radius: 21px;
+      color: #3574f5;
+    }
   }
   .my_btn {
     margin-bottom: 10px;

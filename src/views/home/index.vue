@@ -28,6 +28,7 @@
       direction="horizontal"
       :swiperData="dataItem"
       :canDragging="true"
+      :loop="true"
       :paginationVisible="true"
       ref="demo2"
     >
@@ -109,8 +110,8 @@ export default {
         surplusMoney: '',
       },
       entranceList: [
-        { icon: deal_record_icon, text: '交易记录', link: '/agreement4' },
-        { icon: refund_record_icon, text: '还款记录', link: '/agreement1' },
+        { icon: deal_record_icon, text: '交易记录', link: '/my_deal_list' },
+        { icon: refund_record_icon, text: '还款记录', link: '/payback_list' },
         { icon: name_register_icon, text: '实名认证', link: '/agreement2' },
       ],
       dataItem: [

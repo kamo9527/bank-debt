@@ -13,6 +13,9 @@
         <img class="my_icon" :src="item.icon" alt="" />
       </div>
     </nut-cell>
+    <button @click="handleSubmit" class="my_btn">
+      添加信用卡
+    </button>
   </section>
 </template>
 
@@ -52,7 +55,11 @@ export default {
     };
   },
   mounted() {},
-  methods: {},
+  methods: {
+    handleSubmit() {
+      this.$router.push('/my_count');
+    },
+  },
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -86,6 +93,18 @@ export default {
       color: #fff;
       font-size: 15px;
     }
+  }
+  .my_btn {
+    margin: 40px auto 0;
+    display: block;
+    width: 90%;
+    box-sizing: border-box;
+    height: 40px;
+    border-radius: 20px;
+    font-size: 16px;
+    color: #fff;
+    border: none;
+    background-color: #3375f2;
   }
 }
 </style>

@@ -1,0 +1,143 @@
+<template>
+  <section class="page_w deal_page">
+    <div class="fee_title">2020年04月</div>
+    <div class="deal_item">
+      <div class="deal_line">订单号：APPQP20200427181245436332</div>
+      <div class="deal_info">
+        <div class="item_left">
+          交易金额：<span class="red_color">1000.00元</span>
+        </div>
+        <div class="item_right">状态：<span class="y_color">支付中</span></div>
+      </div>
+      <div class="deal_info">
+        <div class="item_left">付款信用卡：华夏银行</div>
+        <div class="item_right bank_num">尾号：8095</div>
+      </div>
+      <div class="deal_info">
+        <div class="item_left">收款银行卡：建设银行</div>
+        <div class="item_right bank_num">尾号：8095</div>
+      </div>
+      <div class="deal_line">
+        交易时间：<span class="b_color">2020-01-24 18:13:45</span>
+      </div>
+    </div>
+    <div class="deal_item">
+      <div class="deal_line">订单号：APPQP20200427181245436332</div>
+      <div class="deal_info">
+        <div class="item_left">
+          交易金额：<span class="red_color">1000.00元</span>
+        </div>
+        <div class="item_right">状态：<span class="y_color">支付中</span></div>
+      </div>
+      <div class="deal_info">
+        <div class="item_left">付款信用卡：华夏银行</div>
+        <div class="item_right bank_num">尾号：8095</div>
+      </div>
+      <div class="deal_info">
+        <div class="item_left">收款银行卡：建设银行</div>
+        <div class="item_right bank_num">尾号：8095</div>
+      </div>
+      <div class="deal_line">
+        交易时间：<span class="b_color">2020-01-24 18:13:45</span>
+      </div>
+    </div>
+    <div class="deal_item">
+      <div class="deal_line">订单号：APPQP20200427181245436332</div>
+      <div class="deal_info">
+        <div class="item_left">
+          交易金额：<span class="red_color">1000.00元</span>
+        </div>
+        <div class="item_right">状态：<span class="y_color">支付中</span></div>
+      </div>
+      <div class="deal_info">
+        <div class="item_left">付款信用卡：华夏银行</div>
+        <div class="item_right bank_num">尾号：8095</div>
+      </div>
+      <div class="deal_info">
+        <div class="item_left">收款银行卡：建设银行</div>
+        <div class="item_right bank_num">尾号：8095</div>
+      </div>
+      <div class="deal_line">
+        交易时间：<span class="b_color">2020-01-24 18:13:45</span>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script>
+// @ is an alias to /src
+import cache from '@/utils/cache';
+import ajax from '@/rest/ajax';
+export default {
+  name: 'myFeePage',
+  data() {
+    return {
+      entranceList: [],
+    };
+  },
+  mounted() {
+    const sessionData = cache.getSessionData('new_debt_data');
+    if (sessionData) {
+      this.newDebtData = sessionData;
+    }
+    ajax.get('/repay/confirmSm').then(res => {
+      console.log(res);
+    });
+  },
+  methods: {
+    tabSwitch(index, event) {
+      console.log(index + '--' + event);
+    },
+    changeTips(index) {
+      this.isTip = index;
+    },
+    tabSwitch3(value, index) {
+      console.log(index);
+    },
+  },
+};
+</script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="less">
+.deal_page {
+  .fee_title {
+    color: #333;
+    font-size: 13px;
+    padding: 15px;
+  }
+  .deal_item {
+    color: #333;
+    font-size: 13px;
+    padding: 10px 30px;
+    background-color: #fff;
+    margin-bottom: 10px;
+    .deal_line {
+      line-height: 26px;
+    }
+    .deal_info {
+      line-height: 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .item_left {
+      flex: 1;
+    }
+    .item_right {
+      width: 90px;
+    }
+    .red_color {
+      color: #ee8b8f;
+    }
+    .y_color {
+      color: #ffd375;
+    }
+    .bank_num {
+      color: #999;
+    }
+    .b_color {
+      color: #6893f4;
+    }
+  }
+}
+</style>

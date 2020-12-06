@@ -41,13 +41,11 @@
     <button @click="handleSubmit" class="my_btn">
       下一步
     </button>
-    <nut-datepicker
-      :is-visible="dateVisible"
-      type="date"
-      title="请选择日期"
-      :startDate="startDate"
-      :endDate="endDate"
-      :is-show-chinese="false"
+    <nut-calendar
+      :is-visible.sync="dateVisible"
+      :start-date="startDate"
+      :end-date="endDate"
+      :animation="`nutSlideUp`"
       @close="switchPicker"
       @choose="setChooseValue"
     />
@@ -216,7 +214,8 @@ export default {
       this.dateVisible = false;
     },
     setChooseValue(param) {
-      this.toDay = param[3];
+      this.dateCustmer = param[3];
+      console.log(param[3]);
     },
     openDateSwitch() {
       this.dateVisible = true;
@@ -327,6 +326,7 @@ export default {
     .my_cellxx {
       background-color: #fff;
       padding: 0 20px;
+      margin-bottom: 6px;
     }
     .my_cellxx .nut-cell-right {
       font-size: 14px;

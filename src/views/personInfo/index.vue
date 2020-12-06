@@ -18,14 +18,45 @@
       class="my_cell"
       v-for="item in entranceList"
       :key="item.link"
-      :to="item.link"
       :show-icon="true"
       :title="item.text"
+      @click-cell="cellClick(item.link)"
     >
       <div class="my_link" slot="avatar">
         <img class="my_icon" :src="item.icon" alt="" />
       </div>
     </nut-cell>
+    <nut-popup
+      class="my_popup"
+      v-model="showService"
+      position="bottom"
+      :style="{ height: '170px' }"
+    >
+      <div class="service_list">
+        <button @click="handleQQ" class="my_btn">
+          <a
+            style="color: #fff"
+            target="blank"
+            href="http://wpa.qq.com/msgrd?V=1&Uin=${qq!}"
+            >在线QQ咨询（9:00-18:00）
+          </a>
+          <!-- <a
+            target="_blank"
+            href="http://wpa.qq.com/msgrd?v=1&uin=QQ号码&site=qq&menu=yes"
+            >在线QQ咨询（9:00-18:00）
+          </a> -->
+          <!-- <a href="tencent://message/?uin=你的QQ号&Site=QQ交谈bai&Menu=yes" target="blank"><img border="0" src="http://wpa.qq.com/pa?p=1:你的QQ号:7" alt="图片不正常时显示的文字du" width="71" height="24" /></a> -->
+        </button>
+        <button @click="handlePhone" class="my_btn">
+          <a style="color: #fff" href="tel:0755-23068536"
+            >电话咨询（0755-23068536）</a
+          >
+        </button>
+        <button @click="handleCancle" class="my_btn my_btn_xx">
+          取消
+        </button>
+      </div>
+    </nut-popup>
     <nut-tabbar
       class="my_tabs"
       @tab-switch="tabSwitch3"
@@ -57,12 +88,12 @@ export default {
   data() {
     return {
       entranceList: [
-        { icon: fee_icon, text: '我的费率', link: '/agreement0' },
-        { icon: account_icon, text: '收款账户', link: '/agreement1' },
+        { icon: fee_icon, text: '我的费率', link: '/my_fee' },
+        { icon: account_icon, text: '收款账户', link: '/my_count' },
         { icon: card_icon, text: '我的付款卡', link: '/agreement2' },
-        { icon: count_detail_icon, text: '收款明细', link: '/agreement3' },
+        { icon: count_detail_icon, text: '收款明细', link: '/my_deal_list' },
         { icon: change_number_icon, text: '修改密码', link: '/agreement4' },
-        { icon: service_icon, text: '联系客服', link: '/agreement5' },
+        { icon: service_icon, text: '联系客服' },
         { icon: about_icon, text: '关于我们', link: '/agreement6' },
         { icon: note_icon, text: '消息通知', link: '/agreement7' },
       ],
@@ -83,6 +114,7 @@ export default {
         },
       ],
       activeNames: 1,
+      showService: false,
     };
   },
   mounted() {
@@ -103,6 +135,22 @@ export default {
     },
     tabSwitch3(value, index) {
       console.log(index);
+    },
+    cellClick(link) {
+      if (link) {
+        this.$router.push(link);
+      } else {
+        this.showService = true;
+      }
+    },
+    handleQQ() {
+      console.log(222);
+    },
+    handlePhone() {
+      console.log(222);
+    },
+    handleCancle() {
+      this.showService = false;
     },
   },
 };
@@ -156,6 +204,28 @@ export default {
     .icon-box {
       font-size: 13px;
     }
+  }
+  .my_popup {
+    background-color: transparent;
+  }
+  .service_list {
+    padding: 0 40px;
+  }
+  .my_btn {
+    margin-bottom: 10px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    height: 42px;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #fff;
+    border: none;
+    background-color: #3375f2;
+  }
+  .my_btn_xx {
+    color: #333;
+    background-color: #fff;
   }
 }
 </style>

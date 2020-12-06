@@ -151,6 +151,17 @@ const routes = [
       ),
   },
   {
+    path: '/card_collection',
+    name: 'cardCollectionPage',
+    meta: {
+      title: '无卡收款',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "refund_pack" */ '../views/collectionPack/index.vue'
+      ),
+  },
+  {
     path: '/person_info',
     name: 'personInfoPage',
     meta: {
@@ -159,6 +170,39 @@ const routes = [
     component: () =>
       import(
         /* webpackChunkName: "person_info" */ '../views/personInfo/index.vue'
+      ),
+  },
+  {
+    path: '/my_fee',
+    name: 'myFeePage',
+    meta: {
+      title: '我的费率',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "person_info" */ '../views/personInfo/myFee.vue'
+      ),
+  },
+  {
+    path: '/my_count',
+    name: 'myCountPage',
+    meta: {
+      title: '收款账户',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "person_info" */ '../views/personInfo/myCount.vue'
+      ),
+  },
+  {
+    path: '/my_deal_list',
+    name: 'dealListPage',
+    meta: {
+      title: '交易明细',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "person_info" */ '../views/personInfo/dealList.vue'
       ),
   },
   // {

@@ -25,6 +25,7 @@
 
 <script>
 // @ is an alias to /src
+import ajax from '@/rest/ajax';
 export default {
   name: 'certif_bank',
   data() {
@@ -32,6 +33,23 @@ export default {
       show: false,
     };
   },
+  mounted() {
+    // this.nextUrl = this.$route.query.next;
+    this.getList();
+  },
+  methods: {
+    getList() {
+      const params = {};
+      ajax.post(`/area/list`, params).then((res) => {
+        if (res.code === 0) {
+          // this.$toast.text('成功获取验证码');
+          // this.handleLoading();
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    }
+  }
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

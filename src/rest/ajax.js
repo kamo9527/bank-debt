@@ -26,7 +26,11 @@ fly.interceptors.request.use(request => {
   // 添加公共参数
   addCommonParams(params);
   // 签名
-  createParamsSign(params, checkApiToSign(request.url), checkTimestampToSign(request.url));
+  createParamsSign(
+    params,
+    checkApiToSign(request.url),
+    checkTimestampToSign(request.url)
+  );
   return request;
 });
 fly.interceptors.response.use(

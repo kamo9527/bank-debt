@@ -16,7 +16,12 @@
         />
       </div>
       <div class="input_wrap">
-        <input type="number" placeholder="请输入验证码" v-model="smCode" maxlength="6"/>
+        <input
+          type="number"
+          placeholder="请输入验证码"
+          v-model="smCode"
+          maxlength="6"
+        />
         <div class="my_snake">
           <div v-if="loading" class="my_flex my_ju">
             <span class="spinner_snake" />
@@ -144,7 +149,7 @@ export default {
         mobile: this.mobile,
         type: '101',
       };
-      ajax.post(`/sm/getCode`, params).then((res) => {
+      ajax.post('/sm/getCode', params).then(res => {
         if (res.code === 0) {
           this.$toast.text('成功获取验证码');
           this.handleLoading();
@@ -191,13 +196,13 @@ export default {
         this.$toast.text('请阅读用户使用协议并同意才能注册');
         return;
       }
-      const params = { 
-        mobile: this.mobile, 
+      const params = {
+        mobile: this.mobile,
         smCode: this.smCode,
         password: md5.hex_md5(this.password),
         agentMobile: this.agentMobile,
       };
-      ajax.post('/account/register', params).then((res) => {
+      ajax.post('/account/register', params).then(res => {
         if (res.code === 0) {
           this.$toast.text('注册成功');
           this.$router.push('/login_login');

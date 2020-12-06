@@ -19,18 +19,24 @@
     <div class="content">
       <div class="card_line">
         <div class="card">
-          <img src="~@/assets/images/certif/step1/camera@2x.png" />
-          <span>身份证正面照</span>
+          <SmImagePicker @getImg="getImg">
+            <img src="~@/assets/images/certif/step1/camera@2x.png" />
+            <span>身份证正面照</span>
+          </SmImagePicker>
         </div>
         <div class="card">
-          <img src="~@/assets/images/certif/step1/camera@2x.png" />
-          <span>身份证背面照</span>
+          <SmImagePicker @getImg="getImg">
+            <img src="~@/assets/images/certif/step1/camera@2x.png" />
+            <span>身份证背面照</span>
+          </SmImagePicker>
         </div>
       </div>
       <div class="card_line">
         <div class="card">
-          <img src="~@/assets/images/certif/step1/camera@2x.png" />
-          <span>手持身份证</span>
+          <SmImagePicker @getImg="getImg">
+            <img src="~@/assets/images/certif/step1/camera@2x.png" />
+            <span>手持身份证</span>
+          </SmImagePicker>
         </div>
       </div>
       <div class="claim">证件要求：</div>
@@ -48,17 +54,67 @@
         <span>证件号码：</span>
         <input type="text" placeholder="请输入真实号码" />
       </div>
-      <div class="btn">下一步</div>
+      <div class="btn" @click="handle">下一步</div>
     </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import { regexpMap } from '@/utils/common';
+import ajax from '@/rest/ajax';
+import SmImagePicker from '@/components/SmImagePicker';
+
 export default {
-  name: 'certif_index',
+  name: 'certif_stpe1',
   data() {
-    return {};
+    return {
+      previewSrc: '',
+    };
+  },
+  methods: {
+    getImg(e) {
+      console.log(e);
+    },
+    handle() {
+      if (this.agentMobile.trim() == '') {
+        this.$toast.text('请上传身份证正面照');
+        return;
+      }
+      if (this.agentMobile.trim() == '') {
+        this.$toast.text('请上传身份证反面照');
+        return;
+      }
+      if (this.agentMobile.trim() == '') {
+        this.$toast.text('请上传手持身份证照');
+        return;
+      }
+      if (!regexpMap.regexp_name_cn.test(this.password)) {
+        this.$toast.text('请输入正确姓名');
+        return;
+      }
+      if (!regexpMap.regexp_Identification_card.test(this.password)) {
+        this.$toast.text('请输入正确身份证号');
+        return;
+      }
+
+      const params = {
+        mobile: this.mobile,
+        smCode: this.smCode,
+        agentMobile: this.agentMobile,
+      };
+      ajax.post('/account/register', params).then(res => {
+        if (res.code === 0) {
+          this.$toast.text('注册成功');
+          this.$router.push('/login_login');
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    },
+  },
+  components: {
+    SmImagePicker,
   },
 };
 </script>
@@ -109,7 +165,7 @@ export default {
       position: absolute;
       left: 43px;
       top: 8px;
-      font-size: 38.5px;
+      font-size: 18.5px;
       color: #3574f2;
       line-height: 1;
     }
@@ -153,6 +209,7 @@ export default {
         margin-top: 20px;
       }
       .card {
+        position: relative;
         width: 133.5px;
         height: 83px;
         display: flex;

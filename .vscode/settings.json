@@ -2,5 +2,9 @@
   "editor.tabSize": 2,
   "editor.fontSize": 15,
   "workbench.editor.enablePreview": false,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+  },
+  "eslint.validate": ["javascript", "vue", "html"]
 }

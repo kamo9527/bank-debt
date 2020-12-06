@@ -150,6 +150,17 @@ const routes = [
         /* webpackChunkName: "person_info" */ '../views/personInfo/index.vue'
       ),
   },
+  {
+    path: '/my_set_password',
+    name: 'setPassword',
+    meta: {
+      title: '修改密码',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "refund_pack" */ '../views/personInfo/setPassword.vue'
+      ),
+  },
   // {
   //   path: '/',
   //   alias: '/register',

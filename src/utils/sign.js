@@ -3,10 +3,19 @@
  **/
 import md5 from '@/utils/md5';
 import cache from '@/utils/cache';
+import { formatTime } from '@/utils/common';
+
 /**
  * 不需要登陆状态 签名接口列表 (所有接口默认 有登陆状态 签名)
  **/
-const noLoginApiList = ['account/login'];
+const noLoginApiList = [
+  '/account/login',
+  '/sm/getCode',
+  '/account/register',
+  '/account/resetPassword',
+];
+
+const otherTimestampApiList = ['/area/list'];
 
 export function addCommonParams(params) {
   const personInfo = cache.getLocalStorageData('person_info') || '';
@@ -25,8 +34,16 @@ export function checkApiToSign(url) {
   return index > -1;
 }
 
-export function createParamsSign(params, noLogin) {
-  const timestamp = new Date().getTime();
+export function checkTimestampToSign(url) {
+  if (!otherTimestampApiList) return;
+  const index = otherTimestampApiList.findIndex(item => url.indexOf(item) > -1);
+  return index > -1;
+}
+
+export function createParamsSign(params, noLogin, noNormaltimestamp) {
+  const timestamp = noNormaltimestamp
+    ? formatTime(new Date(), 'yyyyMMddhhmmss')
+    : new Date().getTime();
   const nonce =
     'zhaih' +
     Math.random()

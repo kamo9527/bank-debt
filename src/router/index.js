@@ -173,6 +173,17 @@ const routes = [
       ),
   },
   {
+    path: '/my_set_password',
+    name: 'setPassword',
+    meta: {
+      title: '修改密码',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "refund_pack" */ '../views/personInfo/setPassword.vue'
+      ),
+  },
+  {
     path: '/my_fee',
     name: 'myFeePage',
     meta: {

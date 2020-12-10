@@ -73,7 +73,7 @@
 <script>
 // @ is an alias to /src
 export default {
-  name: 'certif_index',
+  name: 'certif_stpe2',
   data() {
     return {
       show: false,

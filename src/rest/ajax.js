@@ -3,12 +3,13 @@
  * ajax request help
  */
 import Fly from 'flyio/dist/npm/fly';
-// import cache from '@/utils/cache';
+import cache from '@/utils/cache';
 import baseUrl from './config';
 import {
   addCommonParams,
   createParamsSign,
   checkApiToSign,
+  checkTimestampToSign,
 } from '@/utils/sign';
 
 let fly = new Fly();
@@ -16,6 +17,7 @@ fly.interceptors.request.use(request => {
   // 给所有请求添加自定义header
   request.headers['X-Tag'] = 'flyio';
   request.headers['channelType'] = 'wx';
+  request.headers['Content-Type'] = 'application/x-www-form-urlencoded ';
 
   request.baseURL = baseUrl;
 
@@ -24,16 +26,22 @@ fly.interceptors.request.use(request => {
   // 添加公共参数
   addCommonParams(params);
   // 签名
-  createParamsSign(params, checkApiToSign(request.url));
+  createParamsSign(
+    params,
+    checkApiToSign(request.url),
+    checkTimestampToSign(request.url)
+  );
   return request;
 });
 fly.interceptors.response.use(
   response => {
-    // const { code } = response.data;
-    // if (code === 901) {
-    //   const next = window.location.hash.slice(1);
-    //   window.location.href = `#/register?next=${next}`;
-    // }
+    const { code } = response.data;
+    if (code === 8017 || code === 8014) {
+      cache.clearLocalStorageData('person_info');
+      cache.clearLocalStorageData('signKey');
+      const next = window.location.hash.slice(1);
+      window.location.href = `/login_login?next=${next}`;
+    }
     return response.data;
   },
   err => {

@@ -15,9 +15,7 @@ const noLoginApiList = [
   '/account/resetPassword',
 ];
 
-const otherTimestampApiList = [
-  '/area/list',
-];
+const otherTimestampApiList = ['/area/list'];
 
 export function addCommonParams(params) {
   const personInfo = cache.getLocalStorageData('person_info') || '';
@@ -43,14 +41,16 @@ export function checkTimestampToSign(url) {
 }
 
 export function createParamsSign(params, noLogin, noNormaltimestamp) {
-  const timestamp = new Date();
+  const timestamp = noNormaltimestamp
+    ? formatTime(new Date(), 'yyyyMMddhhmmss')
+    : new Date().getTime();
   const nonce =
     'zhaih' +
     Math.random()
       .toString(36)
       .substr(2);
 
-  params.timestamp = noNormaltimestamp ? formatTime(timestamp, 'yyyyMMddhhmmss') : timestamp.getTime();
+  params.timestamp = timestamp;
   params.nonce = nonce;
 
   const paramsKeys = Object.keys(params).sort();

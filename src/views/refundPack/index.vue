@@ -57,7 +57,7 @@ export default {
   mounted() {},
   methods: {
     handleSubmit() {
-      this.$router.push('/my_count');
+      this.$router.push('/add_new_card');
     },
   },
 };

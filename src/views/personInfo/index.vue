@@ -81,7 +81,6 @@ import account_icon from '@/assets/images/personInfo/account_icon@2x.png';
 import card_icon from '@/assets/images/personInfo/card_icon@2x.png';
 import change_number_icon from '@/assets/images/personInfo/change_number_icon@2x.png';
 import count_detail_icon from '@/assets/images/personInfo/count_detail_icon@2x.png';
-import about_icon from '@/assets/images/personInfo/about_icon@2x.png';
 import service_icon from '@/assets/images/personInfo/service_icon@2x.png';
 import note_icon from '@/assets/images/personInfo/note_icon@2x.png';
 import home_icon from '@/assets/images/home_icon@2x.png';
@@ -95,12 +94,15 @@ export default {
       entranceList: [
         { icon: fee_icon, text: '我的费率', link: '/my_fee' },
         { icon: account_icon, text: '收款账户', link: '/my_count' },
-        { icon: card_icon, text: '我的付款卡', link: '/agreement2' },
+        { icon: card_icon, text: '我的付款卡', link: '/add_new_card' },
         { icon: count_detail_icon, text: '收款明细', link: '/my_deal_list' },
-        { icon: change_number_icon, text: '修改密码', link: '/agreement4' },
+        {
+          icon: change_number_icon,
+          text: '修改密码',
+          link: '/my_set_password',
+        },
         { icon: service_icon, text: '联系客服' },
-        { icon: about_icon, text: '关于我们', link: '/agreement6' },
-        { icon: note_icon, text: '消息通知', link: '/agreement7' },
+        { icon: note_icon, text: '消息通知', link: '/my_message' },
       ],
       tabList3: [
         {

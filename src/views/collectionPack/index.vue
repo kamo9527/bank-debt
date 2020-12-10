@@ -13,6 +13,9 @@
         <img class="my_icon" :src="item.icon" alt="" />
       </div>
     </nut-cell>
+    <button @click="handleSubmit" class="my_btn">
+      添加信用卡
+    </button>
   </section>
 </template>
 
@@ -23,7 +26,7 @@ import icon1 from '@/assets/images/refund/icon1@2x.png';
 import icon2 from '@/assets/images/refund/icon2@2x.png';
 import icon3 from '@/assets/images/refund/icon3@2x.png';
 export default {
-  name: 'AddDebtForm',
+  name: 'cardCollectionPage',
   data() {
     return {
       refundCardList: [
@@ -52,7 +55,11 @@ export default {
     };
   },
   mounted() {},
-  methods: {},
+  methods: {
+    handleSubmit() {
+      this.$router.push('/add_new_card');
+    },
+  },
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -74,9 +81,30 @@ export default {
       display: block;
       width: 100%;
     }
+    .nut-cell-title {
+      color: #fff;
+      font-size: 15px;
+    }
     .nut-cell-desc {
       color: #fff;
+      font-size: 15px;
     }
+    .nut-cell-sub-title {
+      color: #fff;
+      font-size: 15px;
+    }
+  }
+  .my_btn {
+    margin: 40px auto 0;
+    display: block;
+    width: 90%;
+    box-sizing: border-box;
+    height: 40px;
+    border-radius: 20px;
+    font-size: 16px;
+    color: #fff;
+    border: none;
+    background-color: #3375f2;
   }
 }
 </style>

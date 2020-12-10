@@ -216,6 +216,28 @@ const routes = [
         /* webpackChunkName: "person_info" */ '../views/personInfo/dealList.vue'
       ),
   },
+  {
+    path: '/add_new_card',
+    name: 'addNewCardPage',
+    meta: {
+      title: '添加信用卡',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "person_info" */ '../views/personInfo/addNewCard.vue'
+      ),
+  },
+  {
+    path: '/my_message',
+    name: 'myMessagePage',
+    meta: {
+      title: '我的消息',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "person_info" */ '../views/personInfo/myMessage.vue'
+      ),
+  },
   // {
   //   path: '/',
   //   alias: '/register',

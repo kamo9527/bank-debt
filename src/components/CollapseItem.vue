@@ -10,37 +10,41 @@
       :class="[
         'collapse-item',
         { 'item-expanded': openExpanded },
+        { 'item-wrap': !openExpanded },
         { 'nut-collapse-item-disabled': disabled },
       ]"
       @click="toggleOpen"
     >
       <div class="collapse-title">
-        <span v-html="title"></span>
+        {{ title }}
       </div>
-      <span v-if="subTitle" v-html="subTitle" class="subTitle"></span>
-      <i
-        v-if="this.$parent.icon"
-        :class="[
-          'collapse-icon',
-          { 'col-expanded': openExpanded },
-          { 'collapse-icon-disabled': disabled },
-        ]"
-        :style="iconStyle"
-      ></i>
-      <i
-        v-else
-        :class="[
-          'collapse-icon',
-          { 'col-expanded': openExpanded },
-          { 'collapse-icon-disabled': disabled },
-        ]"
-      ></i>
+      <div class="collapse-title_icon">
+        <div class="my_gegergeg">{{ subTitle }}</div>
+        <div v-if="openExpanded" class="my_iconxxx" />
+        <!-- <i
+          v-if="this.$parent.icon"
+          :class="[
+            'collapse-icon',
+            { 'col-expanded': openExpanded },
+            { 'collapse-icon-disabled': disabled },
+          ]"
+          :style="iconStyle"
+        ></i>
+        <i
+          v-else
+          :class="[
+            'collapse-icon',
+            { 'col-expanded': openExpanded },
+            { 'collapse-icon-disabled': disabled },
+          ]"
+        ></i> -->
+      </div>
     </div>
-    <div :class="['collapse-wrapper']" ref="wrapper">
+    <!-- <div :class="['collapse-wrapper']" ref="wrapper">
       <div class="collapse-content" ref="content">
         <slot></slot>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -173,20 +177,21 @@ export default {
 <style lang="less" scoped>
 .nut-collapse-item {
   position: relative;
-  .collapse-item {
-    &::after {
-      position: absolute;
-      box-sizing: border-box;
-      content: ' ';
-      pointer-events: none;
-      right: 16px;
-      bottom: 0;
-      left: 16px;
-      border-bottom: 1px solid #ebedf0;
-      -webkit-transform: scaleY(0.5);
-      transform: scaleY(0.5);
-    }
-  }
+  margin-bottom: 6px;
+  // .collapse-item {
+  //   &::after {
+  //     position: absolute;
+  //     box-sizing: border-box;
+  //     content: ' ';
+  //     pointer-events: none;
+  //     right: 16px;
+  //     bottom: 0;
+  //     left: 16px;
+  //     // border-bottom: 1px solid #ebedf0;
+  //     -webkit-transform: scaleY(0.5);
+  //     transform: scaleY(0.5);
+  //   }
+  // }
   .collapse-item {
     position: relative;
     width: 100%;
@@ -197,6 +202,29 @@ export default {
     line-height: 24px;
     background-color: #fff;
     box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    .collapse-title {
+      flex: 1;
+    }
+
+    .collapse-title_icon {
+      width: 32px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .my_gegergeg {
+      font-size: 12px;
+      line-height: 22px;
+      color: #999999;
+    }
+    .collapse-title span {
+      display: block;
+      width: 100%;
+    }
     .collapse-icon {
       display: block;
       position: absolute;
@@ -210,6 +238,12 @@ export default {
       background-repeat: no-repeat;
       background-size: 100% 100%;
       transition: transform 0.3s;
+    }
+    .my_iconxxx {
+      width: 6px;
+      height: 6px;
+      border-radius: 3px;
+      background-color: red;
     }
     .col-expanded {
       transform: rotate(-180deg);
@@ -255,6 +289,11 @@ export default {
         right: 16px;
       }
     }
+  }
+  .item-wrap .collapse-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   // .nut-collapse-item.nut-collapse-item-icon {
   //     .collapse-icon {

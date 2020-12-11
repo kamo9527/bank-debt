@@ -17,7 +17,7 @@ const noLoginApiList = [
 
 const otherTimestampApiList = ['/area/list'];
 
-export function addCommonParams(params) {
+export function addCommonParams(params = {}) {
   const personInfo = cache.getLocalStorageData('person_info') || '';
   if (personInfo) {
     if (!params.loginName) params.loginName = personInfo.loginName || '';

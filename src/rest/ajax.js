@@ -58,7 +58,7 @@ fly.interceptors.response.use(
           break;
         case 400: // 用户没有x-token
         case 401: // 用户没有登录态
-          window.location.href = `/register?next=${window.location.pathname}`;
+          // window.location.href = `/register?next=${window.location.pathname}`;
           break;
         default:
           console.log('error:' + err.message);

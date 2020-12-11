@@ -162,6 +162,17 @@ const routes = [
       ),
   },
   {
+    path: '/card_select',
+    name: 'cardSelectPage',
+    meta: {
+      title: '无卡收款',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "refund_pack" */ '../views/collectionPack/cardSelect.vue'
+      ),
+  },
+  {
     path: '/person_info',
     name: 'personInfoPage',
     meta: {

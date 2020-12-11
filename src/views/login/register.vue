@@ -149,7 +149,7 @@ export default {
         mobile: this.mobile,
         type: '101',
       };
-      ajax.post('/sm/getCode', params).then(res => {
+      ajax.post('/sm/getCode', params).then((res) => {
         if (res.code === 0) {
           this.$toast.text('成功获取验证码');
           this.handleLoading();
@@ -202,7 +202,7 @@ export default {
         password: md5.hex_md5(this.password),
         agentMobile: this.agentMobile,
       };
-      ajax.post('/account/register', params).then(res => {
+      ajax.post('/account/register', params).then((res) => {
         if (res.code === 0) {
           this.$toast.text('注册成功');
           this.$router.push('/login_login');

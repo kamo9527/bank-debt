@@ -39,8 +39,10 @@ export default {
   },
   methods: {
     getList() {
-      const params = {};
-      ajax.post(`/area/list`, params).then((res) => {
+      const params = {
+        bankName: '阳江',
+      };
+      ajax.post(`/bankBranch/search`, params).then((res) => {
         if (res.code === 0) {
           // this.$toast.text('成功获取验证码');
           // this.handleLoading();
@@ -48,8 +50,8 @@ export default {
           this.$toast.text(res.msg);
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

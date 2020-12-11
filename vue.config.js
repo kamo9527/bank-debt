@@ -2,6 +2,7 @@ const pxtorem = require('postcss-pxtorem');
 const isProduction = process.env.NODE_ENV === 'production';
 const isDev = process.env.NODE_ENV === 'development';
 module.exports = {
+  lintOnSave: false,
   productionSourceMap: false, // 生存环境关闭sourceMap
   css: {
     loaderOptions: {

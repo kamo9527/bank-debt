@@ -19,13 +19,13 @@
     <div class="content">
       <div class="card_line">
         <div class="card">
-          <SmImagePicker @getImg="getImg">
+          <SmImagePicker @getImg="getIdentityFront">
             <img src="~@/assets/images/certif/step1/camera@2x.png" />
             <span>身份证正面照</span>
           </SmImagePicker>
         </div>
         <div class="card">
-          <SmImagePicker @getImg="getImg">
+          <SmImagePicker @getImg="getIdentityBack">
             <img src="~@/assets/images/certif/step1/camera@2x.png" />
             <span>身份证背面照</span>
           </SmImagePicker>
@@ -33,7 +33,7 @@
       </div>
       <div class="card_line">
         <div class="card">
-          <SmImagePicker @getImg="getImg">
+          <SmImagePicker @getImg="getIdentityInHand">
             <img src="~@/assets/images/certif/step1/camera@2x.png" />
             <span>手持身份证</span>
           </SmImagePicker>
@@ -48,12 +48,13 @@
       <div class="info">信息采集</div>
       <div class="input_wrap">
         <span>证件姓名：</span>
-        <input type="text" placeholder="请输入真实姓名" />
+        <input type="text" placeholder="请输入真实姓名" v-model.trim="info.name"/>
       </div>
       <div class="input_wrap">
         <span>证件号码：</span>
-        <input type="text" placeholder="请输入真实号码" />
+        <input type="text" placeholder="请输入真实号码"  v-model.trim="info.identity"/>
       </div>
+      
       <div class="btn" @click="handle">下一步</div>
     </div>
   </div>
@@ -69,48 +70,86 @@ export default {
   name: 'certif_stpe1',
   data() {
     return {
-      previewSrc: '',
+      info: {
+        identityFront: '',
+        identityBack: '',
+        identityInHand: '',
+        identity: '',
+        name: '',
+      },
     };
   },
   methods: {
-    getImg(e) {
-      console.log(e);
+    async getIdentityFront(e) {
+      const file = e.file;
+      this.identityFront = await this.uploadImg(file);
+    },
+    async getIdentityBack(e) {
+      const file = e.file;
+      this.identityBack = await this.uploadImg(file);
+    },
+    async getIdentityInHand(e) {
+      const file = e.file;
+      this.identityInHand = await this.uploadImg(file);
+    },
+    uploadImg(file) {
+      return new Promise((resolve, reject) => {
+        const params = new FormData();
+        params.append('file', file);
+        ajax
+          .post('/upload', params)
+          .then((res) => {
+            if (res.code === 0) {
+              const picPath = res.data;
+              resolve(picPath);
+            } else {
+              this.$toast.text(res.msg);
+              resolve('');
+            }
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
     },
     handle() {
-      if (this.agentMobile.trim() == '') {
+      if (this.info.identityFront == '') {
         this.$toast.text('请上传身份证正面照');
         return;
       }
-      if (this.agentMobile.trim() == '') {
+      if (this.info.identityBack == '') {
         this.$toast.text('请上传身份证反面照');
         return;
       }
-      if (this.agentMobile.trim() == '') {
+      if (this.info.identityInHand == '') {
         this.$toast.text('请上传手持身份证照');
         return;
       }
-      if (!regexpMap.regexp_name_cn.test(this.password)) {
+      if (!regexpMap.regexp_name_cn.test(this.info.name)) {
         this.$toast.text('请输入正确姓名');
         return;
       }
-      if (!regexpMap.regexp_Identification_card.test(this.password)) {
+      if (!regexpMap.regexp_Identification_card.test(this.info.identity)) {
         this.$toast.text('请输入正确身份证号');
         return;
       }
 
-      const params = {
-        mobile: this.mobile,
-        smCode: this.smCode,
-        agentMobile: this.agentMobile,
-      };
-      ajax.post('/account/register', params).then(res => {
-        if (res.code === 0) {
-          this.$toast.text('注册成功');
-          this.$router.push('/login_login');
-        } else {
-          this.$toast.text(res.msg);
-        }
-      });
+      localStorage.setItem('certif_stpe1_data', JSON.stringify(this.info));
+      this.$router.push('/certif_step2');
+
+      // const params = {
+      //   mobile: this.mobile,
+      //   smCode: this.smCode,
+      //   agentMobile: this.agentMobile,
+      // };
+      // ajax.post('/account/register', params).then((res) => {
+      //   if (res.code === 0) {
+      //     this.$toast.text('注册成功');
+      //     this.$router.push('/login_login');
+      //   } else {
+      //     this.$toast.text(res.msg);
+      //   }
+      // });
     },
   },
   components: {

@@ -23,15 +23,15 @@
       </div>
       <div class="input_wrap">
         <span>储蓄卡卡号</span>
-        <input type="text" placeholder="请输入储蓄卡卡号" />
+        <input type="text" placeholder="请输入储蓄卡卡号" v-model.trim="info.bankAccountName"/>
       </div>
       <div class="input_wrap">
         <span>所属银行</span>
-        <input type="text" placeholder="请输入银行名称" />
+        <input type="text" placeholder="请输入银行名称" v-model.trim="info.bankName"/>
       </div>
-      <div class="input_wrap">
+      <div class="input_wrap" @click="cityPickerShow">
         <span>开户城市</span>
-        <input type="text" placeholder="请输入开户城市" />
+        <input type="text" placeholder="请输入开户城市"/>
         <img
           class="triangle"
           src="~@/assets/images/certif/step2/triangle@2x.png"
@@ -47,7 +47,7 @@
       </div>
       <div class="input_wrap">
         <span>常驻地址</span>
-        <input type="text" placeholder="请输入常驻地址" />
+        <input type="text" placeholder="请输入常驻地址"/>
         <img
           class="triangle"
           src="~@/assets/images/certif/step2/triangle@2x.png"
@@ -55,29 +55,164 @@
       </div>
       <div class="input_wrap">
         <span>银行预留手机号</span>
-        <input type="text" placeholder="请输入银行预留手机号" />
+        <input type="text" placeholder="请输入银行预留手机号" v-model.trim="info.bankCardMobile"/>
       </div>
       <div class="input_wrap">
         <span>验证码</span>
-        <input type="text" placeholder="请输入验证码" />
-        <div class="smcode">获取验证码</div>
+        <input type="text" placeholder="请输入验证码"/>
+        <div class="smcode" v-if="loading">{{ secend }} s</div>
+        <div class="smcode" v-else @click="handlGetSnake">获取验证码</div>
       </div>
       <div class="btn" @click="show = true">下一步</div>
     </div>
     <nut-popup position="right" v-model="show">
       <div class="bank"></div>
     </nut-popup>
+
+    <nut-picker
+      :is-visible="cityPickerVisible"
+      :list-data="custmerCityData"
+      @close="closeSwitch('isVisible2')"
+      @confirm="setChooseValueCustmer"
+      @choose="updateChooseValueCustmer"
+      @close-update="closeUpdateChooseValueCustmer"
+    ></nut-picker>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import ajax from '@/rest/ajax';
+import { regexpMap } from '@/utils/common';
 export default {
-  name: 'certif_stpe2',
+  name: 'certif_step2',
   data() {
     return {
+      loading: false,
+      secend: 60,
+      timerId: null,
+
+      info: {
+        bankName: '',
+        bankCardNo: '',
+        bankCode: '',
+
+        bankAddress: '',
+        alliedBankCode: '',
+        workProvinceName: '',
+        workCityName: '',
+
+        merchantId: '',
+        bankCardMobile: '',
+        smCode: '',
+      },
       show: false,
+      cityPickerVisible: false,
+      custmerCityData: [],
     };
+  },
+  mounted() {
+    this.getList();
+  },
+  methods: {
+    getList() {
+      const params = {};
+      ajax.post(`/area/list`, params).then((res) => {
+        if (res.code === 0) {
+          const resData = res.data;
+          const col2 = [];
+          resData.forEach((item) => {
+            item.label = item.bank_area_code;
+            item.value = item.bank_area;
+            item.city_list.forEach((city) => {
+              city.label = city.bank_city_code;
+              city.value = city.bank_city;
+            });
+            col2.push(item.city_list);
+          });
+          this.custmerCityData = [resData, col2[0]];
+          // this.defaultValueData = [col2[0]];
+          // this.$set(this.custmerCityData, 1, col2);
+          console.log('this.custmerCityData', this.custmerCityData);
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    },
+    cityPickerShow() {
+      this.cityPickerVisible = true;
+    },
+    closeSwitch(param) {
+      this[`${param}`] = false;
+    },
+
+    setChooseValueCustmer(chooseData) {
+      var str = chooseData.map((item) => item.value).join('-');
+      console.log('chooseData', chooseData);
+      this.cityPickerVisible = false;
+      // this.cityCustmer = str;
+    },
+
+    closeUpdateChooseValueCustmer(self, chooseData) {
+      //此处模拟查询API，如果数据缓存了不需要再重新请求
+      // setTimeout(() => {
+      //   let { label, value } = chooseData[0];
+      //   var resItems = APIData.find((item) => item.label == label);
+      //   if (resItems && resItems.array.length) {
+      //     this.$set(this.custmerCityData, 1, resItems.array);
+      //     // 复原位置
+      //     self.updateChooseValue(self, 0, chooseData[0]);
+      //     self.updateChooseValue(self, 1, chooseData[1]);
+      //   }
+      // }, 100);
+    },
+
+    updateChooseValueCustmer(self, index, resValue, cacheValueData) {
+      if (index === 0) {
+        let { label, value } = resValue;
+        setTimeout(() => {
+          var resItems = resValue.city_list;
+          if (resItems && resItems.length) {
+            this.$set(this.custmerCityData, 1, resItems);
+            self.updateChooseValue(self, index + 1, resItems[0]);
+          }
+        }, 100);
+      }
+    },
+
+    handlGetSnake() {
+      if (this.loading) return;
+      if (this.timerId) return;
+      if (!regexpMap.regexp_mobile.test(this.info.bankCardMobile)) {
+        this.$toast.text('请输入正确的手机号码');
+        return;
+      }
+      const params = {
+        mobile: this.info.bankCardMobile,
+        type: '101',
+      };
+      ajax.post('/sm/getCode', params).then((res) => {
+        if (res.code === 0) {
+          this.$toast.text('成功获取验证码');
+          this.handleLoading();
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    },
+    handleLoading() {
+      this.loading = true;
+      clearInterval(this.timerId);
+      this.timerId = setInterval(() => {
+        this.secend--;
+        if (this.secend === 0) {
+          this.loading = false;
+          clearInterval(this.timerId);
+          this.timerId = null;
+          this.secend = 60;
+        }
+      }, 1000);
+    },
   },
 };
 </script>

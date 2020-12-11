@@ -16,7 +16,12 @@
         />
       </div>
       <div class="input_wrap">
-        <input type="number" placeholder="请输入验证码" v-model="smCode" maxlength="6"/>
+        <input
+          type="number"
+          placeholder="请输入验证码"
+          v-model="smCode"
+          maxlength="6"
+        />
         <div class="my_snake">
           <div v-if="loading" class="my_flex my_ju">
             <span class="spinner_snake" />
@@ -111,11 +116,11 @@ export default {
         this.$toast.text('请输入正确的手机号码');
         return;
       }
-     const params = {
+      const params = {
         mobile: this.mobile,
         type: '103',
       };
-      ajax.post(`/sm/getCode`, params).then((res) => {
+      ajax.post('/sm/getCode', params).then(res => {
         if (res.code === 0) {
           this.$toast.text('成功获取验证码');
           this.handleLoading();
@@ -154,12 +159,12 @@ export default {
         this.$toast.text('请输入正确的密码');
         return;
       }
-      const params = { 
-        mobile: this.mobile, 
+      const params = {
+        mobile: this.mobile,
         smCode: this.smCode,
         newPassWord: md5.hex_md5(this.newPassWord),
       };
-      ajax.post('/account/resetPassword', params).then((res) => {
+      ajax.post('/account/resetPassword', params).then(res => {
         if (res.code === 0) {
           this.$toast.text('密码修改成功');
           this.$router.push('/login_login');

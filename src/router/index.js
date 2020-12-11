@@ -162,6 +162,17 @@ const routes = [
       ),
   },
   {
+    path: '/card_select',
+    name: 'cardSelectPage',
+    meta: {
+      title: '无卡收款',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "refund_pack" */ '../views/collectionPack/cardSelect.vue'
+      ),
+  },
+  {
     path: '/person_info',
     name: 'personInfoPage',
     meta: {
@@ -214,6 +225,28 @@ const routes = [
     component: () =>
       import(
         /* webpackChunkName: "person_info" */ '../views/personInfo/dealList.vue'
+      ),
+  },
+  {
+    path: '/add_new_card',
+    name: 'addNewCardPage',
+    meta: {
+      title: '添加信用卡',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "person_info" */ '../views/personInfo/addNewCard.vue'
+      ),
+  },
+  {
+    path: '/my_message',
+    name: 'myMessagePage',
+    meta: {
+      title: '我的消息',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "person_info" */ '../views/personInfo/myMessage.vue'
       ),
   },
   // {

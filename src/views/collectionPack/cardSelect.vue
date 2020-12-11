@@ -7,7 +7,7 @@
       :title="item.bank"
       :sub-title="item.card"
       :desc="item.status"
-      :to="item.link"
+      @click-cell="cellClick"
     >
       <div class="my_link" slot="avatar">
         <img class="my_icon" :src="item.icon" alt="" />
@@ -26,7 +26,7 @@ import icon1 from '@/assets/images/refund/icon1@2x.png';
 import icon2 from '@/assets/images/refund/icon2@2x.png';
 import icon3 from '@/assets/images/refund/icon3@2x.png';
 export default {
-  name: 'AddDebtForm',
+  name: 'cardSelectPage',
   data() {
     return {
       refundCardList: [
@@ -56,6 +56,9 @@ export default {
   },
   mounted() {},
   methods: {
+    cellClick() {
+      this.$router.go(-1);
+    },
     handleSubmit() {
       this.$router.push('/add_new_card');
     },

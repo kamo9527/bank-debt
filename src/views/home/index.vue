@@ -6,7 +6,7 @@
         src="~@/assets/images/home/refund_image@2x.png"
       />
     </router-link>
-    <router-link to="/my_refund" class="home_image">
+    <router-link to="/card_collection" class="home_image">
       <img
         class="home_image_item"
         src="~@/assets/images/home/collection_image@2x.png"
@@ -28,6 +28,7 @@
       direction="horizontal"
       :swiperData="dataItem"
       :canDragging="true"
+      :loop="true"
       :paginationVisible="true"
       ref="demo2"
     >
@@ -109,9 +110,9 @@ export default {
         surplusMoney: '',
       },
       entranceList: [
-        { icon: deal_record_icon, text: '交易记录', link: '/agreement4' },
-        { icon: refund_record_icon, text: '还款记录', link: '/agreement1' },
-        { icon: name_register_icon, text: '实名认证', link: '/agreement2' },
+        { icon: deal_record_icon, text: '交易记录', link: '/my_deal_list' },
+        { icon: refund_record_icon, text: '还款记录', link: '/payback_list' },
+        { icon: name_register_icon, text: '实名认证', link: '/certif_step1' },
       ],
       dataItem: [
         {

@@ -86,18 +86,16 @@ export default {
         loginName: this.mobile,
         password: md5.hex_md5(this.password),
       };
-      ajax
-        .post('/account/login', params)
-        .then((res) => {
-          if (res.code === 0) {
-            this.$toast.text('登录成功');
-            cache.setLocalStorageData('person_info', res.data);
-            cache.setLocalStorageData('signKey', res.data.signKey);
-            this.$router.push('/home');
-          } else {
-            this.$toast.text(res.msg);
-          }
-        });
+      ajax.post('/account/login', params).then(res => {
+        if (res.code === 0) {
+          this.$toast.text('登录成功');
+          cache.setLocalStorageData('person_info', res.data);
+          cache.setLocalStorageData('signKey', res.data.signKey);
+          this.$router.push('/home');
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
     },
     // handleRead(e) {
     //   this.isRead = e.target.checked;

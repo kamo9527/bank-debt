@@ -13,15 +13,15 @@
       />
     </router-link>
     <div class="home_entrance">
-      <router-link
+      <div
         v-for="item in entranceList"
         :key="item.link"
-        :to="item.link"
         class="home_entrance_item"
+        @click="cellClick(item.link)"
       >
         <img class="icon" :src="item.icon" />
         <div class="text">{{ item.text }}</div>
-      </router-link>
+      </div>
     </div>
     <nut-swiper
       class="my_swiper"
@@ -57,13 +57,11 @@
 <script>
 // @ is an alias to /src
 import ajax from '@/rest/ajax';
-// import Collapse from '@/components/Collapse.vue';
-// import CollapseItem from '@/components/CollapseItem.vue';
-// import deal_record_icon from '@/assets/images/home/deal_record_icon@2x.png';
-// import refund_record_icon from '@/assets/images/home/refund_record_icon@2x.png';
-// import name_register_icon from '@/assets/images/home/name_register_icon@2x.png';
-// import ad_image_1 from '@/assets/images/home/adv_image_1@2x.png';
-// import ad_image_2 from '@/assets/images/home/adv_image_2@2x.png';
+import deal_record_icon from '@/assets/images/home/deal_record_icon@2x.png';
+import refund_record_icon from '@/assets/images/home/refund_record_icon@2x.png';
+import name_register_icon from '@/assets/images/home/name_register_icon@2x.png';
+import ad_image_1 from '@/assets/images/home/adv_image_1@2x.png';
+import ad_image_2 from '@/assets/images/home/adv_image_2@2x.png';
 import home_icon from '@/assets/images/person_icon@2x.png';
 import home_active_icon from '@/assets/images/home_active_icon@2x.png';
 import person_icon from '@/assets/images/person_icon@2x.png';
@@ -72,31 +70,26 @@ export default {
   name: 'homePage',
   data() {
     return {
-      isTip: 1,
-      newDebtData: {
-        name: '',
-        borrowMoney: '',
-        arriveMoney: '',
-        periodMoney: '',
-        repaymentCycle: '',
-        remainingRepaymentCycle: '',
-        annualizedInterest: '0.00%',
-        surplusMoney: '',
-      },
+      isVerified: false,
       entranceList: [
-        // { icon: deal_record_icon, text: '交易记录', link: '/my_deal_list' },
-        // { icon: refund_record_icon, text: '还款记录', link: '/payback_list' },
-        // { icon: name_register_icon, text: '实名认证', link: '/certif_step1' },
+        { icon: deal_record_icon, text: '交易记录', link: '/my_deal_list' },
+        { icon: refund_record_icon, text: '还款记录', link: '/payback_list' },
+        {
+          icon: name_register_icon,
+          text: '实名认证',
+          link: '/certif_step1',
+          ischecked: true,
+        },
       ],
       dataItem: [
-        // {
-        //   name: '广告1',
-        //   image: ad_image_1,
-        // },
-        // {
-        //   name: '广告2',
-        //   image: ad_image_2,
-        // },
+        {
+          name: '广告1',
+          image: ad_image_1,
+        },
+        {
+          name: '广告2',
+          image: ad_image_2,
+        },
       ],
       tabList3: [
         {
@@ -149,7 +142,31 @@ export default {
     //     //return false;  //阻止默认“关闭对话框”的行为
     //   },
     // });
-    ajax.post('/index/getIconAndBanner').then(res => {
+    ajax.post('/account/info', {}).then(res => {
+      console.log(res);
+      if (res.code === 0) {
+        const { isCreditVerified, isDebitVerified } = res.data;
+        this.isVerified = isCreditVerified && isDebitVerified;
+        if (!this.isVerified) {
+          this.$dialog({
+            id: 'my-dialogxxx',
+            title: '温馨提示',
+            content: '您还未实名认证，请先完成实名认证',
+            cancelBtnTxt: '等一会',
+            onOkBtn() {
+              this.close(); //关闭对话框
+              this.$router.push('/certif_step1');
+            },
+            onCancelBtn(event) {
+              console.log(event);
+            },
+          });
+        }
+      } else {
+        this.$toast.text(res.msg);
+      }
+    });
+    ajax.post('/index/getIconAndBanner', {}).then(res => {
       console.log(res);
       if (res.code === 0) {
         const { bannerDTOS, iconDTOS } = res.data;
@@ -161,11 +178,16 @@ export default {
     });
   },
   methods: {
-    tabSwitch(index, event) {
-      console.log(index + '--' + event);
-    },
-    changeTips(index) {
-      this.isTip = index;
+    cellClick(link) {
+      if (link === '/certif_step1') {
+        if (this.isVerified) {
+          this.$toast.text('已实名认证成功');
+        } else {
+          this.$router.push(link);
+        }
+      } else {
+        this.$router.push(link);
+      }
     },
     tabSwitch3(value, index) {
       console.log(index);

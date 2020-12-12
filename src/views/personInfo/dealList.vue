@@ -1,64 +1,29 @@
 <template>
   <section class="page_w deal_page">
-    <div class="fee_title">2020年04月</div>
-    <div class="deal_item">
-      <div class="deal_line">订单号：APPQP20200427181245436332</div>
+    <div class="deal_item" v-for="item in dataList" :key="item.orderId">
+      <div class="deal_line">订单号：{{ item.orderId }}</div>
       <div class="deal_info">
         <div class="item_left">
-          交易金额：<span class="red_color">1000.00元</span>
+          交易金额：<span class="red_color">{{ item.amount }}元</span>
         </div>
-        <div class="item_right">状态：<span class="y_color">支付中</span></div>
+        <div class="item_right">
+          状态：<span class="y_color">{{ statusInfo[item.status] }}</span>
+        </div>
       </div>
       <div class="deal_info">
-        <div class="item_left">付款信用卡：华夏银行</div>
-        <div class="item_right bank_num">尾号：8095</div>
+        <div class="item_left">付款信用卡：{{ item.payBankName }}</div>
+        <div class="item_right bank_num">
+          尾号：{{ item?.payCardNo.slice(-4) }}
+        </div>
       </div>
       <div class="deal_info">
-        <div class="item_left">收款银行卡：建设银行</div>
-        <div class="item_right bank_num">尾号：8095</div>
+        <div class="item_left">收款银行卡：{{ item.settleBankName }}</div>
+        <div class="item_right bank_num">
+          尾号：{{ item?.settleCardNo.slice(-4) }}
+        </div>
       </div>
       <div class="deal_line">
-        交易时间：<span class="b_color">2020-01-24 18:13:45</span>
-      </div>
-    </div>
-    <div class="deal_item">
-      <div class="deal_line">订单号：APPQP20200427181245436332</div>
-      <div class="deal_info">
-        <div class="item_left">
-          交易金额：<span class="red_color">1000.00元</span>
-        </div>
-        <div class="item_right">状态：<span class="y_color">支付中</span></div>
-      </div>
-      <div class="deal_info">
-        <div class="item_left">付款信用卡：华夏银行</div>
-        <div class="item_right bank_num">尾号：8095</div>
-      </div>
-      <div class="deal_info">
-        <div class="item_left">收款银行卡：建设银行</div>
-        <div class="item_right bank_num">尾号：8095</div>
-      </div>
-      <div class="deal_line">
-        交易时间：<span class="b_color">2020-01-24 18:13:45</span>
-      </div>
-    </div>
-    <div class="deal_item">
-      <div class="deal_line">订单号：APPQP20200427181245436332</div>
-      <div class="deal_info">
-        <div class="item_left">
-          交易金额：<span class="red_color">1000.00元</span>
-        </div>
-        <div class="item_right">状态：<span class="y_color">支付中</span></div>
-      </div>
-      <div class="deal_info">
-        <div class="item_left">付款信用卡：华夏银行</div>
-        <div class="item_right bank_num">尾号：8095</div>
-      </div>
-      <div class="deal_info">
-        <div class="item_left">收款银行卡：建设银行</div>
-        <div class="item_right bank_num">尾号：8095</div>
-      </div>
-      <div class="deal_line">
-        交易时间：<span class="b_color">2020-01-24 18:13:45</span>
+        交易时间：<span class="b_color">{{ item.tradeTime }}</span>
       </div>
     </div>
   </section>
@@ -72,27 +37,81 @@ export default {
   name: 'myFeePage',
   data() {
     return {
-      entranceList: [],
+      jsonData: {
+        merchantId: '',
+        pageNum: 1,
+        pageSize: 10,
+      },
+      dataList: [],
+      isUnMore: false,
+      loading: false,
+      showList: false,
+      showNolist: false,
+      statusInfo: {
+        '1': '待支付/支付中',
+        '2': '支付成功',
+        '3': '支付失败',
+      },
     };
   },
   mounted() {
-    const sessionData = cache.getSessionData('new_debt_data');
-    if (sessionData) {
-      this.newDebtData = sessionData;
-    }
-    ajax.get('/repay/confirmSm').then(res => {
-      console.log(res);
+    const info = cache.getLocalStorageData('person_info');
+    this.jsonData.merchantId = info.merchantId;
+    ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
+      if (res.code === 0) {
+        const { records, totalPages } = res.data;
+        this.totalPages = totalPages;
+        if (records && records.length > 0) {
+          this.debtList = records;
+          this.showList = true;
+        } else {
+          this.showNolist = true;
+        }
+      } else {
+        this.$toast.text(res.message);
+      }
     });
   },
   methods: {
-    tabSwitch(index, event) {
-      console.log(index + '--' + event);
+    loadMoreVert() {
+      this.loading = true;
+      if (this.jsonData.pageNum >= this.totalPages) {
+        this.isUnMore = true;
+        this.loading = false;
+      } else {
+        this.jsonData.pageNum++;
+        ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
+          if (res.code === 0) {
+            const { records } = res.data;
+            this.debtList.push(...records);
+          } else {
+            this.jsonData.pageNum--;
+            this.$toast.text(res.message);
+          }
+          this.loading = false;
+          this.isUnMore = false;
+        });
+      }
     },
-    changeTips(index) {
-      this.isTip = index;
-    },
-    tabSwitch3(value, index) {
-      console.log(index);
+    pulldown() {
+      this.loading = true;
+      this.jsonData.pageNum = 1;
+      ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
+        if (res.code === 0) {
+          const { records, totalPages } = res.data;
+          this.totalPages = totalPages;
+          if (records.length > 0) {
+            this.debtList = records;
+            this.showList = true;
+          } else {
+            this.showNolist = true;
+          }
+        } else {
+          this.$toast.text(res.message);
+        }
+        this.loading = false;
+        this.isUnMore = false;
+      });
     },
   },
 };

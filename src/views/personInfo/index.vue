@@ -46,7 +46,9 @@
           <a
             style="color: #fff"
             target="blank"
-            href="http://wpa.qq.com/msgrd?V=1&Uin=${qq!}"
+            :href="
+              `http://wpa.qq.com/msgrd?V=1&Uin=${personInfo.customerServiceQQ}`
+            "
             >在线QQ咨询（9:00-18:00）
           </a>
           <!-- <a
@@ -57,9 +59,19 @@
           <!-- <a href="tencent://message/?uin=你的QQ号&Site=QQ交谈bai&Menu=yes" target="blank"><img border="0" src="http://wpa.qq.com/pa?p=1:你的QQ号:7" alt="图片不正常时显示的文字du" width="71" height="24" /></a> -->
         </button>
         <button @click="handlePhone" class="my_btn">
-          <a style="color: #fff" href="tel:0755-23068536"
-            >电话咨询（0755-23068536）</a
+          <a
+            style="color: #fff"
+            :href="
+              `tel:${personInfo.customerServicePhone.slice(
+                0,
+                4
+              )}-${personInfo.customerServicePhone.slice(4)}`
+            "
           >
+            电话咨询（{{ personInfo.customerServicePhone.slice(0, 4) }}-{{
+              personInfo.customerServicePhone.slice(4)
+            }}）
+          </a>
         </button>
         <button @click="handleCancle" class="my_btn my_btn_xx">
           取消
@@ -78,6 +90,7 @@
 
 <script>
 // @ is an alias to /src
+import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 import fee_icon from '@/assets/images/personInfo/fee_icon@2x.png';
 import account_icon from '@/assets/images/personInfo/account_icon@2x.png';
@@ -123,6 +136,10 @@ export default {
           href: '',
         },
       ],
+      personInfo: {
+        customerServicePhone: '',
+        customerServiceQQ: '',
+      },
       activeNames: 1,
       showService: false,
       mobile: '',
@@ -131,6 +148,7 @@ export default {
     };
   },
   mounted() {
+    this.personInfo = cache.getLocalStorageData('person_info');
     ajax.post('/account/info', {}).then(res => {
       if (res.code === 0) {
         const {

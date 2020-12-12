@@ -60,8 +60,8 @@ export default {
       isEyesClose: true,
       // mobile: '',
       // password: '',
-      mobile: '18520249272', // 不可发短信
-      password: '123456',
+      mobile: '15914039385', // 不可发短信
+      password: 'wdc123',
       // mobile: '13528853680', // 可发短信
       // password: '123456',
     };

@@ -13,15 +13,15 @@
       />
     </router-link>
     <div class="home_entrance">
-      <router-link
+      <div
         v-for="item in entranceList"
         :key="item.link"
-        :to="item.link"
         class="home_entrance_item"
+        @click="cellClick(item.name)"
       >
-        <img class="icon" :src="item.icon" />
-        <div class="text">{{ item.text }}</div>
-      </router-link>
+        <img class="icon" :src="item.url" />
+        <div class="text">{{ item.name }}</div>
+      </div>
     </div>
     <nut-swiper
       class="my_swiper"
@@ -37,39 +37,9 @@
         :key="index"
         class="nut-swiper-slide"
       >
-        <img
-          style="max-width: 100%; max-height: 100%"
-          :src="item.image"
-          alt=""
-        />
+        <img style="max-width: 100%; max-height: 100%" :src="item.url" alt="" />
       </div>
     </nut-swiper>
-    <!-- <div class="home_tips">
-      <div class="home_tips_icon" />
-      <div class="home_tips_title">使用攻略</div>
-    </div>
-    <div class="home_tab">
-      <div
-        class="home_tab_item"
-        v-for="(item, index) in tipsList"
-        :class="{ isActive: isTip === index }"
-        :key="item"
-        @click="changeTips(index)"
-      >
-        {{ item }}
-      </div>
-    </div> 
-     <collapse v-model="activeNames" :accordion="true">
-      <collapse-item title="标题1" :name="1">
-        京东“厂直优品计划”首推“政府优品馆” 3年覆盖80%镇级政府
-      </collapse-item>
-      <collapse-item title="标题2" :name="2">
-        京东到家：教师节期间 创意花束销量增长53倍
-      </collapse-item>
-      <collapse-item title="标题3" :name="3"
-        >京东不回家：教师节期间 创意花束销量增长53倍
-      </collapse-item>
-    </collapse> -->
     <nut-tabbar
       class="my_tabs"
       @tab-switch="tabSwitch3"
@@ -83,13 +53,11 @@
 <script>
 // @ is an alias to /src
 import ajax from '@/rest/ajax';
-// import Collapse from '@/components/Collapse.vue';
-// import CollapseItem from '@/components/CollapseItem.vue';
-import deal_record_icon from '@/assets/images/home/deal_record_icon@2x.png';
-import refund_record_icon from '@/assets/images/home/refund_record_icon@2x.png';
-import name_register_icon from '@/assets/images/home/name_register_icon@2x.png';
-import ad_image_1 from '@/assets/images/home/adv_image_1@2x.png';
-import ad_image_2 from '@/assets/images/home/adv_image_2@2x.png';
+// import deal_record_icon from '@/assets/images/home/deal_record_icon@2x.png';
+// import refund_record_icon from '@/assets/images/home/refund_record_icon@2x.png';
+// import name_register_icon from '@/assets/images/home/name_register_icon@2x.png';
+// import ad_image_1 from '@/assets/images/home/adv_image_1@2x.png';
+// import ad_image_2 from '@/assets/images/home/adv_image_2@2x.png';
 import home_icon from '@/assets/images/person_icon@2x.png';
 import home_active_icon from '@/assets/images/home_active_icon@2x.png';
 import person_icon from '@/assets/images/person_icon@2x.png';
@@ -98,32 +66,9 @@ export default {
   name: 'homePage',
   data() {
     return {
-      isTip: 1,
-      newDebtData: {
-        name: '',
-        borrowMoney: '',
-        arriveMoney: '',
-        periodMoney: '',
-        repaymentCycle: '',
-        remainingRepaymentCycle: '',
-        annualizedInterest: '0.00%',
-        surplusMoney: '',
-      },
-      entranceList: [
-        { icon: deal_record_icon, text: '交易记录', link: '/my_deal_list' },
-        { icon: refund_record_icon, text: '还款记录', link: '/payback_list' },
-        { icon: name_register_icon, text: '实名认证', link: '/certif_step1' },
-      ],
-      dataItem: [
-        {
-          name: '广告1',
-          image: ad_image_1,
-        },
-        {
-          name: '广告2',
-          image: ad_image_2,
-        },
-      ],
+      isVerified: false,
+      entranceList: [],
+      dataItem: [],
       tabList3: [
         {
           tabTitle: '首页',
@@ -144,47 +89,92 @@ export default {
     };
   },
   mounted() {
-    this.$dialog({
-      id: 'my-dialog',
-      title: '允许“帐无忧”在您使用该应用时访问您的位置吗？',
-      content: '为了保障持卡人的交易安全，交易过程中需要使用您的位置信息。',
-      onOkBtn(event) {
-        //确定按钮点击事件
-        console.log(event);
-        this.close(); //关闭对话框
-        this.$dialog({
-          id: 'my-dialogxxx',
-          title: '温馨提示',
-          content: '您还未实名认证，请先完成实名认证',
-          onOkBtn(event) {
-            //确定按钮点击事件
-            console.log(event);
-            this.close(); //关闭对话框
-          },
-          onCancelBtn(event) {
-            console.log(event);
-            //取消按钮点击事件，默认行为关闭对话框
-            //return false;  //阻止默认“关闭对话框”的行为
-          },
-        });
-      },
-      onCancelBtn(event) {
-        this.close(); //关闭对话框
-        console.log(event);
-        //取消按钮点击事件，默认行为关闭对话框
-        //return false;  //阻止默认“关闭对话框”的行为
-      },
-    });
-    ajax.get('/repay/confirmSm').then(res => {
+    // this.$dialog({
+    //   id: 'my-dialog',
+    //   title: '允许“帐无忧”在您使用该应用时访问您的位置吗？',
+    //   content: '为了保障持卡人的交易安全，交易过程中需要使用您的位置信息。',
+    //   onOkBtn(event) {
+    //     //确定按钮点击事件
+    //     console.log(event);
+    //     this.close(); //关闭对话框
+    //     this.$dialog({
+    //       id: 'my-dialogxxx',
+    //       title: '温馨提示',
+    //       content: '您还未实名认证，请先完成实名认证',
+    //       onOkBtn(event) {
+    //         //确定按钮点击事件
+    //         console.log(event);
+    //         this.close(); //关闭对话框
+    //       },
+    //       onCancelBtn(event) {
+    //         console.log(event);
+    //         //取消按钮点击事件，默认行为关闭对话框
+    //         //return false;  //阻止默认“关闭对话框”的行为
+    //       },
+    //     });
+    //   },
+    //   onCancelBtn(event) {
+    //     this.close(); //关闭对话框
+    //     console.log(event);
+    //     //取消按钮点击事件，默认行为关闭对话框
+    //     //return false;  //阻止默认“关闭对话框”的行为
+    //   },
+    // });
+    ajax.post('/account/info', {}).then(res => {
       console.log(res);
+      if (res.code === 0) {
+        const { isCreditVerified, isDebitVerified } = res.data;
+        this.isVerified = isCreditVerified && isDebitVerified;
+        const _this = this;
+        if (!this.isVerified) {
+          this.$dialog({
+            id: 'my-dialogxxx',
+            title: '温馨提示',
+            content: '您还未实名认证，请先完成实名认证',
+            cancelBtnTxt: '等一会',
+            onOkBtn() {
+              this.close(); //关闭对话框
+              _this.$router.push('/certif_step1');
+            },
+            onCancelBtn(event) {
+              console.log(event);
+            },
+          });
+        }
+      } else {
+        this.$toast.text(res.msg);
+      }
+    });
+    ajax.post('/index/getIconAndBanner', {}).then(res => {
+      if (res.code === 0) {
+        const { bannerDTOS, iconDTOS } = res.data;
+        const list = iconDTOS.filter(item => item.name !== '新手教程');
+        this.entranceList = list;
+        this.dataItem = bannerDTOS;
+      } else {
+        this.$toast.text(res.msg);
+      }
     });
   },
   methods: {
-    tabSwitch(index, event) {
-      console.log(index + '--' + event);
-    },
-    changeTips(index) {
-      this.isTip = index;
+    cellClick(name) {
+      switch (name) {
+        case '交易明细':
+          this.$router.push('/my_deal_list');
+          break;
+        case '还款记录':
+          this.$router.push('/payback_list');
+          break;
+        case '实名认证':
+          if (this.isVerified) {
+            this.$toast.text('已实名认证成功');
+          } else {
+            this.$router.push('/certif_step1');
+          }
+          break;
+        default:
+          break;
+      }
     },
     tabSwitch3(value, index) {
       console.log(index);

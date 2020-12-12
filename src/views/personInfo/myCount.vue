@@ -5,35 +5,35 @@
       label="银行卡号"
       placeholder="请输入"
       :hasBorder="false"
-      v-model="countInfo.count"
+      v-model="countInfo.bankCardNo"
     />
     <nut-textinput
       class="my_input"
       label="开户名"
       placeholder="请输入"
       :hasBorder="false"
-      v-model="countInfo.name"
+      v-model="countInfo.bankName"
     />
     <nut-textinput
       class="my_input"
       label="银行所在地"
       placeholder="请输入"
       :hasBorder="false"
-      v-model="countInfo.address"
+      v-model="countInfo.bankAddress"
     />
     <nut-textinput
       class="my_input"
       label="银行网点"
       placeholder="请输入"
       :hasBorder="false"
-      v-model="countInfo.bankName"
+      v-model="countInfo.alliedBankCode"
     />
     <nut-textinput
       class="my_input"
       label="预留手机号"
       placeholder="请输入"
       :hasBorder="false"
-      v-model="countInfo.phone"
+      v-model="countInfo.bankCardMobile"
     />
     <button @click="handleSubmit" class="my_btn">
       修改结算卡
@@ -43,33 +43,42 @@
 
 <script>
 // @ is an alias to /src
-import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 export default {
   name: 'myFeePage',
   data() {
     return {
       countInfo: {
-        count: '',
-        name: '',
-        address: '',
+        bankCardNo: '',
         bankName: '',
-        phone: '',
+        alliedBankCode: '',
+        bankAddress: '',
+        bankCardMobile: '',
       },
+      isCreditVerified: false,
     };
   },
   mounted() {
-    const sessionData = cache.getSessionData('new_debt_data');
-    if (sessionData) {
-      this.newDebtData = sessionData;
-    }
-    ajax.get('/repay/confirmSm').then(res => {
-      console.log(res);
+    ajax.post('/account/info', {}).then(res => {
+      if (res.code === 0) {
+        const { isCreditVerified, merchantDebitQueryResult } = res.data;
+        this.isCreditVerified = isCreditVerified;
+        if (merchantDebitQueryResult) {
+          this.countInfo = merchantDebitQueryResult;
+        } else {
+          this.$toast.text('银行卡未认证');
+        }
+      } else {
+        this.$toast.text(res.msg);
+      }
     });
   },
   methods: {
     handleSubmit() {
-      console.log(1111);
+      if (!this.isCreditVerified) {
+        this.$toast.text('银行卡未认证');
+        return;
+      }
     },
   },
 };

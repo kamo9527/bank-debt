@@ -9,8 +9,12 @@
           alt=""
         />
         <div class="person_info">
-          <div>用户 159****3990</div>
-          <div>未认证</div>
+          <div>
+            {{ userName || '用户' }} {{ mobile.slice(0, 3) }}****{{
+              mobile.slice(7)
+            }}
+          </div>
+          <div>{{ isVerified ? '已认证' : '未认证' }}</div>
         </div>
       </div>
     </div>
@@ -74,7 +78,6 @@
 
 <script>
 // @ is an alias to /src
-import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 import fee_icon from '@/assets/images/personInfo/fee_icon@2x.png';
 import account_icon from '@/assets/images/personInfo/account_icon@2x.png';
@@ -122,15 +125,25 @@ export default {
       ],
       activeNames: 1,
       showService: false,
+      mobile: '',
+      isVerified: false,
+      userName: '',
     };
   },
   mounted() {
-    const sessionData = cache.getSessionData('new_debt_data');
-    if (sessionData) {
-      this.newDebtData = sessionData;
-    }
-    ajax.get('/repay/confirmSm').then(res => {
-      console.log(res);
+    ajax.post('/account/info', {}).then(res => {
+      if (res.code === 0) {
+        const {
+          isCreditVerified,
+          isDebitVerified,
+          merchantInfoQueryResult,
+        } = res.data;
+        this.isVerified = isCreditVerified && isDebitVerified;
+        this.mobile = merchantInfoQueryResult.mobile;
+        this.userName = merchantInfoQueryResult.userName;
+      } else {
+        this.$toast.text(res.msg);
+      }
     });
   },
   methods: {
@@ -157,7 +170,8 @@ export default {
       console.log(222);
     },
     handleCancle() {
-      this.showService = false;
+      this.$router.push('/login_login');
+      // this.showService = false;
     },
   },
 };

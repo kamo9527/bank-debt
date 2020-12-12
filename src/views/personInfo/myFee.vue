@@ -7,60 +7,45 @@
       <span class="fee_item">单笔手续费</span>
     </div>
     <div class="my_fee">
-      <span class="fee_item">无卡收款</span>
-      <span class="fee_item">0.51%</span>
-      <span class="fee_item">2.00元</span>
+      <span class="fee_item"></span>
+      <span class="fee_item">{{ info.quickPer }}%</span>
+      <span class="fee_item">{{ info.quickPer }}元</span>
     </div>
-    <div class="fee_title">无卡收款费率</div>
+    <div class="fee_title">我要还款费率</div>
     <div class="my_fee">
-      <span class="fee_item">I入口</span>
-      <span class="fee_item">0.51%</span>
-      <span class="fee_item">2元</span>
-    </div>
-    <div class="my_fee">
-      <span class="fee_item">G入口</span>
-      <span class="fee_item">0.51%</span>
-      <span class="fee_item">2元</span>
+      <span class="fee_item">我要还款</span>
+      <span class="fee_item">费率</span>
+      <span class="fee_item">单笔手续费</span>
     </div>
     <div class="my_fee">
-      <span class="fee_item">H入口</span>
-      <span class="fee_item">0.51%</span>
-      <span class="fee_item">2元</span>
+      <span class="fee_item"></span>
+      <span class="fee_item">{{ info.repayPer }}%</span>
+      <span class="fee_item">{{ info.repayRate }}元</span>
     </div>
   </section>
 </template>
 
 <script>
 // @ is an alias to /src
-import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 export default {
   name: 'myFeePage',
   data() {
     return {
-      entranceList: [],
+      info: {},
     };
   },
   mounted() {
-    const sessionData = cache.getSessionData('new_debt_data');
-    if (sessionData) {
-      this.newDebtData = sessionData;
-    }
-    ajax.get('/repay/confirmSm').then(res => {
-      console.log(res);
+    ajax.post('/account/info', {}).then(res => {
+      if (res.code === 0) {
+        const { merchantInfoQueryResult } = res.data;
+        this.info = merchantInfoQueryResult;
+      } else {
+        this.$toast.text(res.msg);
+      }
     });
   },
-  methods: {
-    tabSwitch(index, event) {
-      console.log(index + '--' + event);
-    },
-    changeTips(index) {
-      this.isTip = index;
-    },
-    tabSwitch3(value, index) {
-      console.log(index);
-    },
-  },
+  methods: {},
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

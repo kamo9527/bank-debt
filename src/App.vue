@@ -1,9 +1,7 @@
 <template>
   <div id="app" style="height:100%;">
     <transition :name="transitionName">
-      <keep-alive :include="['Home', 'Agreement3', 'Success']">
-        <router-view class="router-view" />
-      </keep-alive>
+      <router-view class="router-view" />
     </transition>
   </div>
 </template>

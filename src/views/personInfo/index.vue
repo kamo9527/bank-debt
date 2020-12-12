@@ -9,7 +9,11 @@
           alt=""
         />
         <div class="person_info">
-          <div>用户 {{ mobile.slice(0, 2) }}****{{ mobile.slice(7) }}</div>
+          <div>
+            {{ userName || '用户' }} {{ mobile.slice(0, 3) }}****{{
+              mobile.slice(7)
+            }}
+          </div>
           <div>{{ isVerified ? '已认证' : '未认证' }}</div>
         </div>
       </div>
@@ -123,11 +127,11 @@ export default {
       showService: false,
       mobile: '',
       isVerified: false,
+      userName: '',
     };
   },
   mounted() {
     ajax.post('/account/info', {}).then(res => {
-      console.log(res);
       if (res.code === 0) {
         const {
           isCreditVerified,
@@ -136,6 +140,7 @@ export default {
         } = res.data;
         this.isVerified = isCreditVerified && isDebitVerified;
         this.mobile = merchantInfoQueryResult.mobile;
+        this.userName = merchantInfoQueryResult.userName;
       } else {
         this.$toast.text(res.msg);
       }
@@ -165,7 +170,8 @@ export default {
       console.log(222);
     },
     handleCancle() {
-      this.showService = false;
+      this.$router.push('/login_login');
+      // this.showService = false;
     },
   },
 };

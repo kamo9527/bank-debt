@@ -1,25 +1,28 @@
 <template>
   <section class="page_w my_message">
-    <collapse v-model="activeNames" :accordion="true">
-      <collapse-item
-        title="京东“厂直优品计划”首推“政府优品馆” 3年覆盖80%镇级政府"
-        subTitle="12:30"
-        :name="1"
-      >
-      </collapse-item>
-      <collapse-item
-        title="京东到家：教师节期间 创意花束销量增长53倍节期间 创意花束销量节期间 创意花束销量节期间 创意花束销量节期间 创意花束销量"
-        subTitle="12:30"
-        :name="2"
-      >
-      </collapse-item>
-      <collapse-item
-        title="京东不回家：教师节期间 创意花束销量增长53倍节期间 创意花束销量节期间 创意花束销量节期间 创意花束销量节期间 创意花束销量"
-        subTitle="昨天"
-        :name="3"
-      >
-      </collapse-item>
-    </collapse>
+    <nut-scroller
+      :is-un-more="isUnMore"
+      :is-loading="loading"
+      :type="'vertical'"
+      @loadMore="loadMoreVert"
+      @pulldown="pulldown"
+    >
+      <div slot="list">
+        <collapse v-model="activeNames" :accordion="true">
+          <collapse-item
+            v-for="item of debtList"
+            :key="item.noticeId"
+            :title="item.title"
+            :subTitle="item.createTime"
+            :name="item.noticeId"
+            :isRead="item.isRead"
+          />
+        </collapse>
+        <div class="no_list" v-if="showNolist">
+          您暂无消息
+        </div>
+      </div>
+    </nut-scroller>
   </section>
 </template>
 
@@ -37,27 +40,83 @@ export default {
   },
   data() {
     return {
+      jsonData: {
+        merchantId: '',
+        currentPage: 1,
+        pageSize: 10,
+      },
       activeNames: 1,
+      debtList: [],
+      isUnMore: false,
+      loading: false,
+      showList: false,
+      showNolist: false,
     };
   },
   mounted() {
-    const sessionData = cache.getSessionData('new_debt_data');
-    if (sessionData) {
-      this.newDebtData = sessionData;
-    }
-    ajax.get('/repay/confirmSm').then(res => {
-      console.log(res);
-    });
+    const info = cache.getLocalStorageData('person_info');
+    this.jsonData.merchantId = info.merchantId;
+    ajax
+      .post('/index/noticeList', this.jsonData, {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+        },
+      })
+      .then(res => {
+        if (res.code === 0) {
+          const { records, totalPages } = res.data;
+          this.totalPages = totalPages;
+          if (records && records.length > 0) {
+            this.debtList = records;
+            this.showList = true;
+          } else {
+            this.showNolist = true;
+          }
+        } else {
+          this.$toast.text(res.message);
+        }
+      });
   },
   methods: {
-    tabSwitch(index, event) {
-      console.log(index + '--' + event);
+    loadMoreVert() {
+      this.loading = true;
+      if (this.jsonData.currentPage >= this.totalPages) {
+        this.isUnMore = true;
+        this.loading = false;
+      } else {
+        this.jsonData.currentPage++;
+        ajax.post('/index/noticeList', this.jsonData).then(res => {
+          if (res.code === 0) {
+            const { records } = res.data;
+            this.debtList.push(...records);
+          } else {
+            this.jsonData.currentPage--;
+            this.$toast.text(res.message);
+          }
+          this.loading = false;
+          this.isUnMore = false;
+        });
+      }
     },
-    changeTips(index) {
-      this.isTip = index;
-    },
-    tabSwitch3(value, index) {
-      console.log(index);
+    pulldown() {
+      this.loading = true;
+      this.jsonData.currentPage = 1;
+      ajax.post('/index/noticeList', this.jsonData).then(res => {
+        if (res.code === 0) {
+          const { records, totalPages } = res.data;
+          this.totalPages = totalPages;
+          if (records.length > 0) {
+            this.debtList = records;
+            this.showList = true;
+          } else {
+            this.showNolist = true;
+          }
+        } else {
+          this.$toast.text(res.message);
+        }
+        this.loading = false;
+        this.isUnMore = false;
+      });
     },
   },
 };

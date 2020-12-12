@@ -20,7 +20,7 @@
       </div>
       <div class="collapse-title_icon">
         <div class="my_gegergeg">{{ subTitle }}</div>
-        <div v-if="openExpanded" class="my_iconxxx" />
+        <div v-if="isRead === 0" class="my_iconxxx" />
         <!-- <i
           v-if="this.$parent.icon"
           :class="[

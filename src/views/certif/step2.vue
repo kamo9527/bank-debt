@@ -23,23 +23,41 @@
       </div>
       <div class="input_wrap">
         <span>储蓄卡卡号</span>
-        <input type="text" placeholder="请输入储蓄卡卡号" v-model.trim="info.bankAccountName"/>
+        <input
+          type="text"
+          placeholder="请输入储蓄卡卡号"
+          v-model.trim="info.bankAccountName"
+        />
       </div>
       <div class="input_wrap">
         <span>所属银行</span>
-        <input type="text" placeholder="请输入银行名称" v-model.trim="info.bankName"/>
+        <input
+          type="text"
+          placeholder="请输入银行名称"
+          v-model.trim="info.bankName"
+        />
       </div>
       <div class="input_wrap" @click="cityPickerShow">
         <span>开户城市</span>
-        <input type="text" placeholder="请输入开户城市"/>
+        <input
+          type="text"
+          placeholder="请输入开户城市"
+          v-model.trim="cityStr"
+          disabled
+        />
         <img
           class="triangle"
           src="~@/assets/images/certif/step2/triangle@2x.png"
         />
       </div>
-      <div class="input_wrap">
+      <div class="input_wrap" @click="bankPickerShow">
         <span>开户支行</span>
-        <input type="text" placeholder="请输入开户支行" />
+        <input
+          type="text"
+          placeholder="请输入开户支行"
+          v-model.trim="info.bankAddress"
+          disabled
+        />
         <img
           class="triangle"
           src="~@/assets/images/certif/step2/triangle@2x.png"
@@ -47,7 +65,7 @@
       </div>
       <div class="input_wrap">
         <span>常驻地址</span>
-        <input type="text" placeholder="请输入常驻地址"/>
+        <input type="text" placeholder="请输入常驻地址" disabled />
         <img
           class="triangle"
           src="~@/assets/images/certif/step2/triangle@2x.png"
@@ -55,18 +73,27 @@
       </div>
       <div class="input_wrap">
         <span>银行预留手机号</span>
-        <input type="text" placeholder="请输入银行预留手机号" v-model.trim="info.bankCardMobile"/>
+        <input
+          type="text"
+          placeholder="请输入银行预留手机号"
+          v-model.trim="info.bankCardMobile"
+        />
       </div>
       <div class="input_wrap">
         <span>验证码</span>
-        <input type="text" placeholder="请输入验证码"/>
+        <input type="text" placeholder="请输入验证码" />
         <div class="smcode" v-if="loading">{{ secend }} s</div>
         <div class="smcode" v-else @click="handlGetSnake">获取验证码</div>
       </div>
       <div class="btn" @click="show = true">下一步</div>
     </div>
-    <nut-popup position="right" v-model="show">
-      <div class="bank"></div>
+    <nut-popup position="right" v-model="bankPickerVisible">
+      <bank
+        ref="bankBranch"
+        class="bank"
+        :bankInfo="bankInfo"
+        @close="bankPickerClose"
+      ></bank>
     </nut-popup>
 
     <nut-picker
@@ -84,6 +111,8 @@
 // @ is an alias to /src
 import ajax from '@/rest/ajax';
 import { regexpMap } from '@/utils/common';
+import bank from './bank';
+
 export default {
   name: 'certif_step2',
   data() {
@@ -93,7 +122,7 @@ export default {
       timerId: null,
 
       info: {
-        bankName: '',
+        bankName: '中',
         bankCardNo: '',
         bankCode: '',
 
@@ -106,7 +135,9 @@ export default {
         bankCardMobile: '',
         smCode: '',
       },
-      show: false,
+      cityStr: '',
+      bankInfo: {},
+      bankPickerVisible: false,
       cityPickerVisible: false,
       custmerCityData: [],
     };
@@ -117,14 +148,14 @@ export default {
   methods: {
     getList() {
       const params = {};
-      ajax.post(`/area/list`, params).then((res) => {
+      ajax.post('/area/list', params).then(res => {
         if (res.code === 0) {
           const resData = res.data;
           const col2 = [];
-          resData.forEach((item) => {
+          resData.forEach(item => {
             item.label = item.bank_area_code;
             item.value = item.bank_area;
-            item.city_list.forEach((city) => {
+            item.city_list.forEach(city => {
               city.label = city.bank_city_code;
               city.value = city.bank_city;
             });
@@ -142,13 +173,24 @@ export default {
     cityPickerShow() {
       this.cityPickerVisible = true;
     },
+    bankPickerShow() {
+      this.bankPickerVisible = true;
+      this.$refs.bankBranch.getList();
+      console.log('this.$refs.bankBranch', this.$refs.bankBranch);
+    },
     closeSwitch(param) {
       this[`${param}`] = false;
     },
 
     setChooseValueCustmer(chooseData) {
-      var str = chooseData.map((item) => item.value).join('-');
+      this.cityStr = chooseData.map(item => item.value.trim()).join('-');
       console.log('chooseData', chooseData);
+      console.log(chooseData.map(item => item.value));
+
+      this.bankInfo.data = chooseData;
+      this.bankInfo.bankName = this.info.bankName;
+      this.bankInfo.bank_city_code = chooseData[1].bank_city_code;
+
       this.cityPickerVisible = false;
       // this.cityCustmer = str;
     },
@@ -179,6 +221,10 @@ export default {
         }, 100);
       }
     },
+    bankPickerClose(item) {
+      if (!item) return;
+      this.info.bankAddress = item.name;
+    },
 
     handlGetSnake() {
       if (this.loading) return;
@@ -191,7 +237,7 @@ export default {
         mobile: this.info.bankCardMobile,
         type: '101',
       };
-      ajax.post('/sm/getCode', params).then((res) => {
+      ajax.post('/sm/getCode', params).then(res => {
         if (res.code === 0) {
           this.$toast.text('成功获取验证码');
           this.handleLoading();
@@ -213,6 +259,9 @@ export default {
         }
       }, 1000);
     },
+  },
+  components: {
+    bank,
   },
 };
 </script>

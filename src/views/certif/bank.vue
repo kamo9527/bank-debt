@@ -4,7 +4,7 @@
       <img
         class="page_back"
         src="~@/assets/images/common/white_back@2x.png"
-        @click="$router.go(-1)"
+        @click="close"
       />
       <span>开户行网点</span>
     </div>
@@ -17,8 +17,16 @@
       <input type="text" placeholder="请输入关键词搜索" />
     </div>
     <ul class="search_list">
-      <!-- <li v-for="i in 3" :key="i">中国建设银行北京新华支行</li> -->
-      <li>无搜索结果！</li>
+      <template v-if="list.length > 0">
+        <li
+          v-for="(item, index) in list"
+          :key="index"
+          @click="selectBranch(item)"
+        >
+          {{ item.name }}
+        </li>
+      </template>
+      <li v-else>无搜索结果！</li>
     </ul>
   </div>
 </template>
@@ -28,28 +36,46 @@
 import ajax from '@/rest/ajax';
 export default {
   name: 'certif_bank',
+  props: {
+    bankInfo: {
+      type: [Object],
+      default() {
+        return {};
+      },
+    },
+  },
   data() {
     return {
       show: false,
+      list: [],
     };
   },
   mounted() {
     // this.nextUrl = this.$route.query.next;
-    this.getList();
+    // this.getList();
   },
   methods: {
     getList() {
       const params = {
-        bankName: '阳江',
+        bankName: this.bankInfo.bankName,
+        bank_city_code: this.bankInfo.bank_city_code,
       };
-      ajax.post(`/bankBranch/search`, params).then((res) => {
+      ajax.post('/bankBranch/search', params).then(res => {
         if (res.code === 0) {
+          this.list = res.data.branchResult;
+
           // this.$toast.text('成功获取验证码');
           // this.handleLoading();
         } else {
           this.$toast.text(res.msg);
         }
       });
+    },
+    close(item) {
+      this.$emit('close', item);
+    },
+    selectBranch(item) {
+      this.close(item);
     },
   },
 };

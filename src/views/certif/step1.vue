@@ -48,13 +48,21 @@
       <div class="info">信息采集</div>
       <div class="input_wrap">
         <span>证件姓名：</span>
-        <input type="text" placeholder="请输入真实姓名" v-model.trim="info.name"/>
+        <input
+          type="text"
+          placeholder="请输入真实姓名"
+          v-model.trim="info.name"
+        />
       </div>
       <div class="input_wrap">
         <span>证件号码：</span>
-        <input type="text" placeholder="请输入真实号码"  v-model.trim="info.identity"/>
+        <input
+          type="text"
+          placeholder="请输入真实号码"
+          v-model.trim="info.identity"
+        />
       </div>
-      
+
       <div class="btn" @click="handle">下一步</div>
     </div>
   </div>
@@ -98,7 +106,7 @@ export default {
         params.append('file', file);
         ajax
           .post('/upload', params)
-          .then((res) => {
+          .then(res => {
             if (res.code === 0) {
               const picPath = res.data;
               resolve(picPath);
@@ -107,7 +115,7 @@ export default {
               resolve('');
             }
           })
-          .catch((err) => {
+          .catch(err => {
             reject(err);
           });
       });

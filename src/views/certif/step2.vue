@@ -1,5 +1,5 @@
 <template>
-  <div class="certif_index">
+  <div class="certif_step2">
     <img
       class="page_back"
       src="~@/assets/images/common/white_back@2x.png"
@@ -17,8 +17,10 @@
     <div class="content">
       <div class="card_line">
         <div class="card">
-          <img src="~@/assets/images/certif/step2/plus@2x.png" />
-          <span>上传储蓄卡正面</span>
+          <SmImagePicker @getImg="getBankCardFront">
+            <img src="~@/assets/images/certif/step2/plus@2x.png" />
+            <span>上传储蓄卡正面</span>
+          </SmImagePicker>
         </div>
       </div>
       <div class="input_wrap">
@@ -26,7 +28,8 @@
         <input
           type="text"
           placeholder="请输入储蓄卡卡号"
-          v-model.trim="info.bankAccountName"
+          v-model.trim="info.bankCardNo"
+          maxlength="19"
         />
       </div>
       <div class="input_wrap">
@@ -37,12 +40,12 @@
           v-model.trim="info.bankName"
         />
       </div>
-      <div class="input_wrap" @click="cityPickerShow">
+      <div class="input_wrap" @click="cityPickerShow('bankCity')">
         <span>开户城市</span>
         <input
           type="text"
           placeholder="请输入开户城市"
-          v-model.trim="cityStr"
+          v-model.trim="bankCity"
           disabled
         />
         <img
@@ -63,9 +66,14 @@
           src="~@/assets/images/certif/step2/triangle@2x.png"
         />
       </div>
-      <div class="input_wrap">
+      <div class="input_wrap" @click="cityPickerShow('workCity')">
         <span>常驻地址</span>
-        <input type="text" placeholder="请输入常驻地址" disabled />
+        <input
+          type="text"
+          placeholder="请输入常驻地址"
+          v-model.trim="workCity"
+          disabled
+        />
         <img
           class="triangle"
           src="~@/assets/images/certif/step2/triangle@2x.png"
@@ -81,11 +89,16 @@
       </div>
       <div class="input_wrap">
         <span>验证码</span>
-        <input type="text" placeholder="请输入验证码" />
+        <input
+          type="text"
+          placeholder="请输入验证码"
+          v-model.trim="info.smCode"
+          maxlength="6"
+        />
         <div class="smcode" v-if="loading">{{ secend }} s</div>
         <div class="smcode" v-else @click="handlGetSnake">获取验证码</div>
       </div>
-      <div class="btn" @click="show = true">下一步</div>
+      <div class="btn" @click="addCard">提交审核</div>
     </div>
     <nut-popup position="right" v-model="bankPickerVisible">
       <bank
@@ -99,7 +112,7 @@
     <nut-picker
       :is-visible="cityPickerVisible"
       :list-data="custmerCityData"
-      @close="closeSwitch('isVisible2')"
+      @close="closeSwitch('cityPickerVisible')"
       @confirm="setChooseValueCustmer"
       @choose="updateChooseValueCustmer"
       @close-update="closeUpdateChooseValueCustmer"
@@ -112,6 +125,7 @@
 import ajax from '@/rest/ajax';
 import { regexpMap } from '@/utils/common';
 import bank from './bank';
+import SmImagePicker from '@/components/SmImagePicker';
 
 export default {
   name: 'certif_step2',
@@ -122,23 +136,26 @@ export default {
       timerId: null,
 
       info: {
-        bankName: '中',
-        bankCardNo: '',
-        bankCode: '',
-
-        bankAddress: '',
-        alliedBankCode: '',
-        workProvinceName: '',
-        workCityName: '',
+        bankName: 'sdfsfsdf',
+        bankCardNo: '15521',
+        bankCode: 'sdfsdf',
+        bankCardFront: 'sdfsdf',
+        bankAccountName: '和大家',
+        bankAddress: 'sfdf',
+        alliedBankCode: 'sdfsdfsdf',
+        workProvinceName: 'sdfsfsf',
+        workCityName: 'sdfsfsdf',
 
         merchantId: '',
-        bankCardMobile: '',
-        smCode: '',
+        bankCardMobile: '15521220234',
+        smCode: '950579',
       },
-      cityStr: '',
+      bankCity: '',
+      workCity: '',
+      cityPickerVisible: false,
+      cityPickerType: '',
       bankInfo: {},
       bankPickerVisible: false,
-      cityPickerVisible: false,
       custmerCityData: [],
     };
   },
@@ -170,27 +187,41 @@ export default {
         }
       });
     },
-    cityPickerShow() {
+    async getBankCardFront(e) {
+      const file = e.file;
+      this.info.bankCardFront = await this.uploadImg(file);
+
+      const ocrData = await this.ocrBankcard(file);
+      if (ocrData) {
+        this.info.bankCardNo = ocrData.bankCardNo.replace(/\s/g, '');
+      }
+    },
+
+    cityPickerShow(type) {
+      this.cityPickerType = type;
       this.cityPickerVisible = true;
     },
     bankPickerShow() {
+      if (this.bankCity == '') {
+        this.$toast.text('请选择开户城市');
+        return;
+      }
       this.bankPickerVisible = true;
-      this.$refs.bankBranch.getList();
-      console.log('this.$refs.bankBranch', this.$refs.bankBranch);
+      // this.$refs.bankBranch.getList();
+      // console.log('this.$refs.bankBranch', this.$refs.bankBranch);
     },
     closeSwitch(param) {
       this[`${param}`] = false;
     },
 
     setChooseValueCustmer(chooseData) {
-      this.cityStr = chooseData.map(item => item.value.trim()).join('-');
-      console.log('chooseData', chooseData);
-      console.log(chooseData.map(item => item.value));
-
-      this.bankInfo.data = chooseData;
-      this.bankInfo.bankName = this.info.bankName;
-      this.bankInfo.bank_city_code = chooseData[1].bank_city_code;
-
+      if (this.cityPickerType == 'bankCity') {
+        this.bankCity = chooseData.map(item => item.value.trim()).join('-');
+        this.bankInfo.data = chooseData;
+        this.bankInfo.bank_city_code = chooseData[1].bank_city_code;
+      } else {
+        this.workCity = chooseData.map(item => item.value.trim()).join('-');
+      }
       this.cityPickerVisible = false;
       // this.cityCustmer = str;
     },
@@ -224,6 +255,7 @@ export default {
     bankPickerClose(item) {
       if (!item) return;
       this.info.bankAddress = item.name;
+      this.bankPickerVisible = false;
     },
 
     handlGetSnake() {
@@ -235,16 +267,22 @@ export default {
       }
       const params = {
         mobile: this.info.bankCardMobile,
-        type: '101',
+        type: '102',
       };
-      ajax.post('/sm/getCode', params).then(res => {
-        if (res.code === 0) {
-          this.$toast.text('成功获取验证码');
-          this.handleLoading();
-        } else {
-          this.$toast.text(res.msg);
-        }
-      });
+      ajax
+        .post('/sm/getCode', params, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+        })
+        .then(res => {
+          if (res.code === 0) {
+            this.$toast.text('验证码下发你手机请查收！');
+            this.handleLoading();
+          } else {
+            this.$toast.text(res.msg);
+          }
+        });
     },
     handleLoading() {
       this.loading = true;
@@ -259,9 +297,110 @@ export default {
         }
       }, 1000);
     },
+    uploadImg(file) {
+      return new Promise((resolve, reject) => {
+        const params = new FormData();
+        params.append('file', file);
+        ajax
+          .post('/upload', params)
+          .then(res => {
+            if (res.code === 0) {
+              const picPath = res.data;
+              resolve(picPath);
+            } else {
+              this.$toast.text(res.msg);
+              resolve('');
+            }
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    ocrBankcard(file) {
+      return new Promise((resolve, reject) => {
+        const params = new FormData();
+        params.append('file', file);
+        ajax
+          .post('/ocr/bankcard', params)
+          .then(res => {
+            if (res.code === 0) {
+              const resData = res.data;
+              resolve(resData);
+            } else {
+              this.$toast.text(res.msg);
+              resolve('');
+            }
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+
+    addCard() {
+      if (this.info.bankCardFront == '') {
+        this.$toast.text('请上传银行卡正面照');
+        return;
+      }
+      if (this.info.bankCardNo == '') {
+        this.$toast.text('请输入借记卡卡号');
+        return;
+      }
+      if (this.info.bankName == '') {
+        this.$toast.text('请输入开户行');
+        return;
+      }
+      if (this.info.bankAddress == '') {
+        this.$toast.text('请输入开户支行');
+        return;
+      }
+      if (this.workCity == '') {
+        this.$toast.text('请选择常住地址');
+        return;
+      }
+      if (!regexpMap.regexp_mobile.test(this.info.bankCardMobile)) {
+        this.$toast.text('请输入正确的手机号码');
+        return;
+      }
+      if (this.info.smCode == '') {
+        this.$toast.text('请输入验证码');
+        return;
+      }
+
+      const certif_stpe1_data = localStorage.getItem('certif_stpe1_data');
+      const params = {
+        ...this.info,
+        ...JSON.parse(certif_stpe1_data),
+      };
+      // console.log('certif_stpe1_data', certif_stpe1_data);
+      // console.log('params', params);
+      // return;
+      ajax.post('/debitCard/addSettleCardAndPhotos', params).then(res => {
+        if (res.code === 0) {
+          this.$dialog({
+            id: 'my-dialogxxx',
+            title: '认证成功提醒',
+            content: '实名认证完成啦！去绑字支付卡就可以交易啦！',
+            cancelBtnTxt: '等一会',
+            okBtnTxt: '去绑支付卡',
+            onOkBtn: () => {
+              this.close(); //关闭对话框
+              this.$router.push('/add_new_card');
+            },
+            onCancelBtn(event) {
+              console.log(event);
+            },
+          });
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    },
   },
   components: {
     bank,
+    SmImagePicker,
   },
 };
 </script>
@@ -273,9 +412,18 @@ export default {
   left: 15px;
   width: 8px;
   height: 14.5px;
-  z-index: 9;
+  z-index: 10;
+  &::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    right: -10px;
+    top: -10px;
+    bottom: -10px;
+    background: #000;
+  }
 }
-.certif_index {
+.certif_step2 {
   height: 100vh;
   display: flex;
   align-items: center;
@@ -337,6 +485,7 @@ export default {
       align-items: center;
       justify-content: center;
       .card {
+        position: relative;
         width: 300px;
         height: 124px;
         display: flex;
@@ -411,6 +560,16 @@ export default {
     width: 375px;
     height: 100vh;
     background: #fff;
+  }
+}
+.nut-picker-control {
+  .nut-picker-confirm-btn,
+  .nut-picker-cancel-btn {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3574f2;
   }
 }
 </style>

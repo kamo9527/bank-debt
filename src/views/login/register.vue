@@ -149,14 +149,20 @@ export default {
         mobile: this.mobile,
         type: '101',
       };
-      ajax.post('/sm/getCode', params).then(res => {
-        if (res.code === 0) {
-          this.$toast.text('成功获取验证码');
-          this.handleLoading();
-        } else {
-          this.$toast.text(res.msg);
-        }
-      });
+      ajax
+        .post('/sm/getCode', params, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+        })
+        .then(res => {
+          if (res.code === 0) {
+            this.$toast.text('成功获取验证码');
+            this.handleLoading();
+          } else {
+            this.$toast.text(res.msg);
+          }
+        });
     },
     handleLoading() {
       this.loading = true;
@@ -222,6 +228,7 @@ export default {
   left: 15px;
   width: 8px;
   height: 14.5px;
+  z-index: 10;
 }
 .login_register {
   height: 100vh;

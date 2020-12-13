@@ -34,7 +34,7 @@
         <input
           :type="isEyesClose2 ? 'password' : 'text'"
           placeholder="6-20位数字字母的组合"
-          v-model="confirmPassword"
+          v-model="newPassWord"
         />
         <span @click="isEyesClose2 = !isEyesClose2">
           <img
@@ -88,10 +88,9 @@ export default {
       isEyesClose1: true,
       isEyesClose2: true,
       isEyesClose3: true,
-      mobile: '',
-      oldPassword: '',
-      password: '',
-      confirmPassword: '',
+      oldPassword: 'wdc123',
+      newPassWord: 'wdc1234',
+      confirmPassword: 'wdc1234',
       // mobile: '15521220234',
       // smCode: '123456',
       // newPassWord: 'qq123456',
@@ -109,17 +108,23 @@ export default {
         return;
       }
       const params = {
-        oldPassword: this.smCode,
+        oldPassword: md5.hex_md5(this.oldPassword),
         newPassWord: md5.hex_md5(this.newPassWord),
       };
-      ajax.post('/account/resetPassword', params).then(res => {
-        if (res.code === 0) {
-          this.$toast.text('密码修改成功');
-          this.$router.go(-1);
-        } else {
-          this.$toast.text(res.msg);
-        }
-      });
+      ajax
+        .post('/account/updatePassword', params, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+        })
+        .then(res => {
+          if (res.code === 0) {
+            this.$toast.text('密码修改成功');
+            this.$router.go(-1);
+          } else {
+            this.$toast.text(res.msg);
+          }
+        });
     },
   },
 };
@@ -156,7 +161,7 @@ export default {
       left: 15px;
       width: 8px;
       height: 14.5px;
-      z-index: 9;
+      z-index: 10;
     }
   }
   .operate_input {

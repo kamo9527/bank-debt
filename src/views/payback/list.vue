@@ -10,29 +10,36 @@
     </div>
     <div class="time">2020年04月</div>
     <ul class="card_list">
-      <li class="item" v-for="i in 3" :key="i">
+      <li
+        class="item"
+        v-for="(item, index) in list"
+        :key="index"
+        @click="gotoDetail(item)"
+      >
         <div class="header">
           <img
             class="bank_icon"
             src="~@/assets/images/common/white_back@2x.png"
           />
-          <span class="bank_name">广东发展银行</span>
-          <span class="bank_no">尾号:6587</span>
+          <span class="bank_name">{{ item.bankName }}</span>
+          <span class="bank_no"
+            >尾号:{{ item.bankCode.substring(item.bankCode.length - 4) }}</span
+          >
         </div>
         <div class="body">
           <span class="body_left">
-            <p>10000.00</p>
+            <p>{{ item.insteadAmount }}</p>
             <p class="desc">还款总额</p>
           </span>
           <span class="body_right">
-            <p>2020-04-15</p>
+            <p>{{ item.finishTime }}</p>
             <p class="desc">完成还款时间</p>
           </span>
         </div>
-        <span class="lable">分期还款终止</span>
+        <span class="lable">{{ item.statusDesc }}</span>
         <div class="process">
           <nut-circleprogress
-            progress="10"
+            :progress="item.finishPeriodCount / item.periodCount"
             :is-auto="true"
             strokeInnerWidth="6"
             :progress-option="{
@@ -44,8 +51,8 @@
           >
             <div class="inner">
               <p>已还款</p>
-              <p>0.00</p>
-              <p>0/0期</p>
+              <p>{{ item.finishInsteadAmount }}</p>
+              <p>{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
             </div>
           </nut-circleprogress>
         </div>
@@ -56,12 +63,73 @@
 
 <script>
 // @ is an alias to /src
+import ajax from '@/rest/ajax';
+import { formatTime } from '@/utils/common';
+
 export default {
   name: 'payback_list',
   data() {
     return {
       show: false,
+      // list: [],
+      list: [
+        {
+          bankCardNo: '',
+          bankCode: '',
+          bankName: '',
+          cardBalance: '',
+          createTime: '',
+          detailList: [
+            {
+              payAmount: '',
+              payStatus: 0,
+              payTime: '',
+              period: 0,
+              repayAmount: '',
+              repayStatus: 0,
+              repayTime: '',
+              taskTime: '',
+            },
+          ],
+          finishInsteadAmount: '',
+          finishPeriodCount: 0,
+          finishTime: '',
+          insteadAmount: '',
+          periodCount: 0,
+          status: 0,
+          statusDesc: '',
+          taskId: 0,
+          totalFee: '',
+        },
+      ],
     };
+  },
+  mounted() {
+    this.getList();
+  },
+  methods: {
+    getList() {
+      const params = {
+        pageSize: 10,
+        pageNum: 1,
+        endDate: formatTime(new Date(), 'yyyy-MM-dd'),
+      };
+      ajax.post('/repay/getTaskHistory', params).then(res => {
+        if (res.code === 0) {
+          this.list = res.data;
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    },
+    gotoDetail(item) {
+      this.$router.push({
+        name: '/payback_detail',
+        params: {
+          detail: JSON.stringify(item),
+        },
+      });
+    },
   },
 };
 </script>
@@ -98,7 +166,7 @@ export default {
       left: 15px;
       width: 8px;
       height: 14.5px;
-      z-index: 9;
+      z-index: 10;
     }
   }
   .time {

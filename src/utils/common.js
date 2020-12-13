@@ -58,3 +58,42 @@ export const toThousands = num => {
 const nums = [...Array(100).keys()];
 nums.shift();
 export const numList = [nums];
+
+//防抖
+export function _debounce(fn, delay = 200) {
+  // var delay = delay || 200;
+  var timer;
+  return function() {
+    var th = this;
+    var args = arguments;
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(function() {
+      timer = null;
+      fn.apply(th, args);
+    }, delay);
+  };
+}
+
+//节流
+export function _throttle(fn, interval = 200) {
+  var last;
+  var timer;
+  // var interval = interval || 200;
+  return function() {
+    var th = this;
+    var args = arguments;
+    var now = +new Date();
+    if (last && now - last < interval) {
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        last = now;
+        fn.apply(th, args);
+      }, interval);
+    } else {
+      last = now;
+      fn.apply(th, args);
+    }
+  };
+}

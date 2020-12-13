@@ -6,7 +6,7 @@
         src="~@/assets/images/common/white_back@2x.png"
         @click="close"
       />
-      <span>开户行网点</span>
+      <span @click="getList">开户行网点</span>
     </div>
     <div class="search_wrap">
       <img
@@ -14,7 +14,12 @@
         src="~@/assets/images/certif/bank/search@2x.png"
         @click="$router.go(-1)"
       />
-      <input type="text" placeholder="请输入关键词搜索" />
+      <input
+        type="text"
+        placeholder="请输入关键词搜索"
+        v-model.trim="bankName"
+        @input="inputing"
+      />
     </div>
     <ul class="search_list">
       <template v-if="list.length > 0">
@@ -26,7 +31,9 @@
           {{ item.name }}
         </li>
       </template>
-      <li v-else>无搜索结果！</li>
+      <template v-else>
+        <li v-if="isSearch">无搜索结果！</li>
+      </template>
     </ul>
   </div>
 </template>
@@ -34,6 +41,8 @@
 <script>
 // @ is an alias to /src
 import ajax from '@/rest/ajax';
+import { _debounce } from '@/utils/common';
+
 export default {
   name: 'certif_bank',
   props: {
@@ -47,7 +56,9 @@ export default {
   data() {
     return {
       show: false,
+      bankName: '中国银行',
       list: [],
+      isSearch: false,
     };
   },
   mounted() {
@@ -55,15 +66,22 @@ export default {
     // this.getList();
   },
   methods: {
+    inputing: _debounce(function() {
+      this.getList();
+    }, 400),
     getList() {
+      if (this.bankName === '') {
+        this.list = [];
+        return;
+      }
       const params = {
-        bankName: this.bankInfo.bankName,
+        bankName: this.bankName,
         bank_city_code: this.bankInfo.bank_city_code,
       };
       ajax.post('/bankBranch/search', params).then(res => {
         if (res.code === 0) {
-          this.list = res.data.branchResult;
-
+          this.list = res.data.branchResult.slice(0, 100);
+          this.isSearch = true;
           // this.$toast.text('成功获取验证码');
           // this.handleLoading();
         } else {
@@ -113,7 +131,7 @@ export default {
       left: 15px;
       width: 8px;
       height: 14.5px;
-      z-index: 9;
+      z-index: 10;
     }
   }
   .search_wrap {
@@ -126,6 +144,7 @@ export default {
     border-radius: 2px;
     padding: 0 17.5px;
     box-sizing: border-box;
+    flex-shrink: 0;
     .icon {
       margin-right: 14.5px;
       width: 20px;

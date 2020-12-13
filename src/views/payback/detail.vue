@@ -83,7 +83,39 @@ export default {
   data() {
     return {
       show: false,
+      detail: {
+        bankCardNo: '',
+        bankCode: '',
+        bankName: '',
+        cardBalance: '',
+        createTime: '',
+        detailList: [
+          {
+            payAmount: '',
+            payStatus: 0,
+            payTime: '',
+            period: 0,
+            repayAmount: '',
+            repayStatus: 0,
+            repayTime: '',
+            taskTime: '',
+          },
+        ],
+        finishInsteadAmount: '',
+        finishPeriodCount: 0,
+        finishTime: '',
+        insteadAmount: '',
+        periodCount: 0,
+        status: 0,
+        statusDesc: '',
+        taskId: 0,
+        totalFee: '',
+      },
     };
+  },
+  mounted() {
+    const detail = this.$route.params.detail;
+    this.detail = JSON.parse(detail);
   },
 };
 </script>
@@ -119,7 +151,7 @@ export default {
       left: 15px;
       width: 8px;
       height: 14.5px;
-      z-index: 9;
+      z-index: 10;
     }
   }
   .card {

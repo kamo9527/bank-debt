@@ -15,7 +15,11 @@ const noLoginApiList = [
   '/account/resetPassword',
 ];
 
-const otherTimestampApiList = ['/area/list', '/index/getIconAndBanner'];
+const otherTimestampApiList = [
+  '/area/list',
+  '/index/getIconAndBanner',
+  '/account/updatePassword',
+];
 
 export function addCommonParams(params = {}) {
   const personInfo = cache.getLocalStorageData('person_info') || '';

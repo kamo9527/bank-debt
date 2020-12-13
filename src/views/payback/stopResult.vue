@@ -57,7 +57,7 @@ export default {
       left: 15px;
       width: 8px;
       height: 14.5px;
-      z-index: 9;
+      z-index: 10;
     }
   }
   .icon {

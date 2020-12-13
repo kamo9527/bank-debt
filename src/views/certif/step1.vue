@@ -1,11 +1,11 @@
 <template>
-  <div class="certif_index">
+  <div class="certif_step1">
     <img
       class="page_back"
       src="~@/assets/images/common/white_back@2x.png"
       @click="$router.go(-1)"
     />
-    <h2 class="header">认证中心</h2>
+    <h2 class="header" @click="ocrIdcard">认证中心</h2>
     <div class="step">
       <span class="num1">1</span>
       <span class="num2">2</span>
@@ -49,6 +49,7 @@
       <div class="input_wrap">
         <span>证件姓名：</span>
         <input
+          class="input"
           type="text"
           placeholder="请输入真实姓名"
           v-model.trim="info.name"
@@ -57,6 +58,7 @@
       <div class="input_wrap">
         <span>证件号码：</span>
         <input
+          class="input"
           type="text"
           placeholder="请输入真实号码"
           v-model.trim="info.identity"
@@ -79,11 +81,11 @@ export default {
   data() {
     return {
       info: {
-        identityFront: '',
-        identityBack: '',
-        identityInHand: '',
-        identity: '',
-        name: '',
+        identityFront: 'asdasdad',
+        identityBack: 'dsadasdasd',
+        identityInHand: 'asdasdad',
+        identity: '441723199103292031',
+        name: '决定是否',
       },
     };
   },
@@ -91,6 +93,12 @@ export default {
     async getIdentityFront(e) {
       const file = e.file;
       this.identityFront = await this.uploadImg(file);
+
+      const ocrData = await this.ocrIdcard(file);
+      if (ocrData) {
+        this.info.name = ocrData.name;
+        this.info.identity = ocrData.idCardNo;
+      }
     },
     async getIdentityBack(e) {
       const file = e.file;
@@ -120,6 +128,27 @@ export default {
           });
       });
     },
+    ocrIdcard(file) {
+      return new Promise((resolve, reject) => {
+        const params = new FormData();
+        params.append('file', file);
+        ajax
+          .post('/ocr/idcard', params)
+          .then(res => {
+            if (res.code === 0) {
+              const resData = res.data;
+              resolve(resData);
+            } else {
+              this.$toast.text(res.msg);
+              resolve('');
+            }
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+
     handle() {
       if (this.info.identityFront == '') {
         this.$toast.text('请上传身份证正面照');
@@ -173,9 +202,9 @@ export default {
   left: 15px;
   width: 8px;
   height: 14.5px;
-  z-index: 9;
+  z-index: 10;
 }
-.certif_index {
+.certif_step1 {
   height: 100vh;
   display: flex;
   align-items: center;
@@ -307,7 +336,7 @@ export default {
         font-size: 11px;
         color: #333333;
       }
-      input {
+      .input {
         height: 20px;
         width: 203.5px;
         text-align: center;

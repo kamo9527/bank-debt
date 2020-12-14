@@ -11,10 +11,7 @@
     <div class="card">
       <div class="head">
         <span class="left">
-          <img
-            class="bank_icon"
-            src="~@/assets/images/common/white_back@2x.png"
-          />
+          <img class="bank_icon" :src="item.bankCode | getBankLogo" />
           <span>
             <p class="bank_name">{{ item.bankName }}</p>
             <p class="bank_no">尾号:{{ item.bankCardNo.slice(-4) }}</p>
@@ -276,7 +273,7 @@ export default {
           margin-right: 11px;
           width: 28px;
           height: 24px;
-          background: #ff0;
+          // background: #ff0;
         }
         .bank_name {
           font-size: 15px;

@@ -56,6 +56,7 @@ export default {
   mounted() {
     const info = cache.getLocalStorageData('person_info');
     this.jsonData.merchantId = info.merchantId;
+    // 接口不通todo
     ajax
       .post('/index/noticeList', this.jsonData, {
         headers: {

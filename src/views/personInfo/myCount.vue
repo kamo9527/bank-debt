@@ -24,6 +24,7 @@
       :readonly="isReadonly"
       v-model="countInfo.bankAddress"
     />
+    <!-- // 网点选择todo -->
     <nut-textinput
       class="my_input"
       label="银行网点"
@@ -48,6 +49,7 @@
 
 <script>
 // @ is an alias to /src
+import { regexpMap } from '@/utils/common';
 import ajax from '@/rest/ajax';
 export default {
   name: 'myFeePage',
@@ -104,7 +106,31 @@ export default {
         });
       } else {
         // 表单校验
-        // 表单提交
+        if (!this.countInfo.bankCardNo) {
+          this.$toast.text('请输入银行卡号');
+          return;
+        }
+        if (!this.countInfo.bankName) {
+          this.$toast.text('请输入开户银行名称');
+          return;
+        }
+        if (!this.countInfo.alliedBankCode) {
+          this.$toast.text('请输入银行网点');
+          return;
+        }
+        if (!this.countInfo.bankAddress) {
+          this.$toast.text('请输入银行所在地');
+          return;
+        }
+        if (!this.countInfo.bankCardMobile) {
+          this.$toast.text('请输入预留手机号');
+          return;
+        }
+        if (!regexpMap.regexp_mobile.test(this.countInfo.bankCardMobile)) {
+          this.$toast.text('请输入正确的手机号码');
+          return;
+        }
+        // 表单提交todo
       }
     },
   },

@@ -3,8 +3,8 @@
     <div class="add_title">添加信用卡</div>
     <div class="basic_info">
       <div class="basic_info_tips">*请绑定您本人的信用卡</div>
-      <div class="basic_info_title">用户名:张三</div>
-      <div class="basic_info_title">身份证号码：440427199510210961</div>
+      <div class="basic_info_title">用户名: {{ cardInfo.bankAccountName }}</div>
+      <div class="basic_info_title">身份证号码：{{ cardInfo.identity }}</div>
     </div>
     <div class="operate_input">
       <div class="iinpu_ophne">
@@ -44,6 +44,7 @@
         class="my_input "
         label="预留手机号"
         placeholder="请输入银行预留手机号"
+        maxlength="11"
         :hasBorder="false"
         v-model="cardInfo.bankCardMobile"
       />
@@ -62,6 +63,7 @@
 
 <script>
 // @ is an alias to /src
+import { regexpMap } from '@/utils/common';
 import ajax from '@/rest/ajax';
 import SingImagePicker from '@/components/SingImagePicker.vue';
 
@@ -77,26 +79,88 @@ export default {
       isVisible: false,
       listData: [nums],
       defaultValueData: [1],
+      isCreditVerified: false,
+      //  bankAccountName 姓名
+      //  bankCardMobile 银行卡绑定手机号
+      //  bankCardNo 银行卡号
+      //  bankCode 银行简码
+      //  bankName 银行名称
+      //  billDay 账单日
+      //  identity 身份证号
+      //  merchantId
       cardInfo: {
         bankCardNo: '',
         bankName: '',
         billDay: '',
         bankCardMobile: '',
+        bankAccountName: '',
+        identity: '',
+        merchantId: '',
+        bankCode: '',
       },
     };
+  },
+  mounted() {
+    ajax.post('/account/info', {}).then(res => {
+      if (res.code === 0) {
+        const { isCreditVerified, merchantDebitQueryResult } = res.data;
+        // this.merchantDebitQueryResult = merchantDebitQueryResult;
+        // this.isCreditVerified = isCreditVerified;
+        if (isCreditVerified) {
+          const {
+            bankAccountName,
+            identity,
+            merchantId,
+          } = merchantDebitQueryResult;
+          this.cardInfo.identity = identity;
+          this.cardInfo.bankAccountName = bankAccountName;
+          this.cardInfo.merchantId = merchantId;
+          this.isCreditVerified = isCreditVerified;
+        } else {
+          this.$toast.text('银行卡未认证');
+        }
+      } else {
+        this.$toast.text(res.msg);
+      }
+    });
   },
   methods: {
     handleUpload(data) {
       const formData = new FormData();
-      formData.append('files', data.file);
-      ajax.post('/ocr/bankcard', formData).then(res => {
-        if (res.code === 0 && res.data) {
-          console.log(res.data);
-          // this.cardInfo.bankCardNo = data;
-        } else {
-          this.$toast.text(res.message);
-        }
-      });
+      formData.append('file', data.file);
+      ajax
+        .post('/ocr/bankcard', formData)
+        .then(res => {
+          const { code, data } = res;
+          if (code === 0) {
+            this.cardInfo.bankCardNo = data.bankCardNo.replace(' ', '');
+            return this.cardInfo.bankCardNo;
+          } else {
+            this.$toast.text(res.message);
+          }
+        })
+        .then(bankCardNo => {
+          if (!bankCardNo) {
+            return;
+          }
+          ajax
+            .post(
+              '/debitCard/getBankNameByCardNo',
+              { bankCardNo },
+              {
+                headers: {
+                  'content-type': 'application/x-www-form-urlencoded',
+                },
+              }
+            )
+            .then(res => {
+              if (res.code === 0 && res.data) {
+                this.cardInfo.bankCode = data.bank_code;
+              } else {
+                this.$toast.text(res.message);
+              }
+            });
+        });
     },
     closeSwitch() {
       this.isVisible = false;
@@ -105,7 +169,7 @@ export default {
       this.isVisible = true;
     },
     saveValue(value) {
-      this.cardInfo.bill = value[0] + '日';
+      this.cardInfo.billDay = value[0] + '';
     },
     handleSubmit() {
       if (!this.cardInfo.bankCardNo) {
@@ -122,6 +186,10 @@ export default {
       }
       if (!this.cardInfo.bankCardMobile) {
         this.$toast.text('请输入银行预留手机号');
+        return;
+      }
+      if (!regexpMap.regexp_mobile.test(this.cardInfo.bankCardMobile)) {
+        this.$toast.text('请输入正确的手机号码');
         return;
       }
       ajax.post('/account/bind', this.cardInfo).then(res => {

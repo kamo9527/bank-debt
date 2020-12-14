@@ -69,10 +69,15 @@ export default {
   mounted() {
     ajax.post('/account/info', {}).then(res => {
       if (res.code === 0) {
-        const { isCreditVerified, merchantDebitQueryResult } = res.data;
+        const {
+          isCreditVerified,
+          merchantDebitQueryResult,
+          merchantInfoQueryResult,
+        } = res.data;
         this.isCreditVerified = isCreditVerified;
         if (merchantDebitQueryResult) {
           this.countInfo = merchantDebitQueryResult;
+          this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
         } else {
           this.$toast.text('银行卡未认证');
         }
@@ -92,9 +97,8 @@ export default {
         this.$dialog({
           title: '温馨提示',
           content: '确定要修改收款账号信息么？',
-          onOkBtn(event) {
+          onOkBtn() {
             //确定按钮点击事件
-            console.log(event);
             _this.isReadonly = true;
             this.close(); //关闭对话框
           },
@@ -130,7 +134,15 @@ export default {
           this.$toast.text('请输入正确的手机号码');
           return;
         }
-        // 表单提交todo
+        ajax
+          .post('/debitCard/updateSettleCardAndPhotos', this.countInfo)
+          .then(res => {
+            if (res.code === 0) {
+              this.$toast.text('修改成功');
+            } else {
+              this.$toast.text(res.msg);
+            }
+          });
       }
     },
   },

@@ -21,6 +21,7 @@
 
 <script>
 // @ is an alias to /src
+import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 import icon1 from '@/assets/images/refund/icon1@2x.png';
 // import icon2 from '@/assets/images/refund/icon2@2x.png';
@@ -69,11 +70,11 @@ export default {
   },
   methods: {
     cellClick(item) {
-      console.log(item);
-
-      // const info = cache.getLocalStorageData('card_collection_form');
-      // info.bankName = item.bankName
-      // info.bankCardNo = item.bankCardNo
+      const info = cache.getLocalStorageData('card_collection_form');
+      info.bankName = item.bankName;
+      info.bankCardNo = item.bankCardNo;
+      info.payCardId = item.cardId;
+      cache.setSessionData('card_collection_form', info);
       // 读取数据缓存再返回todo
       this.$router.go(-1);
     },

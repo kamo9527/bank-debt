@@ -56,7 +56,6 @@ export default {
   mounted() {
     const info = cache.getLocalStorageData('person_info');
     this.jsonData.merchantId = info.merchantId;
-    // 接口不通todo
     ajax
       .post('/index/noticeList', this.jsonData, {
         headers: {
@@ -146,6 +145,10 @@ export default {
     box-sizing: border-box;
     border-right: 1px solid #f7f7f7;
     border-bottom: 1px solid #f7f7f7;
+  }
+  .no_list {
+    text-align: center;
+    padding: 20px;
   }
 }
 </style>

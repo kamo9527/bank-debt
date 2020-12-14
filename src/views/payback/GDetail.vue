@@ -6,59 +6,38 @@
         src="~@/assets/images/common/black_back@2x.png"
         @click="$router.go(-1)"
       />
-      <span>还款详情</span>
+      <span>代还款确认（G入口）</span>
     </div>
     <div class="card">
       <div class="head">
-        <span class="left">
-          <img class="bank_icon" :src="item.bankCode | getBankLogo" />
-          <span>
-            <p class="bank_name">{{ item.bankName }}</p>
-            <p class="bank_no">尾号:{{ item.bankCardNo.slice(-4) }}</p>
-          </span>
-        </span>
-        <span class="lable">{{
-          item.status == 0
-            ? '待执行'
-            : item.status == 1
-            ? '分期还款中'
-            : item.status == 2
-            ? '执行成功'
-            : '手动终止计划'
-        }}</span>
+        <img class="bank_icon" :src="item.bankCode | getBankLogo" />
+        <p class="bank_name">{{ item.bankName }}</p>
+        <p class="bank_no">尾号:{{ item.bankCardNo.slice(-4) }}</p>
       </div>
       <div class="process">
-        <nut-circleprogress
-          :progress="(item.finishPeriodCount / item.periodCount) * 100"
-          :is-auto="true"
-          :progress-option="{
-            radius: 56,
-            backColor: '#f0f0f0',
-            progressColor: 'red',
-          }"
-        >
-          <div class="inner">
-            <p>已还款</p>
-            <p>{{ item.finishInsteadAmount }}</p>
-            <p>{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
+        <div class="line">
+          <div class="left">
+            <span>还款总额</span>
+            <span>10000.00元</span>
           </div>
-        </nut-circleprogress>
-      </div>
-      <div class="footer">
-        <span>
-          <p class="desc">完成还款时间</p>
-          <p>{{ item.finishTime }}</p>
-        </span>
-        <span>
-          <p class="desc">还款总额</p>
-          <p>{{ item.insteadAmount }}</p>
-        </span>
-        <span>
-          <p class="desc">手续费</p>
-          <p>{{ item.totalFee }}元</p>
-        </span>
+          <div class="right">
+            <span>分期次数</span>
+            <span>6期</span>
+          </div>
+        </div>
+        <div class="line line2">
+          <div class="left">
+            <span>信用卡余额</span>
+            <span>10000.00元</span>
+          </div>
+          <div class="right">
+            <span>手续费</span>
+            <span>50元</span>
+          </div>
+        </div>
       </div>
     </div>
+    <div class="detail">每期还款详情</div>
     <ul class="list">
       <li class="item" v-for="(detail, index) in item.detailList" :key="index">
         <div class="line1">
@@ -70,7 +49,7 @@
             <span>{{ detail.displayPayTime }}</span>
             <span>消费:{{ detail.payAmount }}</span>
           </div>
-          <span class="right">{{ detail.payStatusStr }}</span>
+          <span class="right">等待</span>
         </div>
         <div class="line3">
           <div class="left">
@@ -78,22 +57,15 @@
             <span>{{ detail.displayPayTime }}</span>
             <span>消费:{{ detail.payAmount }}</span>
           </div>
-          <span class="right">{{ detail.payStatusStr }}</span>
+          <span class="right">等待</span>
         </div>
       </li>
     </ul>
 
-    <template v-if="item.status == 1 || item.status == 3">
-      <div class="mock-bottom"></div>
-      <div class="btn-wrap">
-        <span class="btn" @click="stopPlan" v-if="item.status == 1"
-          >终止计划</span
-        >
-        <span class="btn" @click="createPlan" v-if="item.status == 3"
-          >重新创建分期计划</span
-        >
-      </div>
-    </template>
+    <div class="mock-bottom"></div>
+    <div class="btn-wrap">
+      <span class="btn" @click="createPlan">确认分期</span>
+    </div>
   </div>
 </template>
 
@@ -115,14 +87,14 @@ export default {
         createTime: '',
         detailList: [
           {
-            payAmount: '',
+            payAmount: '111',
             payStatus: 0,
             payTime: new Date(),
             period: 0,
-            repayAmount: '',
+            repayAmount: '222',
             repayStatus: 0,
             repayTime: new Date(),
-            taskTime: '',
+            taskTime: '33',
           },
         ],
         finishInsteadAmount: '',
@@ -185,35 +157,36 @@ export default {
       });
       this.item = item;
     },
-    stopPlan() {
-      const _this = this;
-      this.$dialog({
-        id: 'my-dialogxxx',
-        title: '提示',
-        content: '确定终止该计划吗？',
-        cancelBtnTxt: '再考虑一下',
-        okBtnTxt: '确定终止',
-        onOkBtn() {
-          const __this = this;
-          const params = {
-            taskId: _this.item.taskId,
-          };
-          ajax.post('/repay/stopPlan', params).then(res => {
-            if (res.code === 0) {
-              __this.close(); //关闭对话框
-              // this.list = res.data;
-            } else {
-              _this.$toast.text(res.msg);
-            }
-          });
-        },
-        onCancelBtn(event) {
-          console.log(event);
-        },
-      });
-    },
+    // stopPlan() {
+    //   const _this = this;
+    //   this.$dialog({
+    //     id: 'my-dialogxxx',
+    //     title: '提示',
+    //     content: '确定终止该计划吗？',
+    //     cancelBtnTxt: '再考虑一下',
+    //     okBtnTxt: '确定终止',
+    //     onOkBtn() {
+    //       const __this = this;
+    //       const params = {
+    //         taskId: _this.item.taskId,
+    //       };
+    //       ajax.post('/repay/stopPlan', params).then(res => {
+    //         if (res.code === 0) {
+    //           __this.close(); //关闭对话框
+    //           // this.list = res.data;
+    //         } else {
+    //           _this.$toast.text(res.msg);
+    //         }
+    //       });
+    //     },
+    //     onCancelBtn(event) {
+    //       console.log(event);
+    //     },
+    //   });
+    // },
     createPlan() {
-      this.$router.push('/my_refund_chanel');
+      // 确认分期
+      // this.$router.push('/my_refund_chanel');
     },
   },
 };
@@ -256,92 +229,84 @@ export default {
   .card {
     margin-top: 10px;
     width: 375px;
-    height: 260px;
+    height: 131.5px;
     padding-top: 15px;
     background: #fff;
     .head {
       width: 100%;
-      padding: 0 37.5px 0 26px;
+      padding: 0 13.5px 0 26px;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
+      align-items: center;
       font-size: 15px;
       color: #333333;
       box-sizing: border-box;
-      .left {
-        display: flex;
-        .bank_icon {
-          margin-right: 11px;
-          width: 28px;
-          height: 24px;
-          // background: #ff0;
-        }
-        .bank_name {
-          font-size: 15px;
-          color: #333333;
-        }
-        .bank_no {
-          margin-top: 14.5px;
-          font-size: 12px;
-          color: #999999;
-        }
+      line-height: 1;
+      .bank_icon {
+        width: 28px;
+        height: 24px;
       }
+      .bank_name {
+        margin-left: 11px;
+        margin-right: 10px;
+        font-size: 15px;
+        color: #333333;
+      }
+      .bank_no {
+        font-size: 12px;
+        color: #999999;
+      }
+      // .left {
+      //   display: flex;
+      //   line-height: 1;
+      // }
       .lable {
         font-size: 15px;
         color: #4574f2;
       }
     }
     .process {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      .inner {
-        text-align: center;
-        p:nth-child(1) {
-          font-size: 12px;
-          color: #666666;
-        }
-        p:nth-child(2) {
-          font-size: 18px;
-          font-weight: bold;
-          color: #333333;
-        }
-        p:nth-child(3) {
-          font-size: 12px;
-          color: #3574f2;
-        }
-      }
-    }
-    .footer {
-      margin-top: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      color: #333333;
+      margin-top: 25px;
       line-height: 1;
-      .desc {
-        margin-bottom: 10px;
-        font-size: 12px;
-        color: #666666;
+      font-size: 13px;
+      color: #333333;
+      padding-left: 37px;
+      box-sizing: border-box;
+      .line {
+        display: flex;
+        align-content: center;
+        .left {
+          width: 190px;
+          display: flex;
+          align-content: center;
+          span:nth-child(1) {
+            width: 92px;
+          }
+        }
+        .right {
+          display: flex;
+          align-content: center;
+          span:nth-child(1) {
+            width: 78px;
+          }
+        }
       }
-      span {
-        font-size: 15px;
-        color: #3574f2;
-        text-align: center;
-      }
-      span:nth-child(1) {
-        // margin-left: 55px;
-        margin-right: 10px;
-        // width: 125.5px;
-      }
-      span:nth-child(2) {
-        margin-right: 10px;
-        // width: 54px;
-      }
-      span:nth-child(3) {
-        // width: 74px;
+      .line2 {
+        margin-top: 20px;
       }
     }
+  }
+  .detail {
+    margin-top: 7px;
+    margin-bottom: 7px;
+    height: 35px;
+    width: 375px;
+    padding-left: 37px;
+    box-sizing: border-box;
+    line-height: 35px;
+    font-size: 13px;
+    color: #333333;
+    background: #fff;
   }
   .list {
     .item {
@@ -389,7 +354,14 @@ export default {
           }
         }
         .right {
-          color: #d51523;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          color: #fff;
+          background: #a3a3a3;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       }
       .line3 {
@@ -418,7 +390,7 @@ export default {
           }
         }
         .right {
-          color: #04a612;
+          color: #999999;
         }
       }
     }

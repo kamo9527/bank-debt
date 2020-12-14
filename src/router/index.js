@@ -98,6 +98,17 @@ const routes = [
       ),
   },
   {
+    path: '/payback_GDetail',
+    name: 'payback_GDetail',
+    meta: {
+      title: '代还款确认（G入口）',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "payback_pack" */ '../views/payback/GDetail.vue'
+      ),
+  },
+  {
     path: '/payback_stopResult',
     name: 'payback_stopResult',
     meta: {

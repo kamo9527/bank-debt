@@ -42,7 +42,7 @@
             item.status == 0
               ? '待执行'
               : item.status == 1
-              ? '执行中'
+              ? '分期还款中'
               : item.status == 2
               ? '执行成功'
               : '手动终止计划'
@@ -110,7 +110,8 @@ export default {
     },
     gotoDetail(item) {
       localStorage.setItem('paybackDetail', JSON.stringify(item));
-      this.$router.push('/payback_detail');
+      // this.$router.push('/payback_detail');
+      this.$router.push('/payback_GDetail');
     },
     loadMoreVert() {
       this.loading = true;
@@ -133,7 +134,7 @@ export default {
     },
     pulldown() {
       this.pageNum = 1;
-      this.loading = false;
+      this.loading = true;
       this.isUnMore = false;
       this.getList();
     },

@@ -1,28 +1,38 @@
 <template>
   <section class="page_w deal_page">
-    <div class="deal_item" v-for="item in dataList" :key="item.orderId">
-      <div class="deal_line">订单号：{{ item.orderId }}</div>
-      <div class="deal_info">
-        <div class="item_left">
-          交易金额：<span class="red_color">{{ item.amount }}元</span>
+    <nut-scroller
+      :is-un-more="isUnMore"
+      :is-loading="loading"
+      :type="'vertical'"
+      @loadMore="loadMoreVert"
+      @pulldown="pulldown"
+    >
+      <div slot="list">
+        <div class="deal_item" v-for="item in dataList" :key="item.orderId">
+          <div class="deal_line">订单号：{{ item.orderId }}</div>
+          <div class="deal_info">
+            <div class="item_left">
+              交易金额：<span class="red_color">{{ item.amount }}元</span>
+            </div>
+            <div class="item_right">
+              状态：<span class="y_color">{{ statusInfo[item.status] }}</span>
+            </div>
+          </div>
+          <div class="deal_info">
+            <div class="item_left">付款信用卡：{{ item.payBankName }}</div>
+            <div class="item_right bank_num">尾号：{{ item.payCardNo }}</div>
+          </div>
+          <div class="deal_info">
+            <div class="item_left">收款银行卡：{{ item.settleBankName }}</div>
+            <div class="item_right bank_num">尾号：{{ item.settleCardNo }}</div>
+          </div>
+          <div class="deal_line">
+            交易时间：<span class="b_color">{{ item.tradeTime }}</span>
+          </div>
         </div>
-        <div class="item_right">
-          状态：<span class="y_color">{{ statusInfo[item.status] }}</span>
-        </div>
+        <div class="mgergerg" v-if="dataList.length === 0">暂无纪录</div>
       </div>
-      <div class="deal_info">
-        <div class="item_left">付款信用卡：{{ item.payBankName }}</div>
-        <div class="item_right bank_num">尾号：{{ item.payCardNo }}</div>
-      </div>
-      <div class="deal_info">
-        <div class="item_left">收款银行卡：{{ item.settleBankName }}</div>
-        <div class="item_right bank_num">尾号：{{ item.settleCardNo }}</div>
-      </div>
-      <div class="deal_line">
-        交易时间：<span class="b_color">{{ item.tradeTime }}</span>
-      </div>
-    </div>
-    <div class="mgergerg" v-if="dataList.length === 0">暂无纪录</div>
+    </nut-scroller>
   </section>
 </template>
 
@@ -56,14 +66,15 @@ export default {
     this.jsonData.merchantId = info.merchantId;
     ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
       if (res.code === 0) {
-        const { records, totalPages } = res.data;
-        this.totalPages = totalPages;
+        const records = res.data;
+        console.log('records', records);
+        // this.totalPages = totalPages;
         if (records && records.length > 0) {
           records.forEach(item => {
             item.payCardNo = item.payCardNo.slice(-4);
             item.settleCardNo = item.settleCardNo.slice(-4);
           });
-          this.debtList = records;
+          this.dataList = records;
           this.showList = true;
         } else {
           this.showNolist = true;
@@ -84,7 +95,7 @@ export default {
       //   ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
       //     if (res.code === 0) {
       //       const { records } = res.data;
-      //       this.debtList.push(...records);
+      //       this.dataList.push(...records);
       //     } else {
       //       this.jsonData.pageNum--;
       //       this.$toast.text(res.message);
@@ -96,12 +107,13 @@ export default {
       this.jsonData.pageNum++;
       ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
         if (res.code === 0) {
-          const { records } = res.data;
+          // const { records } = res.data;
+          const records = res.data;
           records.forEach(item => {
             item.payCardNo = item.payCardNo.slice(-4);
             item.settleCardNo = item.settleCardNo.slice(-4);
           });
-          this.debtList.push(...records);
+          this.dataList.push(...records);
         } else {
           this.jsonData.pageNum--;
           this.$toast.text(res.message);
@@ -122,7 +134,7 @@ export default {
               item.payCardNo = item.payCardNo.slice(-4);
               item.settleCardNo = item.settleCardNo.slice(-4);
             });
-            this.debtList = records;
+            this.dataList = records;
             this.showList = true;
           } else {
             this.showNolist = true;
@@ -165,6 +177,7 @@ export default {
     }
     .item_right {
       width: 90px;
+      white-space: nowrap;
     }
     .red_color {
       color: #ee8b8f;

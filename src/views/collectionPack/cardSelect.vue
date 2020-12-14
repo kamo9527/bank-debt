@@ -10,7 +10,7 @@
       @click-cell="cellClick(item)"
     >
       <div class="my_link" slot="avatar">
-        <img class="my_icon" :src="item.icon" alt="" />
+        <img class="my_icon" :src="item.bankCode | getBankLogo" alt="" />
       </div>
     </nut-cell>
     <button @click="handleSubmit" class="my_btn">
@@ -23,7 +23,7 @@
 // @ is an alias to /src
 import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
-import icon1 from '@/assets/images/refund/icon1@2x.png';
+// import icon1 from '@/assets/images/refund/icon1@2x.png';
 // import icon2 from '@/assets/images/refund/icon2@2x.png';
 // import icon3 from '@/assets/images/refund/icon3@2x.png';
 export default {
@@ -57,12 +57,13 @@ export default {
       if (res.code === 0) {
         const { merchantCreditQueryResult } = res.data;
         // todo 遍历数组映射icon
-        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList.map(
-          item => {
-            item.icon = icon1;
-            return item;
-          }
-        );
+        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList;
+        // this.refundCardList = merchantCreditQueryResult.merchantCreditCardList.map(
+        //   item => {
+        //     item.icon = item.;
+        //     return item;
+        //   }
+        // );
       } else {
         this.$toast.text(res.msg);
       }

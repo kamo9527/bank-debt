@@ -19,7 +19,8 @@ const otherTimestampApiList = [
   '/area/list',
   '/index/getIconAndBanner',
   '/account/updatePassword',
-  'index/noticeList',
+  '/index/noticeList',
+  '/debitCard/getBankNameByCardNo',
 ];
 
 export function addCommonParams(params = {}) {

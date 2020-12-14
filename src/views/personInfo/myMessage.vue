@@ -146,5 +146,9 @@ export default {
     border-right: 1px solid #f7f7f7;
     border-bottom: 1px solid #f7f7f7;
   }
+  .no_list {
+    text-align: center;
+    padding: 20px;
+  }
 }
 </style>

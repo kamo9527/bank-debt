@@ -7,6 +7,8 @@
       />
     </router-link>
     <router-link to="/card_collection" class="home_image">
+      <!-- @click="goCardCollection" -->
+
       <img
         class="home_image_item"
         src="~@/assets/images/home/collection_image@2x.png"
@@ -52,6 +54,7 @@
 
 <script>
 // @ is an alias to /src
+import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 // import deal_record_icon from '@/assets/images/home/deal_record_icon@2x.png';
 // import refund_record_icon from '@/assets/images/home/refund_record_icon@2x.png';
@@ -66,7 +69,8 @@ export default {
   name: 'homePage',
   data() {
     return {
-      isVerified: false,
+      auditStatus: false,
+      ocrStatus: false,
       entranceList: [],
       dataItem: [],
       tabList3: [
@@ -89,46 +93,15 @@ export default {
     };
   },
   mounted() {
-    // this.$dialog({
-    //   id: 'my-dialog',
-    //   title: '允许“帐无忧”在您使用该应用时访问您的位置吗？',
-    //   content: '为了保障持卡人的交易安全，交易过程中需要使用您的位置信息。',
-    //   onOkBtn(event) {
-    //     //确定按钮点击事件
-    //     console.log(event);
-    //     this.close(); //关闭对话框
-    //     this.$dialog({
-    //       id: 'my-dialogxxx',
-    //       title: '温馨提示',
-    //       content: '您还未实名认证，请先完成实名认证',
-    //       onOkBtn(event) {
-    //         //确定按钮点击事件
-    //         console.log(event);
-    //         this.close(); //关闭对话框
-    //       },
-    //       onCancelBtn(event) {
-    //         console.log(event);
-    //         //取消按钮点击事件，默认行为关闭对话框
-    //         //return false;  //阻止默认“关闭对话框”的行为
-    //       },
-    //     });
-    //   },
-    //   onCancelBtn(event) {
-    //     this.close(); //关闭对话框
-    //     console.log(event);
-    //     //取消按钮点击事件，默认行为关闭对话框
-    //     //return false;  //阻止默认“关闭对话框”的行为
-    //   },
-    // });
     ajax.post('/account/info', {}).then(res => {
       console.log(res);
       if (res.code === 0) {
-        const { isCreditVerified, isDebitVerified } = res.data;
-        this.isVerified = isCreditVerified && isDebitVerified;
+        const { merchantInfoQueryResult } = res.data;
+        this.auditStatus = merchantInfoQueryResult.auditStatus;
+        this.ocrStatus = merchantInfoQueryResult.ocrStatus;
         const _this = this;
-        if (!this.isVerified) {
+        if (this.auditStatus !== 1) {
           this.$dialog({
-            id: 'my-dialogxxx',
             title: '温馨提示',
             content: '您还未实名认证，请先完成实名认证',
             cancelBtnTxt: '等一会',
@@ -157,6 +130,19 @@ export default {
     });
   },
   methods: {
+    goCardCollection() {
+      if (this.auditStatus !== 1) {
+        this.$router.push('/certif_step1');
+      } else {
+        if (this.ocrStatus) {
+          cache.setSessionData('card_collection_form', null);
+          this.$router.push('/card_collection');
+        } else {
+          // todo 跳转去人脸识别
+          this.$router.push('/card_collection');
+        }
+      }
+    },
     cellClick(name) {
       switch (name) {
         case '交易明细':
@@ -166,7 +152,7 @@ export default {
           this.$router.push('/payback_list');
           break;
         case '实名认证':
-          if (this.isVerified) {
+          if (this.auditStatus) {
             this.$toast.text('已实名认证成功');
           } else {
             this.$router.push('/certif_step1');

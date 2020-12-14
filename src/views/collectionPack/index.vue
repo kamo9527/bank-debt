@@ -3,26 +3,49 @@
     <div class="collection_title">无卡收款</div>
     <div class="mony_info">
       <div class="mony_info_title">请输入收款金额(元）</div>
-      <nut-textinput
-        class="mony_info_input"
-        placeholder="0.00"
-        :hasBorder="false"
-        v-model="cardInfo.money"
-      />
+      <div class="boardValue" @click="showKeyBoard">
+        <nut-textinput
+          class="mony_info_input"
+          placeholder="0.00"
+          :has-border="false"
+          readonly
+          v-model="cardCollection.amount"
+        />
+        <nut-numberkeyboard
+          :visible="visible"
+          v-model="cardCollection.amount"
+          maxlength="6"
+          @close="close"
+        />
+      </div>
     </div>
     <div class="form_info">
       <nut-cell
         class="my_cell"
         :show-icon="true"
         title="支付卡"
-        desc="民生银行 | 尾号4510"
-        @click-cell="cellClick"
+        :desc="
+          `${cardCollection.bankName} | 尾号${cardCollection.bankCardNo.slice(
+            -4
+          )}`
+        "
+        @click.native="cellClick"
       />
-      <nut-cell class="my_cell" title="收款账户" desc="民生银行 | 尾号4510" />
-      <nut-cell class="my_cell" title="到帐金额" desc="0.00 元" />
+      <nut-cell
+        class="my_cell"
+        title="收款账户"
+        :desc="
+          `${
+            merchantDebitQueryResult.bankName
+          } | 尾号${merchantDebitQueryResult.bankCardNo.slice(-4)}`
+        "
+      />
+      <nut-cell class="my_cell" title="到帐金额" :desc="`${feeAmount} `" />
       <nut-cell class="my_cell" title="到账方式" desc="实时到账" />
     </div>
-    <div class="xxx_cell">*费率0.63%+3；交易时间00:00-23:00</div>
+    <div class="xxx_cell">
+      *费率{{ feeInfo.quickRate }}%+{{ feeInfo.quickPer }}；交易时间00:00-23:00
+    </div>
     <button @click="handleSubmit" class="my_btn">
       下一步
     </button>
@@ -31,23 +54,112 @@
 
 <script>
 // @ is an alias to /src
-// import ajax from '@/rest/ajax';
+import cache from '@/utils/cache';
+import ajax from '@/rest/ajax';
 export default {
   name: 'cardCollectionPage',
   data() {
     return {
-      cardInfo: {
-        money: '',
+      visible: false,
+      merchantDebitQueryResult: {
+        bankCardNo: '',
+        bankName: '',
+      },
+      cardCollection: {
+        amount: '',
+        appOs: '85.0.4183.121',
+        appOsType: '0',
+        channelNo: 'H5',
+        goodsName: 'App购物',
+        merchantId: '',
+        payCardId: '',
+        bankCardNo: '',
+        bankName: '',
+      },
+      feeInfo: {
+        quickRate: '',
+        quickPer: '',
       },
     };
   },
-  mounted() {},
+  computed: {
+    feeAmount() {
+      // 到账金额=收款金额-收款金额*费率-单笔手续费
+      if (!this.cardCollection.amount) return '0.00元';
+      if (!this.feeInfo.quickRate) return '0.00元';
+      if (!this.feeInfo.quickPer) return '0.00元';
+      const aa =
+        this.cardCollection.amount -
+        1 * this.cardCollection.amount * (1 * this.feeInfo.quickRate) -
+        this.feeInfo.quickPer;
+      return aa + '元';
+    },
+  },
+  mounted() {
+    const dfff = cache.getLocalStorageData('person_info');
+    this.cardCollection.merchantId = dfff.merchantId;
+    const info = cache.getLocalStorageData('card_collection_form');
+    if (info) {
+      this.cardCollection = info;
+    } else {
+      ajax.post('/account/info', {}).then(res => {
+        if (res.code === 0) {
+          const {
+            merchantInfoQueryResult,
+            merchantDebitQueryResult,
+          } = res.data;
+          if (merchantDebitQueryResult) {
+            this.merchantDebitQueryResult = merchantDebitQueryResult;
+          }
+          this.feeInfo = merchantInfoQueryResult;
+          // if (isCreditVerified) {
+          //   this.cardCollection = merchantDebitQueryResult;
+          // } else {
+          //   this.$toast.text('银行卡未认证');
+          // }
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    }
+  },
   methods: {
     handleSubmit() {
-      console.log(12123);
+      if (!this.cardCollection.amount) {
+        this.$toast.text('请输入收款金额');
+        return;
+      }
+      if (!this.cardCollection.payCardId) {
+        this.$toast.text('请选择支付卡');
+        return;
+      }
+      ajax.post('/quickpay', this.cardCollection).then(res => {
+        if (res.code === 0) {
+          console.log(res.data);
+          const { status, channelData } = res.data;
+          if (status === 1) {
+            window.location.href = channelData;
+          }
+          this.$router.push(`/card_succuss?isOk=${status}`);
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
     },
     cellClick() {
+      if (!this.cardInfo.money) {
+        this.$toast.text('请输入收款金额');
+        return;
+      }
+      // 表单缓存
+      cache.setSessionData('card_collection_form', this.cardCollection);
       this.$router.push('/card_select');
+    },
+    showKeyBoard() {
+      this.visible = true;
+    },
+    close() {
+      this.visible = false;
     },
   },
 };

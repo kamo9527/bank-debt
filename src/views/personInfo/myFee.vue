@@ -8,7 +8,7 @@
     </div>
     <div class="my_fee">
       <span class="fee_item"></span>
-      <span class="fee_item">{{ info.quickPer }}%</span>
+      <span class="fee_item">{{ info.quickRate }}%</span>
       <span class="fee_item">{{ info.quickPer }}元</span>
     </div>
     <div class="fee_title">我要还款费率</div>
@@ -19,8 +19,8 @@
     </div>
     <div class="my_fee">
       <span class="fee_item"></span>
-      <span class="fee_item">{{ info.repayPer }}%</span>
-      <span class="fee_item">{{ info.repayRate }}元</span>
+      <span class="fee_item">{{ info.repayRate }}%</span>
+      <span class="fee_item">{{ info.repayPer }}元</span>
     </div>
   </section>
 </template>

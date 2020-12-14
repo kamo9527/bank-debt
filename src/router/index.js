@@ -173,6 +173,17 @@ const routes = [
       ),
   },
   {
+    path: '/card_succuss',
+    name: 'cardSuccussPage',
+    meta: {
+      title: '无卡收款',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "refund_pack" */ '../views/collectionPack/succuss.vue'
+      ),
+  },
+  {
     path: '/person_info',
     name: 'personInfoPage',
     meta: {

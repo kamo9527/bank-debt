@@ -12,20 +12,17 @@
       </div>
       <div class="deal_info">
         <div class="item_left">付款信用卡：{{ item.payBankName }}</div>
-        <div class="item_right bank_num">
-          尾号：{{ item?.payCardNo.slice(-4) }}
-        </div>
+        <div class="item_right bank_num">尾号：{{ item.payCardNo }}</div>
       </div>
       <div class="deal_info">
         <div class="item_left">收款银行卡：{{ item.settleBankName }}</div>
-        <div class="item_right bank_num">
-          尾号：{{ item?.settleCardNo.slice(-4) }}
-        </div>
+        <div class="item_right bank_num">尾号：{{ item.settleCardNo }}</div>
       </div>
       <div class="deal_line">
         交易时间：<span class="b_color">{{ item.tradeTime }}</span>
       </div>
     </div>
+    <div class="mgergerg" v-if="dataList.length === 0">暂无纪录</div>
   </section>
 </template>
 
@@ -62,6 +59,10 @@ export default {
         const { records, totalPages } = res.data;
         this.totalPages = totalPages;
         if (records && records.length > 0) {
+          records.forEach(item => {
+            item.payCardNo = item.payCardNo.slice(-4);
+            item.settleCardNo = item.settleCardNo.slice(-4);
+          });
           this.debtList = records;
           this.showList = true;
         } else {
@@ -75,23 +76,39 @@ export default {
   methods: {
     loadMoreVert() {
       this.loading = true;
-      if (this.jsonData.pageNum >= this.totalPages) {
-        this.isUnMore = true;
+      // if (this.jsonData.pageNum >= this.totalPages) {
+      //   this.isUnMore = true;
+      //   this.loading = false;
+      // } else {
+      //   this.jsonData.pageNum++;
+      //   ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
+      //     if (res.code === 0) {
+      //       const { records } = res.data;
+      //       this.debtList.push(...records);
+      //     } else {
+      //       this.jsonData.pageNum--;
+      //       this.$toast.text(res.message);
+      //     }
+      //     this.loading = false;
+      //     this.isUnMore = false;
+      //   });
+      // }
+      this.jsonData.pageNum++;
+      ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
+        if (res.code === 0) {
+          const { records } = res.data;
+          records.forEach(item => {
+            item.payCardNo = item.payCardNo.slice(-4);
+            item.settleCardNo = item.settleCardNo.slice(-4);
+          });
+          this.debtList.push(...records);
+        } else {
+          this.jsonData.pageNum--;
+          this.$toast.text(res.message);
+        }
         this.loading = false;
-      } else {
-        this.jsonData.pageNum++;
-        ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
-          if (res.code === 0) {
-            const { records } = res.data;
-            this.debtList.push(...records);
-          } else {
-            this.jsonData.pageNum--;
-            this.$toast.text(res.message);
-          }
-          this.loading = false;
-          this.isUnMore = false;
-        });
-      }
+        this.isUnMore = false;
+      });
     },
     pulldown() {
       this.loading = true;
@@ -101,6 +118,10 @@ export default {
           const { records, totalPages } = res.data;
           this.totalPages = totalPages;
           if (records.length > 0) {
+            records.forEach(item => {
+              item.payCardNo = item.payCardNo.slice(-4);
+              item.settleCardNo = item.settleCardNo.slice(-4);
+            });
             this.debtList = records;
             this.showList = true;
           } else {
@@ -157,6 +178,10 @@ export default {
     .b_color {
       color: #6893f4;
     }
+  }
+  .mgergerg {
+    text-align: center;
+    padding: 20px;
   }
 }
 </style>

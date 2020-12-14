@@ -13,12 +13,14 @@
           label="信用卡卡号"
           placeholder="请输入卡号或扫描信用卡"
           :hasBorder="false"
-          v-model="cardInfo.card"
+          v-model="cardInfo.bankCardNo"
         />
-        <img
-          class="phongg"
-          src="~@/assets/images/personInfo/xiangji@2x.png"
-          alt=""
+        <sing-image-picker
+          class="upload_item"
+          :ismultiple="false"
+          :showImage="false"
+          max="1"
+          @getImg="handleUpload"
         />
       </div>
       <nut-textinput
@@ -26,16 +28,8 @@
         label="所属银行"
         placeholder="请输入开户银行名称"
         :hasBorder="false"
-        v-model="cardInfo.bank"
+        v-model="cardInfo.bankName"
       />
-      <!-- <nut-cell
-        class="my_cell"
-        :show-icon="true"
-        title="账单日"
-        placeholder="请输入开户银行名称"
-        :desc="billDate"
-        @click.native="openSwitch('isVisible')"
-      /> -->
       <div @click="openSwitch">
         <nut-textinput
           class="my_input my_cell"
@@ -43,7 +37,7 @@
           placeholder="请选择信用卡账单日"
           :hasBorder="false"
           :disabled="true"
-          v-model="cardInfo.bill"
+          v-model="cardInfo.billDay"
         />
       </div>
       <nut-textinput
@@ -51,7 +45,7 @@
         label="预留手机号"
         placeholder="请输入银行预留手机号"
         :hasBorder="false"
-        v-model="cardInfo.phone"
+        v-model="cardInfo.bankCardMobile"
       />
     </div>
     <button @click="handleSubmit" class="my_btn">
@@ -68,40 +62,42 @@
 
 <script>
 // @ is an alias to /src
-import { regexpMap } from '@/utils/common';
-// import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
-import md5 from '@/utils/md5';
+import SingImagePicker from '@/components/SingImagePicker.vue';
+
 const nums = [...Array(31).keys()];
 nums.shift();
 export default {
   name: 'addNewCardPage',
+  components: {
+    SingImagePicker,
+  },
   data() {
     return {
-      billDate: '请选择信用卡账单日',
       isVisible: false,
       listData: [nums],
       defaultValueData: [1],
       cardInfo: {
-        card: '',
-        bank: '',
-        bill: '',
-        phone: '',
+        bankCardNo: '',
+        bankName: '',
+        billDay: '',
+        bankCardMobile: '',
       },
-      isEyesClose1: true,
-      isEyesClose2: true,
-      isEyesClose3: true,
-      mobile: '',
-      oldPassword: '',
-      password: '',
-      confirmPassword: '',
-      // mobile: '15521220234',
-      // smCode: '123456',
-      // newPassWord: 'qq123456',
-      // confirmPassword: 'qq123456',
     };
   },
   methods: {
+    handleUpload(data) {
+      const formData = new FormData();
+      formData.append('files', data.file);
+      ajax.post('/ocr/bankcard', formData).then(res => {
+        if (res.code === 0 && res.data) {
+          console.log(res.data);
+          // this.cardInfo.bankCardNo = data;
+        } else {
+          this.$toast.text(res.message);
+        }
+      });
+    },
     closeSwitch() {
       this.isVisible = false;
     },
@@ -110,30 +106,27 @@ export default {
     },
     saveValue(value) {
       this.cardInfo.bill = value[0] + '日';
-      // this.isVisible = false
     },
     handleSubmit() {
-      console.log(1231);
-    },
-    onFocus() {
-      console.log(12123);
-    },
-    handle() {
-      if (this.newPassWord !== this.confirmPassword) {
-        this.$toast.text('您输入的两次密码不相同');
+      if (!this.cardInfo.bankCardNo) {
+        this.$toast.text('请输入卡号或扫描信用卡');
         return;
       }
-      if (!regexpMap.regexp_password.test(this.newPassWord)) {
-        this.$toast.text('请输入正确的密码');
+      if (!this.cardInfo.bankName) {
+        this.$toast.text('请输入开户银行名称');
         return;
       }
-      const params = {
-        oldPassword: this.smCode,
-        newPassWord: md5.hex_md5(this.newPassWord),
-      };
-      ajax.post('/account/resetPassword', params).then(res => {
+      if (!this.cardInfo.billDay) {
+        this.$toast.text('请选择信用卡账单日');
+        return;
+      }
+      if (!this.cardInfo.bankCardMobile) {
+        this.$toast.text('请输入银行预留手机号');
+        return;
+      }
+      ajax.post('/account/bind', this.cardInfo).then(res => {
         if (res.code === 0) {
-          this.$toast.text('密码修改成功');
+          this.$toast.text('添加成功');
           this.$router.go(-1);
         } else {
           this.$toast.text(res.msg);
@@ -209,11 +202,15 @@ export default {
         flex: 1;
         border: none;
       }
-      .phongg {
-        display: block;
-        width: 17px;
-        margin-left: 20px;
-      }
+      // .upload_item {
+      //   width: 40px;
+      //   height: 40px;
+      // }
+      // .phongg {
+      //   display: block;
+      //   width: 17px;
+      //   margin-left: 20px;
+      // }
     }
   }
   .my_btn {

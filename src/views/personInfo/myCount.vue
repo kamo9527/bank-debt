@@ -5,6 +5,7 @@
       label="银行卡号"
       placeholder="请输入"
       :hasBorder="false"
+      :readonly="isReadonly"
       v-model="countInfo.bankCardNo"
     />
     <nut-textinput
@@ -12,6 +13,7 @@
       label="开户名"
       placeholder="请输入"
       :hasBorder="false"
+      :readonly="isReadonly"
       v-model="countInfo.bankName"
     />
     <nut-textinput
@@ -19,6 +21,7 @@
       label="银行所在地"
       placeholder="请输入"
       :hasBorder="false"
+      :readonly="isReadonly"
       v-model="countInfo.bankAddress"
     />
     <nut-textinput
@@ -26,12 +29,14 @@
       label="银行网点"
       placeholder="请输入"
       :hasBorder="false"
+      :readonly="isReadonly"
       v-model="countInfo.alliedBankCode"
     />
     <nut-textinput
       class="my_input"
       label="预留手机号"
       placeholder="请输入"
+      :readonly="isReadonly"
       :hasBorder="false"
       v-model="countInfo.bankCardMobile"
     />
@@ -55,6 +60,7 @@ export default {
         bankAddress: '',
         bankCardMobile: '',
       },
+      isReadonly: true,
       isCreditVerified: false,
     };
   },
@@ -78,6 +84,27 @@ export default {
       if (!this.isCreditVerified) {
         this.$toast.text('银行卡未认证');
         return;
+      }
+      if (this.isReadonly) {
+        const _this = this;
+        this.$dialog({
+          title: '温馨提示',
+          content: '确定要修改收款账号信息么？',
+          onOkBtn(event) {
+            //确定按钮点击事件
+            console.log(event);
+            _this.isReadonly = true;
+            this.close(); //关闭对话框
+          },
+          onCancelBtn(event) {
+            console.log(event);
+            //取消按钮点击事件，默认行为关闭对话框
+            //return false;  //阻止默认“关闭对话框”的行为
+          },
+        });
+      } else {
+        // 表单校验
+        // 表单提交
       }
     },
   },

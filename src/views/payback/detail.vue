@@ -11,22 +11,25 @@
     <div class="card">
       <div class="head">
         <span class="left">
-          <img
-            class="bank_icon"
-            src="~@/assets/images/common/white_back@2x.png"
-          />
+          <img class="bank_icon" :src="item.bankCode | getBankLogo" />
           <span>
             <p class="bank_name">{{ item.bankName }}</p>
-            <p class="bank_no">
-              尾号:{{ item.bankCode.substring(item.bankCode.length - 4) }}
-            </p>
+            <p class="bank_no">尾号:{{ item.bankCardNo.slice(-4) }}</p>
           </span>
         </span>
-        <span class="lable">{{ item.statusDesc }}</span>
+        <span class="lable">{{
+          item.status == 0
+            ? '待执行'
+            : item.status == 1
+            ? '执行中'
+            : item.status == 2
+            ? '执行成功'
+            : '手动终止计划'
+        }}</span>
       </div>
       <div class="process">
         <nut-circleprogress
-          progress="10"
+          :progress="(item.finishPeriodCount / item.periodCount) * 100"
           :is-auto="true"
           :progress-option="{
             radius: 56,
@@ -270,7 +273,7 @@ export default {
           margin-right: 11px;
           width: 28px;
           height: 24px;
-          background: #ff0;
+          // background: #ff0;
         }
         .bank_name {
           font-size: 15px;
@@ -312,8 +315,10 @@ export default {
       margin-top: 5px;
       display: flex;
       align-items: center;
+      justify-content: center;
       font-size: 15px;
       color: #333333;
+      line-height: 1;
       .desc {
         margin-bottom: 10px;
         font-size: 12px;
@@ -325,14 +330,16 @@ export default {
         text-align: center;
       }
       span:nth-child(1) {
-        margin-left: 55px;
-        width: 125.5px;
+        // margin-left: 55px;
+        margin-right: 10px;
+        // width: 125.5px;
       }
       span:nth-child(2) {
-        width: 54px;
+        margin-right: 10px;
+        // width: 54px;
       }
       span:nth-child(3) {
-        width: 74px;
+        // width: 74px;
       }
     }
   }

@@ -1,12 +1,16 @@
 <template>
   <section class="page_w return_information_page">
-    <nut-cell class="my_cell" title="华夏银行" sub-title="6358********6587" />
+    <nut-cell
+      class="my_cell"
+      :title="queryInfo.bankName"
+      :sub-title="queryInfo.bankCardNo"
+    />
     <div class="operate_input">
       <nut-cell
         class="my_cellxx"
         :show-icon="true"
         title="最后还款日:"
-        :desc="dateCustmer"
+        :desc="params.lastRepaymentDate"
         @click.native="openDateSwitch"
       />
       <nut-textinput
@@ -14,14 +18,14 @@
         label="信用卡内余额（元）"
         placeholder="卡内最小余额200"
         :hasBorder="false"
-        v-model="balance"
+        v-model="params.cardBalance"
       />
       <nut-textinput
         class="my_input"
         label="还款金额（元）"
         placeholder="最小还款金额300"
         :hasBorder="false"
-        v-model="refund"
+        v-model="params.repaymentAmount"
       />
       <nut-cell
         class="my_cellxx"
@@ -38,9 +42,7 @@
       /> -->
       <div class="tips">*计划执行期内信用卡余额不能小于你输入的金额</div>
     </div>
-    <button @click="handleSubmit" class="my_btn">
-      下一步
-    </button>
+    <button @click="handleSubmit" class="my_btn">下一步</button>
     <nut-calendar
       :is-visible.sync="dateVisible"
       :start-date="startDate"
@@ -63,6 +65,7 @@
 
 <script>
 // @ is an alias to /src
+import ajax from '@/rest/ajax';
 import { formatTime } from '@/utils/common';
 const toDay = new Date().getTime();
 const StartDate = formatTime(
@@ -73,68 +76,11 @@ const EndDate = formatTime(
   new Date(toDay + 22 * 24 * 60 * 60 * 1000),
   'yyyy-MM-dd'
 );
-const APIData = [
-  {
-    label: 1,
-    array: [
-      {
-        label: 1,
-        value: '朝阳区',
-      },
-      {
-        label: 2,
-        value: '海淀区',
-      },
-      {
-        label: 3,
-        value: '大兴区',
-      },
-      {
-        label: 4,
-        value: '东城区',
-      },
-      {
-        label: 5,
-        value: '西城区',
-      },
-      {
-        label: 6,
-        value: '丰台区',
-      },
-    ],
-  },
-  {
-    label: 2,
-    array: [
-      {
-        label: 1,
-        value: '黄浦区',
-      },
-      {
-        label: 2,
-        value: '长宁区',
-      },
-      {
-        label: 3,
-        value: '普陀区',
-      },
-      {
-        label: 4,
-        value: '杨浦区',
-      },
-      {
-        label: 5,
-        value: '浦东新区',
-      },
-    ],
-  },
-];
 export default {
   name: 'refundReturnInformationPage',
   data() {
     return {
       dateVisible: false,
-      dateCustmer: StartDate,
       addressVisible: false,
       startDate: StartDate,
       endDate: EndDate,
@@ -142,79 +88,47 @@ export default {
       refund: '',
       defaultValueData: null,
       cityCustmer: '请选择常住地址',
-      listData: [
-        [
-          {
-            label: 1,
-            value: '南京市',
-          },
-          {
-            label: 2,
-            value: '无锡市',
-          },
-          {
-            label: 3,
-            value: '海北藏族自治区',
-          },
-          {
-            label: 4,
-            value: '北京市',
-          },
-          {
-            label: 5,
-            value: '连云港市',
-          },
-          {
-            label: 6,
-            value: '浙江市',
-          },
-          {
-            label: 7,
-            value: '江苏市',
-          },
-          {
-            label: 8,
-            value: '大庆市',
-          },
-          {
-            label: 9,
-            value: '绥化市',
-          },
-          {
-            label: 10,
-            value: '潍坊市',
-          },
-          {
-            label: 11,
-            value: '请按市',
-          },
-          {
-            label: 12,
-            value: '乌鲁木齐市',
-          },
-        ],
-      ],
-      custmerCityData: [
-        [
-          {
-            label: 1,
-            value: '北京',
-          },
-          {
-            label: 2,
-            value: '上海',
-          },
-        ],
-      ],
+      queryInfo: {},
+      params: {
+        province: '',
+        cityCode: '',
+        cardBalance: '',
+        repaymentAmount: '',
+        channelNo: 'H5',
+        lastRepaymentDate: StartDate,
+      },
+      custmerCityData: [],
     };
   },
-  mounted() {},
+  mounted() {
+    const { cardId, channelId } = this.$route.query;
+    this.params.cardId = cardId;
+    this.params.channelId = channelId;
+    ajax.post('/area/list', {}).then((res) => {
+      if (res.code === 0) {
+        const resData = res.data;
+        const col2 = [];
+        resData.forEach((item) => {
+          item.label = item.bank_area_code;
+          item.value = item.bank_area;
+          item.city_list.forEach((city) => {
+            city.label = city.bank_city_code;
+            city.value = city.bank_city;
+          });
+          col2.push(item.city_list);
+        });
+        this.custmerCityData = [resData, col2[0]];
+      } else {
+        this.$toast.text(res.msg);
+      }
+    });
+  },
   methods: {
     switchPicker() {
       this.dateVisible = false;
     },
     setChooseValue(param) {
-      this.dateCustmer = param[3];
+      this.params.lastRepaymentDate = param[3];
       console.log(param[3]);
     },
     openDateSwitch() {
@@ -227,48 +141,68 @@ export default {
       this.addressVisible = false;
     },
     setChooseValueCustmer(chooseData) {
-      var str = chooseData.map(item => item.value).join('-');
+      console.log(chooseData);
+      let str = chooseData.map((item) => item.value).join('-');
       this.cityCustmer = str;
+      this.params.province = chooseData[0].bank_area_code;
+      this.params.cityCode = chooseData[0].bank_city_code;
     },
     closeUpdateChooseValueCustmer(self, chooseData) {
+      console.log(self, chooseData);
       //此处模拟查询API，如果数据缓存了不需要再重新请求
-      setTimeout(() => {
-        let { label, value } = chooseData[0];
-        console.log(label, value);
-        var resItems = APIData.find(item => item.label == label);
-        if (resItems && resItems.array.length) {
-          this.$set(this.custmerCityData, 1, resItems.array);
-
-          // 复原位置
-          self.updateChooseValue(self, 0, chooseData[0]);
-          self.updateChooseValue(self, 1, chooseData[1]);
-        }
-      }, 100);
+      // setTimeout(() => {
+      //   let { label, value } = chooseData[0];
+      //   console.log(label, value);
+      //   var resItems = APIData.find(item => item.label == label);
+      //   if (resItems && resItems.array.length) {
+      //     this.$set(this.custmerCityData, 1, resItems.array);
+      //     // 复原位置
+      //     self.updateChooseValue(self, 0, chooseData[0]);
+      //     self.updateChooseValue(self, 1, chooseData[1]);
+      //   }
+      // }, 100);
     },
     updateChooseValueCustmer(self, index, resValue, cacheValueData) {
       console.log(cacheValueData);
       // 本demo为二级联动，所以限制只有首列变动的时候触发事件
       if (index === 0) {
-        //此处模拟查询API，如果数据缓存了不需要再重新请求
         let { label, value } = resValue;
         console.log(label, value);
         setTimeout(() => {
-          var resItems = APIData.find(item => item.label == label);
-          if (resItems && resItems.array.length) {
-            this.$set(this.custmerCityData, 1, resItems.array);
-            // 更新第二列位置
-            self.updateChooseValue(self, index + 1, this.custmerCityData[1][0]);
+          var resItems = resValue.city_list;
+          if (resItems && resItems.length) {
+            this.$set(this.custmerCityData, 1, resItems);
+            self.updateChooseValue(self, index + 1, resItems[0]);
           }
         }, 100);
       }
     },
     handleSubmit() {
-      console.log(1111);
+      if (!this.params.lastRepaymentDate) {
+        this.$toast.text('请输入最后还款日');
+        return;
+      }
+      if (!this.params.cardBalance) {
+        this.$toast.text('请输入信用卡内余额');
+        return;
+      }
+      if (!this.params.repaymentAmount) {
+        this.$toast.text('请输入还款金额');
+        return;
+      }
+      if (!this.params.province || !this.params.cityCode) {
+        this.$toast.text('请选择常住地');
+        return;
+      }
+      ajax.post('/repay/generatePlan', this.params).then((res) => {
+        if (res.code === 0) {
+          const taskId = res.data.taskId;
+          this.$router.push(`/payback_GDetail?taskId=${taskId}`);
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
     },
-    // handleGo(info) {
-    //   // 交互说明：选择渠道需判断是否要开通业务，需开通跳到开通业务界面，不需要开通业务跳到填写代还信息页
-    //   this.$router.push(info.link);
-    // },
   },
 };
 </script>

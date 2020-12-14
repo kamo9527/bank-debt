@@ -3,11 +3,11 @@
     <nut-cell
       class="my_cell"
       v-for="item in refundCardList"
-      :key="item.card"
-      :title="item.bank"
-      :sub-title="item.card"
-      :desc="item.status"
-      :to="item.link"
+      :key="item.bankCardNo"
+      :title="item.bankName"
+      :sub-title="item.bankCardNo"
+      :desc="item.currentPlanStatus"
+      @click-cell="cellClick(item)"
     >
       <div class="my_link" slot="avatar">
         <img class="my_icon" :src="item.icon" alt="" />
@@ -21,41 +21,44 @@
 
 <script>
 // @ is an alias to /src
-// import ajax from '@/rest/ajax';
+import ajax from '@/rest/ajax';
 import icon1 from '@/assets/images/refund/icon1@2x.png';
-import icon2 from '@/assets/images/refund/icon2@2x.png';
-import icon3 from '@/assets/images/refund/icon3@2x.png';
+// import icon2 from '@/assets/images/refund/icon2@2x.png';
+// import icon3 from '@/assets/images/refund/icon3@2x.png';
 export default {
-  name: 'AddDebtForm',
+  name: 'cardSelectPage',
   data() {
     return {
-      refundCardList: [
-        {
-          bank: '广东发展银行',
-          card: '6358********6587',
-          status: '还款中',
-          icon: icon1,
-          link: '/my_refund_chanel',
-        },
-        {
-          bank: '广东发展银行',
-          card: '6358********4587',
-          status: '还款中',
-          icon: icon2,
-          link: '/my_refund_chanel',
-        },
-        {
-          bank: '广东发展银行',
-          card: '6358********6687',
-          status: '还款中',
-          icon: icon3,
-          link: '/my_refund_chanel',
-        },
-      ],
+      merchantId: '',
+      refundCardList: [],
     };
   },
-  mounted() {},
+  mounted() {
+    ajax.post('/account/info', {}).then(res => {
+      if (res.code === 0) {
+        const { merchantCreditQueryResult, merchantInfoQueryResult } = res.data;
+        this.merchantId = merchantInfoQueryResult.merchantId;
+        if (!merchantCreditQueryResult) {
+          return;
+        }
+        // todo 遍历数组映射icon
+        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList.map(
+          item => {
+            item.icon = icon1;
+            return item;
+          }
+        );
+      } else {
+        this.$toast.text(res.msg);
+      }
+    });
+  },
   methods: {
+    cellClick(item) {
+      item.merchantId = this.merchantId;
+      // 读取数据缓存再返回todo
+      this.$router.push({ path: '/my_refund_chanel', query: item });
+    },
     handleSubmit() {
       this.$router.push('/add_new_card');
     },

@@ -42,9 +42,7 @@
       /> -->
       <div class="tips">*计划执行期内信用卡余额不能小于你输入的金额</div>
     </div>
-    <button @click="handleSubmit" class="my_btn">
-      下一步
-    </button>
+    <button @click="handleSubmit" class="my_btn">下一步</button>
     <nut-calendar
       :is-visible.sync="dateVisible"
       :start-date="startDate"
@@ -106,14 +104,14 @@ export default {
     const { cardId, channelId } = this.$route.query;
     this.params.cardId = cardId;
     this.params.channelId = channelId;
-    ajax.post('/area/list', {}).then(res => {
+    ajax.post('/area/list', {}).then((res) => {
       if (res.code === 0) {
         const resData = res.data;
         const col2 = [];
-        resData.forEach(item => {
+        resData.forEach((item) => {
           item.label = item.bank_area_code;
           item.value = item.bank_area;
-          item.city_list.forEach(city => {
+          item.city_list.forEach((city) => {
             city.label = city.bank_city_code;
             city.value = city.bank_city;
           });
@@ -144,10 +142,10 @@ export default {
     },
     setChooseValueCustmer(chooseData) {
       console.log(chooseData);
-      var str = chooseData.map(item => item.value).join('-');
+      let str = chooseData.map((item) => item.value).join('-');
       this.cityCustmer = str;
-      this.params.province = chooseData[0].bank_area_code.trim();
-      this.params.cityCode = chooseData[0].bank_city_code.trim();
+      this.params.province = chooseData[0].bank_area_code;
+      this.params.cityCode = chooseData[0].bank_city_code;
     },
     closeUpdateChooseValueCustmer(self, chooseData) {
       console.log(self, chooseData);
@@ -196,7 +194,7 @@ export default {
         this.$toast.text('请选择常住地');
         return;
       }
-      ajax.post('/repay/generatePlan', this.params).then(res => {
+      ajax.post('/repay/generatePlan', this.params).then((res) => {
         if (res.code === 0) {
           const taskId = res.data.taskId;
           this.$router.push(`/payback_GDetail?taskId=${taskId}`);

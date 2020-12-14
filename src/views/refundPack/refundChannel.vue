@@ -1,15 +1,19 @@
 <template>
   <section class="page_w refund_channel_page">
-    <nut-cell class="my_cell" title="华夏银行" sub-title="6358********6587" />
+    <nut-cell
+      class="my_cell"
+      :title="queryInfo.bankName"
+      :sub-title="queryInfo.bankCardNo"
+    />
     <div
       class="my_chanel"
       v-for="item in refundChannelList"
-      :key="item.link"
+      :key="item.channelId"
       @click="handleGo(item)"
     >
       <div class="my_chanel_flex">
-        <div class="my_chanel_title">{{ item.title }}</div>
-        <div class="my_chanel_detail">{{ item.detail }}</div>
+        <div class="my_chanel_title">{{ item.channelName }}</div>
+        <div class="my_chanel_detail">{{ item.channelDesc }}</div>
       </div>
       <img
         class="my_chanel_icon"
@@ -21,38 +25,54 @@
 
 <script>
 // @ is an alias to /src
-// import ajax from '@/rest/ajax';
+import ajax from '@/rest/ajax';
 export default {
   name: 'refundChannelPage',
   data() {
     return {
       refundChannelList: [
-        {
-          title: 'I入口',
-          detail:
-            '费率0.8%+1，该入口是大额分期入口，可单笔1000以 上，当天单卡5000元内，当天单卡最多五笔消费',
-          link: '/my_return_information?cardId=3333',
-        },
-        {
-          title: 'G入口',
-          detail:
-            '费率0.8%+1，该入口是大额分期入口，可单笔1000以 上，当天单卡20000元内，当天单卡最多五笔消费,能短 时间还大额账',
-          link: '/my_return_information?cardId=1111',
-        },
-        {
-          title: 'H入口',
-          detail:
-            '费率0.7%+1，该入口是小额分期入口，可单笔1000以 内，当天单卡5000元内，当天单卡最多五笔消费。',
-          link: '/my_return_information?cardId=123',
-        },
+        // {
+        //   title: 'I入口',
+        //   detail:
+        //     '费率0.8%+1，该入口是大额分期入口，可单笔1000以 上，当天单卡5000元内，当天单卡最多五笔消费',
+        //   link: '/my_return_information?cardId=3333',
+        // },
+        // {
+        //   title: 'G入口',
+        //   detail:
+        //     '费率0.8%+1，该入口是大额分期入口，可单笔1000以 上，当天单卡20000元内，当天单卡最多五笔消费,能短 时间还大额账',
+        //   link: '/my_return_information?cardId=1111',
+        // },
+        // {
+        //   title: 'H入口',
+        //   detail:
+        //     '费率0.7%+1，该入口是小额分期入口，可单笔1000以 内，当天单卡5000元内，当天单卡最多五笔消费。',
+        //   link: '/my_return_information?cardId=123',
+        // },
       ],
+      queryInfo: {},
     };
   },
-  mounted() {},
+  mounted() {
+    this.queryInfo = this.$route.query;
+    ajax.post('/repay/channelList', this.queryInfo).then(res => {
+      if (res.code === 0) {
+        this.refundChannelList = res.data;
+      } else {
+        this.$toast.text(res.msg);
+      }
+    });
+  },
   methods: {
     handleGo(info) {
       // 交互说明：选择渠道需判断是否要开通业务，需开通跳到开通业务界面，不需要开通业务跳到填写代还信息页
-      this.$router.push(info.link);
+      if (info.mccSelectable) {
+        const pagea = { ...info, ...this.queryInfo };
+        this.$router.push({ path: '/my_return_information', query: pagea });
+      } else {
+        // todo 缺开通业务界面path
+        // window.location.href = '///';
+      }
     },
   },
 };

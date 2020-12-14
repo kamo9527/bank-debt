@@ -53,16 +53,15 @@ export default {
     };
   },
   mounted() {
-    ajax.post('/account/info', {}).then(res => {
+    const info = cache.getLocalStorageData('person_info');
+    const { merchantId } = info.merchantId;
+    ajax.post('/repay/payCardList', { merchantId }).then(res => {
       if (res.code === 0) {
-        const { merchantCreditQueryResult } = res.data;
         // todo 遍历数组映射icon
-        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList.map(
-          item => {
-            item.icon = icon1;
-            return item;
-          }
-        );
+        this.refundCardList = res.data.map(item => {
+          item.icon = icon1;
+          return item;
+        });
       } else {
         this.$toast.text(res.msg);
       }

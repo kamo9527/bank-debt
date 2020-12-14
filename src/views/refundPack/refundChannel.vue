@@ -65,8 +65,9 @@ export default {
   },
   methods: {
     handleGo(info) {
+      console.log('info', info);
       // 交互说明：选择渠道需判断是否要开通业务，需开通跳到开通业务界面，不需要开通业务跳到填写代还信息页
-      if (info.mccSelectable) {
+      if (!info.mccSelectable) {
         const pagea = { ...info, ...this.queryInfo };
         this.$router.push({ path: '/my_return_information', query: pagea });
       } else {

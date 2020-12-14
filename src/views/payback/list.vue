@@ -110,8 +110,8 @@ export default {
     },
     gotoDetail(item) {
       localStorage.setItem('paybackDetail', JSON.stringify(item));
-      // this.$router.push('/payback_detail');
-      this.$router.push('/payback_GDetail');
+      this.$router.push('/payback_detail');
+      // this.$router.push('/payback_GDetail');
     },
     loadMoreVert() {
       this.loading = true;

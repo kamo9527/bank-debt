@@ -1,5 +1,5 @@
 <template>
-  <div class="payback_detail">
+  <div class="payback_GDetail">
     <div class="title">
       <img
         class="page_back"
@@ -18,21 +18,21 @@
         <div class="line">
           <div class="left">
             <span>还款总额</span>
-            <span>10000.00元</span>
+            <span>{{ item.insteadAmount }}元</span>
           </div>
           <div class="right">
             <span>分期次数</span>
-            <span>6期</span>
+            <span>{{ item.periodCount }}期</span>
           </div>
         </div>
         <div class="line line2">
           <div class="left">
             <span>信用卡余额</span>
-            <span>10000.00元</span>
+            <span>{{ item.cardBalance }}元</span>
           </div>
           <div class="right">
             <span>手续费</span>
-            <span>50元</span>
+            <span>{{ item.totalFee }}元</span>
           </div>
         </div>
       </div>
@@ -62,10 +62,12 @@
       </li>
     </ul>
 
-    <div class="mock-bottom"></div>
-    <div class="btn-wrap">
-      <span class="btn" @click="createPlan">确认分期</span>
-    </div>
+    <template v-if="!isConfirm">
+      <div class="mock-bottom"></div>
+      <div class="btn-wrap">
+        <span class="btn" @click="createPlan">确认分期</span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -75,10 +77,10 @@ import { formatTime } from '@/utils/common';
 import ajax from '@/rest/ajax';
 
 export default {
-  name: 'payback_detail',
+  name: 'payback_GDetail',
   data() {
     return {
-      show: false,
+      isConfirm: false,
       item: {
         bankCardNo: '',
         bankCode: '',
@@ -110,7 +112,9 @@ export default {
     };
   },
   mounted() {
-    this.initData();
+    // this.initData();
+    this.taskId = this.$route.query.taskId;
+    this.getTaskById();
   },
   methods: {
     initData() {
@@ -157,43 +161,90 @@ export default {
       });
       this.item = item;
     },
-    // stopPlan() {
-    //   const _this = this;
-    //   this.$dialog({
-    //     id: 'my-dialogxxx',
-    //     title: '提示',
-    //     content: '确定终止该计划吗？',
-    //     cancelBtnTxt: '再考虑一下',
-    //     okBtnTxt: '确定终止',
-    //     onOkBtn() {
-    //       const __this = this;
-    //       const params = {
-    //         taskId: _this.item.taskId,
-    //       };
-    //       ajax.post('/repay/stopPlan', params).then(res => {
-    //         if (res.code === 0) {
-    //           __this.close(); //关闭对话框
-    //           // this.list = res.data;
-    //         } else {
-    //           _this.$toast.text(res.msg);
-    //         }
-    //       });
-    //     },
-    //     onCancelBtn(event) {
-    //       console.log(event);
-    //     },
-    //   });
-    // },
+    getTaskById() {
+      const params = {
+        taskId: this.taskId,
+      };
+      ajax.post('/repay/getTaskById', params).then(res => {
+        if (res.code === 0) {
+          res.data.detailList.forEach(item => {
+            const payTime = formatTime(
+              new Date(item.payTime),
+              'yyyy-MM-dd hh:mm'
+            ).split(' ');
+            const repayTime = formatTime(
+              new Date(item.repayTime),
+              'yyyy-MM-dd hh:mm'
+            ).split(' ');
+
+            item.displayPayDate = payTime[0];
+            item.displayPayTime = payTime[1];
+            item.displayRepayDate = repayTime[0];
+            item.displayRepayTime = repayTime[1];
+
+            item.payStatusStr =
+              item.payStatus == 0
+                ? '待执行'
+                : item.payStatus == 1
+                ? '扣款中'
+                : item.payStatus == 2
+                ? '成功'
+                : item.payStatus == 3
+                ? '失败'
+                : '';
+
+            item.repayStatusStr =
+              item.repayStatus == 0
+                ? '待执行'
+                : item.repayStatus == 1
+                ? '还款中'
+                : item.repayStatus == 2
+                ? '成功'
+                : item.repayStatus == 3
+                ? '失败'
+                : '';
+          });
+          this.item = res.data;
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    },
     createPlan() {
-      // 确认分期
-      // this.$router.push('/my_refund_chanel');
+      const _this = this;
+      this.$dialog({
+        id: 'my-dialogxxx',
+        title: '提示',
+        content: '确定开始该计划吗？',
+        cancelBtnTxt: '再考虑一下',
+        okBtnTxt: '确定开始',
+        onOkBtn() {
+          const __this = this;
+          const params = {
+            taskId: _this.taskId,
+          };
+          ajax.post('/repay/confirmPlan', params).then(res => {
+            if (res.code === 0) {
+              __this.close(); //关闭对话框
+              _this.$toast.text('确认成功');
+              this.isConfirm = true;
+              // this.list = res.data;
+            } else {
+              _this.$toast.text(res.msg);
+            }
+          });
+        },
+        onCancelBtn(event) {
+          console.log(event);
+        },
+      });
     },
   },
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
-.payback_detail {
+.payback_GDetail {
   height: 100vh;
   display: flex;
   align-items: center;
@@ -310,12 +361,14 @@ export default {
   }
   .list {
     .item {
-      margin-top: 11px;
       width: 375px;
       height: 85px;
       box-sizing: border-box;
       padding-left: 37.5px;
       background: #fff;
+      &:not(:first-child) {
+        margin-top: 5px;
+      }
       .line1 {
         padding-top: 7px;
         line-height: 1;
@@ -331,6 +384,7 @@ export default {
         }
       }
       .line2 {
+        position: relative;
         margin-top: 4.5px;
         display: flex;
         align-items: center;
@@ -354,6 +408,10 @@ export default {
           }
         }
         .right {
+          position: absolute;
+          right: 49px;
+          top: 50%;
+          transform: translateY(-50%);
           width: 30px;
           height: 30px;
           border-radius: 50%;

@@ -88,9 +88,9 @@ export default {
       isEyesClose1: true,
       isEyesClose2: true,
       isEyesClose3: true,
-      oldPassword: 'wdc123',
-      newPassWord: 'wdc1234',
-      confirmPassword: 'wdc1234',
+      oldPassword: '',
+      newPassWord: '',
+      confirmPassword: '',
       // mobile: '15521220234',
       // smCode: '123456',
       // newPassWord: 'qq123456',
@@ -108,7 +108,7 @@ export default {
         return;
       }
       const params = {
-        oldPassword: md5.hex_md5(this.oldPassword),
+        oldPassWord: md5.hex_md5(this.oldPassword),
         newPassWord: md5.hex_md5(this.newPassWord),
       };
       ajax

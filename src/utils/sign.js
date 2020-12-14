@@ -19,6 +19,7 @@ const otherTimestampApiList = [
   '/area/list',
   '/index/getIconAndBanner',
   '/account/updatePassword',
+  'index/noticeList',
 ];
 
 export function addCommonParams(params = {}) {
@@ -45,46 +46,67 @@ export function checkTimestampToSign(url) {
 }
 
 export function createParamsSign(params, noLogin, noNormaltimestamp) {
-  const timestamp = noNormaltimestamp
-    ? formatTime(new Date(), 'yyyyMMddhhmmss')
-    : new Date().getTime();
-  const nonce =
-    'zhaih' +
-    Math.random()
-      .toString(36)
-      .substr(2);
+  if (!noLogin) {
+    const personInfo = cache.getLocalStorageData('person_info') || '';
+    const deviceId = cache.getLocalStorageData('deviceId') || '';
+    const saltKey = cache.getLocalStorageData('signKey');
 
-  params.timestamp = timestamp;
-  params.nonce = nonce;
+    // loginName, deviceId, timestamp, signKey
+    const timestamp = noNormaltimestamp
+      ? formatTime(new Date(), 'yyyyMMddhhmmss')
+      : new Date().getTime();
+    params.timestamp = timestamp;
+    console.log('1111', saltKey);
+    console.log(
+      '1111',
+      `${personInfo.loginName}${deviceId}${timestamp}${saltKey}`
+    );
+    params.sign = md5.hex_md5(
+      `${personInfo.loginName}${deviceId}${timestamp}${saltKey}`
+    );
+  } else {
+    const timestamp = noNormaltimestamp
+      ? formatTime(new Date(), 'yyyyMMddhhmmss')
+      : new Date().getTime();
+    const nonce =
+      'zhaih' +
+      Math.random()
+        .toString(36)
+        .substr(2);
 
-  const paramsKeys = Object.keys(params).sort();
-  let paramsStr = '';
-  paramsKeys.forEach(item => {
-    if (
-      (!(params[item] instanceof Function) && params[item]) ||
-      params[item] === 0 ||
-      params[item] === false
-    ) {
-      const paramsItemStr =
-        typeof params[item] === 'object'
-          ? JSON.stringify(params[item])
-          : params[item];
-      paramsStr += `&${item}=${paramsItemStr}`;
-    }
-  });
-  paramsStr = paramsStr.slice(1);
+    params.timestamp = timestamp;
+    params.nonce = nonce;
 
-  const saltKey = cache.getLocalStorageData('saltKey');
-  // 区分 是否有登陆状态 1、没登陆`${timestamp}#${nonce}` 2、有登陆`${timestamp}#${nonce}#${saltKey}`
-  const hexMd5Str = noLogin
-    ? `${timestamp}#${nonce}`
-    : `${timestamp}#${nonce}#${saltKey}`;
+    const paramsKeys = Object.keys(params).sort();
+    let paramsStr = '';
+    paramsKeys.forEach(item => {
+      if (
+        (!(params[item] instanceof Function) && params[item]) ||
+        params[item] === 0 ||
+        params[item] === false
+      ) {
+        const paramsItemStr =
+          typeof params[item] === 'object'
+            ? JSON.stringify(params[item])
+            : params[item];
+        paramsStr += `&${item}=${paramsItemStr}`;
+      }
+    });
+    paramsStr = paramsStr.slice(1);
 
-  const salt = md5.hex_md5(hexMd5Str).toUpperCase();
-  paramsStr = `${paramsStr}&key=${salt}`;
+    const saltKey = cache.getLocalStorageData('signKey');
+    // 区分 是否有登陆状态 1、没登陆`${timestamp}#${nonce}` 2、有登陆`${timestamp}#${nonce}#${saltKey}`
+    const hexMd5Str = noLogin
+      ? `${timestamp}#${nonce}`
+      : `${timestamp}#${nonce}#${saltKey}`;
 
-  const sign = md5.hex_hmac_md5(salt, paramsStr);
-  params.sign = sign;
+    const salt = md5.hex_md5(hexMd5Str).toUpperCase();
+    paramsStr = `${paramsStr}&key=${salt}`;
+
+    const sign = md5.hex_hmac_md5(salt, paramsStr);
+    params.sign = sign;
+  }
+
   // return {
   //   sign,
   //   ...params

@@ -16,11 +16,13 @@
             src="~@/assets/images/common/white_back@2x.png"
           />
           <span>
-            <p class="bank_name">广东发展银行</p>
-            <p class="bank_no">尾号:6587</p>
+            <p class="bank_name">{{ item.bankName }}</p>
+            <p class="bank_no">
+              尾号:{{ item.bankCode.substring(item.bankCode.length - 4) }}
+            </p>
           </span>
         </span>
-        <span class="lable">分期还款终止</span>
+        <span class="lable">{{ item.statusDesc }}</span>
       </div>
       <div class="process">
         <nut-circleprogress
@@ -34,56 +36,75 @@
         >
           <div class="inner">
             <p>已还款</p>
-            <p>0.00</p>
-            <p>0/0期</p>
+            <p>{{ item.finishInsteadAmount }}</p>
+            <p>{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
           </div>
         </nut-circleprogress>
       </div>
       <div class="footer">
         <span>
           <p class="desc">完成还款时间</p>
-          <p>2020-04-15</p>
+          <p>{{ item.finishTime }}</p>
         </span>
         <span>
           <p class="desc">还款总额</p>
-          <p>10000.00</p>
+          <p>{{ item.insteadAmount }}</p>
         </span>
         <span>
           <p class="desc">手续费</p>
-          <p>50元</p>
+          <p>{{ item.totalFee }}元</p>
         </span>
       </div>
     </div>
     <ul class="list">
-      <li class="item" v-for="i in 4" :key="i">
+      <li class="item" v-for="(detail, index) in item.detailList" :key="index">
         <div class="line1">
-          <span class="lable">第一期</span>
+          <span class="lable">第{{ detail.period }}期</span>
         </div>
         <div class="line2">
           <div class="left">
-            <span>2020-05-08</span>
-            <span>11:49</span>
-            <span>消费:990</span>
+            <span>{{ detail.displayPayDate }}</span>
+            <span>{{ detail.displayPayTime }}</span>
+            <span>消费:{{ detail.payAmount }}</span>
           </div>
-          <span class="right">扣款中</span>
+          <span class="right">{{ detail.payStatusStr }}</span>
+        </div>
+        <div class="line3">
+          <div class="left">
+            <span></span>
+            <span>{{ detail.displayPayTime }}</span>
+            <span>消费:{{ detail.payAmount }}</span>
+          </div>
+          <span class="right">{{ detail.payStatusStr }}</span>
         </div>
       </li>
     </ul>
-    <div class="mock-bottom"></div>
-    <div class="btn-wrap">
-      <span class="btn">终止计划</span>
-    </div>
+
+    <template v-if="item.status == 1 || item.status == 3">
+      <div class="mock-bottom"></div>
+      <div class="btn-wrap">
+        <span class="btn" @click="stopPlan" v-if="item.status == 1"
+          >终止计划</span
+        >
+        <span class="btn" @click="createPlan" v-if="item.status == 3"
+          >重新创建分期计划</span
+        >
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import { formatTime } from '@/utils/common';
+import ajax from '@/rest/ajax';
+
 export default {
   name: 'payback_detail',
   data() {
     return {
       show: false,
-      detail: {
+      item: {
         bankCardNo: '',
         bankCode: '',
         bankName: '',
@@ -93,11 +114,11 @@ export default {
           {
             payAmount: '',
             payStatus: 0,
-            payTime: '',
+            payTime: new Date(),
             period: 0,
             repayAmount: '',
             repayStatus: 0,
-            repayTime: '',
+            repayTime: new Date(),
             taskTime: '',
           },
         ],
@@ -114,8 +135,83 @@ export default {
     };
   },
   mounted() {
-    const detail = this.$route.params.detail;
-    this.detail = JSON.parse(detail);
+    this.initData();
+  },
+  methods: {
+    initData() {
+      const itemStr = localStorage.getItem('paybackDetail') || '';
+      if (!itemStr) return;
+      const item = JSON.parse(itemStr);
+
+      item.detailList.forEach(item => {
+        const payTime = formatTime(
+          new Date(item.payTime),
+          'yyyy-MM-dd hh:mm'
+        ).split(' ');
+        const repayTime = formatTime(
+          new Date(item.repayTime),
+          'yyyy-MM-dd hh:mm'
+        ).split(' ');
+
+        item.displayPayDate = payTime[0];
+        item.displayPayTime = payTime[1];
+        item.displayRepayDate = repayTime[0];
+        item.displayRepayTime = repayTime[1];
+
+        item.payStatusStr =
+          item.payStatus == 0
+            ? '待执行'
+            : item.payStatus == 1
+            ? '扣款中'
+            : item.payStatus == 2
+            ? '成功'
+            : item.payStatus == 3
+            ? '失败'
+            : '';
+
+        item.repayStatusStr =
+          item.repayStatus == 0
+            ? '待执行'
+            : item.repayStatus == 1
+            ? '还款中'
+            : item.repayStatus == 2
+            ? '成功'
+            : item.repayStatus == 3
+            ? '失败'
+            : '';
+      });
+      this.item = item;
+    },
+    stopPlan() {
+      const _this = this;
+      this.$dialog({
+        id: 'my-dialogxxx',
+        title: '提示',
+        content: '确定终止该计划吗？',
+        cancelBtnTxt: '再考虑一下',
+        okBtnTxt: '确定终止',
+        onOkBtn() {
+          const __this = this;
+          const params = {
+            taskId: _this.item.taskId,
+          };
+          ajax.post('/repay/stopPlan', params).then(res => {
+            if (res.code === 0) {
+              __this.close(); //关闭对话框
+              // this.list = res.data;
+            } else {
+              _this.$toast.text(res.msg);
+            }
+          });
+        },
+        onCancelBtn(event) {
+          console.log(event);
+        },
+      });
+    },
+    createPlan() {
+      this.$router.push('/my_refund_chanel');
+    },
   },
 };
 </script>
@@ -250,6 +346,7 @@ export default {
       background: #fff;
       .line1 {
         padding-top: 7px;
+        line-height: 1;
         .lable {
           width: 51px;
           height: 22.5px;
@@ -270,6 +367,7 @@ export default {
         color: #333333;
         box-sizing: border-box;
         padding-right: 49px;
+        line-height: 1;
         .left {
           display: flex;
           align-items: center;
@@ -285,6 +383,35 @@ export default {
         }
         .right {
           color: #d51523;
+        }
+      }
+      .line3 {
+        position: relative;
+        left: 10px;
+        margin-top: 16.5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #333333;
+        box-sizing: border-box;
+        padding-right: 49px;
+        line-height: 1;
+        .left {
+          display: flex;
+          align-items: center;
+          span:nth-child(1) {
+            width: 103px;
+          }
+          span:nth-child(2) {
+            width: 62px;
+          }
+          span:nth-child(3) {
+            width: 80px;
+          }
+        }
+        .right {
+          color: #04a612;
         }
       }
     }

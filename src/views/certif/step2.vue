@@ -338,7 +338,7 @@ export default {
       });
     },
 
-    addCard() {
+    async addCard() {
       if (this.info.bankCardFront == '') {
         this.$toast.text('请上传银行卡正面照');
         return;
@@ -368,6 +368,13 @@ export default {
         return;
       }
 
+      // 四要素验证
+      const f4ValidateData = await this.f4Validate();
+      if (f4ValidateData.code != 0) {
+        this.$toast.text('身份证与银行卡信息配置有误，请检查！');
+        return;
+      }
+
       const certif_stpe1_data = localStorage.getItem('certif_stpe1_data');
       const params = {
         ...this.info,
@@ -376,6 +383,7 @@ export default {
       // console.log('certif_stpe1_data', certif_stpe1_data);
       // console.log('params', params);
       // return;
+      const _this = this;
       ajax.post('/debitCard/addSettleCardAndPhotos', params).then(res => {
         if (res.code === 0) {
           this.$dialog({
@@ -384,9 +392,9 @@ export default {
             content: '实名认证完成啦！去绑字支付卡就可以交易啦！',
             cancelBtnTxt: '等一会',
             okBtnTxt: '去绑支付卡',
-            onOkBtn: () => {
+            onOkBtn() {
               this.close(); //关闭对话框
-              this.$router.push('/add_new_card');
+              _this.$router.push('/add_new_card');
             },
             onCancelBtn(event) {
               console.log(event);
@@ -395,6 +403,32 @@ export default {
         } else {
           this.$toast.text(res.msg);
         }
+      });
+    },
+
+    f4Validate() {
+      return new Promise((resolve, reject) => {
+        const certif_stpe1_data = localStorage.getItem('certif_stpe1_data');
+        const params = {
+          bankcard: this.info.bankCardNo,
+          identity: certif_stpe1_data.identity,
+          mobile: this.info.bankCardMobile,
+          name: certif_stpe1_data.identity,
+        };
+        ajax
+          .post('/f4/validate', params)
+          .then(res => {
+            if (res.code === 0) {
+              // const data = res.data;
+              resolve(res);
+            } else {
+              // this.$toast.text(res.msg);
+              resolve('');
+            }
+          })
+          .catch(err => {
+            reject(err);
+          });
       });
     },
   },

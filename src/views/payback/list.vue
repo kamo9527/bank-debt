@@ -83,11 +83,11 @@ export default {
             {
               payAmount: '',
               payStatus: 0,
-              payTime: '',
+              payTime: new Date(),
               period: 0,
               repayAmount: '',
               repayStatus: 0,
-              repayTime: '',
+              repayTime: new Date(),
               taskTime: '',
             },
           ],
@@ -116,19 +116,15 @@ export default {
       };
       ajax.post('/repay/getTaskHistory', params).then(res => {
         if (res.code === 0) {
-          this.list = res.data;
+          // this.list = res.data;
         } else {
           this.$toast.text(res.msg);
         }
       });
     },
     gotoDetail(item) {
-      this.$router.push({
-        name: '/payback_detail',
-        params: {
-          detail: JSON.stringify(item),
-        },
-      });
+      localStorage.setItem('paybackDetail', JSON.stringify(item));
+      this.$router.push('/payback_detail');
     },
   },
 };

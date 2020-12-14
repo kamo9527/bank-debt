@@ -5,7 +5,7 @@
       src="~@/assets/images/common/white_back@2x.png"
       @click="$router.go(-1)"
     />
-    <h2 class="header" @click="ocrIdcard">认证中心</h2>
+    <h2 class="header">认证中心</h2>
     <div class="step">
       <span class="num1">1</span>
       <span class="num2">2</span>

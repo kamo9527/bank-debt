@@ -136,9 +136,9 @@ export default {
       timerId: null,
 
       info: {
-        bankName: 'sdfsfsdf',
+        bankName: '北京银行',
         bankCardNo: '15521',
-        bankCode: 'sdfsdf',
+        // bankCode: 'sdfsdf',
         bankCardFront: 'sdfsdf',
         bankAccountName: '和大家',
         bankAddress: 'sfdf',
@@ -165,14 +165,14 @@ export default {
   methods: {
     getList() {
       const params = {};
-      ajax.post('/area/list', params).then(res => {
+      ajax.post('/area/list', params).then((res) => {
         if (res.code === 0) {
           const resData = res.data;
           const col2 = [];
-          resData.forEach(item => {
+          resData.forEach((item) => {
             item.label = item.bank_area_code;
             item.value = item.bank_area;
-            item.city_list.forEach(city => {
+            item.city_list.forEach((city) => {
               city.label = city.bank_city_code;
               city.value = city.bank_city;
             });
@@ -190,6 +190,8 @@ export default {
     async getBankCardFront(e) {
       const file = e.file;
       this.info.bankCardFront = await this.uploadImg(file);
+
+      console.log('this.info.bankCardFront', this.info.bankCardFront);
 
       const ocrData = await this.ocrBankcard(file);
       if (ocrData) {
@@ -216,11 +218,13 @@ export default {
 
     setChooseValueCustmer(chooseData) {
       if (this.cityPickerType == 'bankCity') {
-        this.bankCity = chooseData.map(item => item.value.trim()).join('-');
+        this.bankCity = chooseData.map((item) => item.value.trim()).join('-');
         this.bankInfo.data = chooseData;
         this.bankInfo.bank_city_code = chooseData[1].bank_city_code;
       } else {
-        this.workCity = chooseData.map(item => item.value.trim()).join('-');
+        this.workCity = chooseData.map((item) => item.value.trim()).join('-');
+        this.info.workProvinceName = chooseData[0].value.trim();
+        this.info.workCityName = chooseData[1].value.trim();
       }
       this.cityPickerVisible = false;
       // this.cityCustmer = str;
@@ -255,6 +259,7 @@ export default {
     bankPickerClose(item) {
       if (!item) return;
       this.info.bankAddress = item.name;
+      this.info.alliedBankCode = item.allied_bank_code;
       this.bankPickerVisible = false;
     },
 
@@ -275,7 +280,7 @@ export default {
             'content-type': 'application/x-www-form-urlencoded',
           },
         })
-        .then(res => {
+        .then((res) => {
           if (res.code === 0) {
             this.$toast.text('验证码下发你手机请查收！');
             this.handleLoading();
@@ -303,16 +308,17 @@ export default {
         params.append('file', file);
         ajax
           .post('/upload', params)
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               const picPath = res.data;
+              console.log('picPath', res);
               resolve(picPath);
             } else {
               this.$toast.text(res.msg);
               resolve('');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             reject(err);
           });
       });
@@ -323,7 +329,7 @@ export default {
         params.append('file', file);
         ajax
           .post('/ocr/bankcard', params)
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               const resData = res.data;
               resolve(resData);
@@ -332,7 +338,7 @@ export default {
               resolve('');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             reject(err);
           });
       });
@@ -369,22 +375,24 @@ export default {
       }
 
       // 四要素验证
-      const f4ValidateData = await this.f4Validate();
-      if (f4ValidateData.code != 0) {
-        this.$toast.text('身份证与银行卡信息配置有误，请检查！');
-        return;
-      }
+      // const f4ValidateData = await this.f4Validate();
+      // if (f4ValidateData.data.code != 0) {
+      //   this.$toast.text('身份证与银行卡信息配置有误，请检查！');
+      //   return;
+      // }
 
-      const certif_stpe1_data = localStorage.getItem('certif_stpe1_data');
+      const certif_stpe1_data_str = localStorage.getItem('certif_stpe1_data');
+      const certif_stpe1_data = JSON.parse(certif_stpe1_data_str);
       const params = {
         ...this.info,
-        ...JSON.parse(certif_stpe1_data),
+        ...certif_stpe1_data,
       };
+      params.bankAccountName = certif_stpe1_data.name;
       // console.log('certif_stpe1_data', certif_stpe1_data);
       // console.log('params', params);
       // return;
       const _this = this;
-      ajax.post('/debitCard/addSettleCardAndPhotos', params).then(res => {
+      ajax.post('/debitCard/addSettleCardAndPhotos', params).then((res) => {
         if (res.code === 0) {
           this.$dialog({
             id: 'my-dialogxxx',
@@ -408,16 +416,17 @@ export default {
 
     f4Validate() {
       return new Promise((resolve, reject) => {
-        const certif_stpe1_data = localStorage.getItem('certif_stpe1_data');
+        const certif_stpe1_data_str = localStorage.getItem('certif_stpe1_data');
+        const certif_stpe1_data = JSON.parse(certif_stpe1_data_str);
         const params = {
           bankcard: this.info.bankCardNo,
           identity: certif_stpe1_data.identity,
           mobile: this.info.bankCardMobile,
-          name: certif_stpe1_data.identity,
+          name: certif_stpe1_data.name,
         };
         ajax
           .post('/f4/validate', params)
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               // const data = res.data;
               resolve(res);
@@ -426,7 +435,7 @@ export default {
               resolve('');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             reject(err);
           });
       });

@@ -52,16 +52,10 @@ export function createParamsSign(params, noLogin, noNormaltimestamp) {
     const deviceId = cache.getLocalStorageData('deviceId') || '';
     const saltKey = cache.getLocalStorageData('signKey');
 
-    // loginName, deviceId, timestamp, signKey
     const timestamp = noNormaltimestamp
       ? formatTime(new Date(), 'yyyyMMddhhmmss')
       : new Date().getTime();
     params.timestamp = timestamp;
-    console.log('1111', saltKey);
-    console.log(
-      '1111',
-      `${personInfo.loginName}${deviceId}${timestamp}${saltKey}`
-    );
     params.sign = md5.hex_md5(
       `${personInfo.loginName}${deviceId}${timestamp}${saltKey}`
     );

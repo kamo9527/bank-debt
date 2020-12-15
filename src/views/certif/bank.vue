@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       show: false,
-      bankName: '中国银行',
+      bankName: '北京银行',
       list: [],
       isSearch: false,
     };
@@ -78,7 +78,7 @@ export default {
         bankName: this.bankName,
         bank_city_code: this.bankInfo.bank_city_code,
       };
-      ajax.post('/bankBranch/search', params).then(res => {
+      ajax.post('/bankBranch/search', params).then((res) => {
         if (res.code === 0) {
           this.list = res.data.branchResult.slice(0, 100);
           this.isSearch = true;

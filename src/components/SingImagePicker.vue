@@ -76,16 +76,19 @@ export default {
       const fileArr = Array.from(file);
       const key = this.imgKey;
       fileArr.splice(this.max);
-      fileArr.forEach(item => {
+      fileArr.forEach((item) => {
         lrz(item)
           .then(function(rst) {
             // 处理成功会执行
             const { base64, file } = rst;
+            const newFile = new File([file], origin.name, {
+              type: origin.type,
+            });
             self.imgUrl = base64;
             self.$emit('getImg', {
               key,
               src: base64,
-              file,
+              file: newFile,
             });
           })
           .catch(function(err) {

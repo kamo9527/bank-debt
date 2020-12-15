@@ -92,7 +92,7 @@ export default {
   methods: {
     async getIdentityFront(e) {
       const file = e.file;
-      this.identityFront = await this.uploadImg(file);
+      this.info.identityFront = await this.uploadImg(file);
 
       const ocrData = await this.ocrIdcard(file);
       if (ocrData) {
@@ -102,11 +102,11 @@ export default {
     },
     async getIdentityBack(e) {
       const file = e.file;
-      this.identityBack = await this.uploadImg(file);
+      this.info.identityBack = await this.uploadImg(file);
     },
     async getIdentityInHand(e) {
       const file = e.file;
-      this.identityInHand = await this.uploadImg(file);
+      this.info.identityInHand = await this.uploadImg(file);
     },
     uploadImg(file) {
       return new Promise((resolve, reject) => {
@@ -114,16 +114,17 @@ export default {
         params.append('file', file);
         ajax
           .post('/upload', params)
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               const picPath = res.data;
+              // console.log('picPath', picPath, res);
               resolve(picPath);
             } else {
               this.$toast.text(res.msg);
               resolve('');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             reject(err);
           });
       });
@@ -134,7 +135,7 @@ export default {
         params.append('file', file);
         ajax
           .post('/ocr/idcard', params)
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               const resData = res.data;
               resolve(resData);
@@ -143,7 +144,7 @@ export default {
               resolve('');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             reject(err);
           });
       });

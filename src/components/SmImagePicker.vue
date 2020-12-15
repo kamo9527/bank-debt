@@ -8,6 +8,7 @@
   </div>
 </template>
 <script>
+import lrz from 'lrz';
 export default {
   name: 'sm_imagePicker',
   props: {
@@ -25,9 +26,25 @@ export default {
     change(e) {
       const file = e.target.files[0];
       this.previewSrc = URL.createObjectURL(file);
-      this.$emit('getImg', {
-        file,
-      });
+      // this.$emit('getImg', {
+      //   file,
+      // });
+      lrz(file)
+        .then((rst) => {
+          // 处理成功会执行
+          const { base64, file, origin } = rst;
+          const newFile = new File([file], origin.name, { type: origin.type });
+          this.$emit('getImg', {
+            file: newFile,
+          });
+        })
+        .catch(function(err) {
+          // 处理失败会执行
+          console.log(err);
+        })
+        .always(function() {
+          // 不管是成功失败，都会执行
+        });
     },
   },
 };

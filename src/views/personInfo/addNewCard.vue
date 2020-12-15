@@ -145,6 +145,7 @@ export default {
         });
     },
     handleUpload(data) {
+      const loading = this.$toast.loading('加载中');
       const formData = new FormData();
       formData.append('file', data.file);
       ajax
@@ -152,7 +153,7 @@ export default {
         .then((res) => {
           const { code, data } = res;
           if (code === 0) {
-            this.cardInfo.bankCardNo = data.bankCardNo.replace(' ', '');
+            this.cardInfo.bankCardNo = data.bankCardNo.replace(/\s/g, '');
             return this.cardInfo.bankCardNo;
           } else {
             this.$toast.text(res.message);
@@ -173,6 +174,7 @@ export default {
               }
             )
             .then((res) => {
+              loading.hide();
               if (res.code === 0 && res.data) {
                 this.cardInfo.bankCode = res.data.bank_code;
               } else {

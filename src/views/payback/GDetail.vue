@@ -45,19 +45,19 @@
         </div>
         <div class="line2">
           <div class="left">
-            <span>{{ detail.displayPayDate }}</span>
-            <span>{{ detail.displayPayTime }}</span>
+            <span>{{ detail.taskTime }}</span>
+            <span>{{ detail.payTime }}</span>
             <span>消费:{{ detail.payAmount }}</span>
           </div>
-          <span class="right">等待</span>
+          <span class="rightx">{{ statusInfo[detail.payStatus] }}</span>
         </div>
         <div class="line3">
           <div class="left">
             <span></span>
-            <span>{{ detail.displayPayTime }}</span>
-            <span>消费:{{ detail.payAmount }}</span>
+            <span>{{ detail.repayTime }}</span>
+            <span>消费:{{ detail.repayAmount }}</span>
           </div>
-          <span class="right">等待</span>
+          <span class="rightx">{{ statusInfo[detail.repayStatus] }}</span>
         </div>
       </li>
     </ul>
@@ -80,6 +80,12 @@ export default {
   name: 'payback_GDetail',
   data() {
     return {
+      statusInfo: {
+        0: '待执行',
+        1: '执行中',
+        2: '执行成功',
+        3: '执行失败',
+      },
       isConfirm: false,
       item: {
         bankCardNo: '',
@@ -122,7 +128,7 @@ export default {
       if (!itemStr) return;
       const item = JSON.parse(itemStr);
 
-      item.detailList.forEach(item => {
+      item.detailList.forEach((item) => {
         const payTime = formatTime(
           new Date(item.payTime),
           'yyyy-MM-dd hh:mm'
@@ -165,50 +171,56 @@ export default {
       const params = {
         taskId: this.taskId,
       };
-      ajax.post('/repay/getTaskById', params).then(res => {
-        if (res.code === 0) {
-          res.data.detailList.forEach(item => {
-            const payTime = formatTime(
-              new Date(item.payTime),
-              'yyyy-MM-dd hh:mm'
-            ).split(' ');
-            const repayTime = formatTime(
-              new Date(item.repayTime),
-              'yyyy-MM-dd hh:mm'
-            ).split(' ');
+      ajax
+        .post('/repay/getTaskById', params, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+        })
+        .then((res) => {
+          if (res.code === 0) {
+            res.data.detailList.forEach((item) => {
+              const payTime = formatTime(
+                new Date(item.payTime),
+                'yyyy-MM-dd hh:mm'
+              ).split(' ');
+              const repayTime = formatTime(
+                new Date(item.repayTime),
+                'yyyy-MM-dd hh:mm'
+              ).split(' ');
 
-            item.displayPayDate = payTime[0];
-            item.displayPayTime = payTime[1];
-            item.displayRepayDate = repayTime[0];
-            item.displayRepayTime = repayTime[1];
+              item.displayPayDate = payTime[0];
+              item.displayPayTime = payTime[1];
+              item.displayRepayDate = repayTime[0];
+              item.displayRepayTime = repayTime[1];
 
-            item.payStatusStr =
-              item.payStatus == 0
-                ? '待执行'
-                : item.payStatus == 1
-                ? '扣款中'
-                : item.payStatus == 2
-                ? '成功'
-                : item.payStatus == 3
-                ? '失败'
-                : '';
+              item.payStatusStr =
+                item.payStatus == 0
+                  ? '待执行'
+                  : item.payStatus == 1
+                  ? '扣款中'
+                  : item.payStatus == 2
+                  ? '成功'
+                  : item.payStatus == 3
+                  ? '失败'
+                  : '';
 
-            item.repayStatusStr =
-              item.repayStatus == 0
-                ? '待执行'
-                : item.repayStatus == 1
-                ? '还款中'
-                : item.repayStatus == 2
-                ? '成功'
-                : item.repayStatus == 3
-                ? '失败'
-                : '';
-          });
-          this.item = res.data;
-        } else {
-          this.$toast.text(res.msg);
-        }
-      });
+              item.repayStatusStr =
+                item.repayStatus == 0
+                  ? '待执行'
+                  : item.repayStatus == 1
+                  ? '还款中'
+                  : item.repayStatus == 2
+                  ? '成功'
+                  : item.repayStatus == 3
+                  ? '失败'
+                  : '';
+            });
+            this.item = res.data;
+          } else {
+            this.$toast.text(res.msg);
+          }
+        });
     },
     createPlan() {
       const _this = this;
@@ -223,7 +235,7 @@ export default {
           const params = {
             taskId: _this.taskId,
           };
-          ajax.post('/repay/confirmPlan', params).then(res => {
+          ajax.post('/repay/confirmPlan', params).then((res) => {
             if (res.code === 0) {
               __this.close(); //关闭对话框
               _this.$toast.text('确认成功');

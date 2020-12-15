@@ -144,8 +144,8 @@ export default {
       console.log(chooseData);
       let str = chooseData.map((item) => item.value).join('-');
       this.cityCustmer = str;
-      this.params.province = chooseData[0].bank_area_code.replace(' ', '');
-      this.params.cityCode = chooseData[1].bank_city_code.replace(' ', '');
+      this.params.province = chooseData[0].bank_area_code.replace(/\s/g, '');
+      this.params.cityCode = chooseData[1].bank_city_code.replace(/\s/g, '');
     },
     closeUpdateChooseValueCustmer(self, chooseData) {
       console.log(self, chooseData);

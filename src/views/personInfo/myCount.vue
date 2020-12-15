@@ -24,14 +24,19 @@
       :readonly="isReadonly"
       v-model="countInfo.bankAddress"
     />
-    <!-- // 网点选择todo -->
-    <nut-textinput
-      class="my_input"
-      label="银行网点"
-      placeholder="请输入"
-      :hasBorder="false"
-      :readonly="isReadonly"
-      v-model="countInfo.branchBankName"
+    <nut-cell
+      class="my_cell"
+      :show-icon="true"
+      title="银行网点"
+      :desc="countInfo.branchBankName"
+      @click.native="cellClick"
+    />
+    <nut-cell
+      class="my_cellxx"
+      :show-icon="true"
+      title="选择常住地："
+      :desc="cityCustmer"
+      @click.native="openAddressSwitch"
     />
     <nut-textinput
       class="my_input"
@@ -41,6 +46,37 @@
       :hasBorder="false"
       v-model="countInfo.bankCardMobile"
     />
+
+    <div class="input_wrap">
+      <span class="ggspan">验证码</span>
+      <input
+        class="gerginput"
+        type="text"
+        placeholder="请输入验证码"
+        :readonly="isReadonly"
+        v-model.trim="countInfo.smCode"
+        maxlength="6"
+      />
+      <div class="smcode" v-if="loading">{{ secend }} s</div>
+      <div class="smcode" v-else @click="handlGetSnake">获取验证码</div>
+    </div>
+    <nut-picker
+      :is-visible="addressVisible"
+      :default-value-data="defaultValueData"
+      :list-data="custmerCityData"
+      @close="closeSwitch"
+      @confirm="setChooseValueCustmer"
+      @choose="updateChooseValueCustmer"
+      @close-update="closeUpdateChooseValueCustmer"
+    />
+    <nut-popup position="right" v-model="bankPickerVisible">
+      <bank
+        ref="bankBranch"
+        class="bank"
+        :bankInfo="bankInfo"
+        @close="bankPickerClose"
+      />
+    </nut-popup>
     <button @click="handleSubmit" class="my_btn">修改结算卡</button>
   </section>
 </template>
@@ -49,17 +85,36 @@
 // @ is an alias to /src
 import { regexpMap } from '@/utils/common';
 import ajax from '@/rest/ajax';
+import bank from '../certif/bank';
+
 export default {
-  name: 'myFeePage',
+  name: 'myCountPage',
+  components: {
+    bank,
+  },
   data() {
     return {
+      cityCustmer: '请选择常住地址',
+      dateVisible: false,
+      defaultValueData: null,
+      addressVisible: false,
+      custmerCityData: [],
+      loading: false,
+      secend: 60,
+      timerId: null,
       countInfo: {
+        bankCode: '',
         bankCardNo: '',
         bankName: '',
-        branchBankName: '',
+        branchBankName: '请输入',
         bankAddress: '',
         bankCardMobile: '',
+        smCode: '',
+        workProvinceName: '',
+        workCityName: '',
       },
+      bankInfo: {},
+      bankPickerVisible: false,
       isReadonly: true,
       auditStatus: 0,
     };
@@ -71,7 +126,14 @@ export default {
         if (merchantDebitQueryResult) {
           this.countInfo = merchantDebitQueryResult;
           this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
+          this.countInfo.workProvinceName =
+            merchantInfoQueryResult.provinceName;
+          this.countInfo.workCityName = merchantInfoQueryResult.cityName;
           this.auditStatus = merchantInfoQueryResult.auditStatus;
+          this.cityCustmer =
+            merchantInfoQueryResult.provinceName +
+            '-' +
+            merchantInfoQueryResult.cityName;
         } else {
           this.$toast.text('银行卡未认证');
         }
@@ -79,8 +141,122 @@ export default {
         this.$toast.text(res.msg);
       }
     });
+    ajax.post('/area/list', {}).then((res) => {
+      if (res.code === 0) {
+        const resData = res.data;
+        const col2 = [];
+        resData.forEach((item) => {
+          item.label = item.bank_area_code;
+          item.value = item.bank_area;
+          item.city_list.forEach((city) => {
+            city.label = city.bank_city_code;
+            city.value = city.bank_city;
+          });
+          col2.push(item.city_list);
+        });
+        this.custmerCityData = [resData, col2[0]];
+      } else {
+        this.$toast.text(res.msg);
+      }
+    });
   },
   methods: {
+    openAddressSwitch() {
+      this.addressVisible = true;
+    },
+    closeSwitch() {
+      this.addressVisible = false;
+    },
+    setChooseValueCustmer(chooseData) {
+      console.log(chooseData);
+      let str = chooseData.map((item) => item.value).join('-');
+      this.cityCustmer = str;
+      this.countInfo.workProvinceName = chooseData[0].bank_area;
+      this.countInfo.workCityName = chooseData[1].bank_city;
+    },
+    closeUpdateChooseValueCustmer(self, chooseData) {
+      console.log(self, chooseData);
+      //此处模拟查询API，如果数据缓存了不需要再重新请求
+      // setTimeout(() => {
+      //   let { label, value } = chooseData[0];
+      //   console.log(label, value);
+      //   var resItems = APIData.find(item => item.label == label);
+      //   if (resItems && resItems.array.length) {
+      //     this.$set(this.custmerCityData, 1, resItems.array);
+      //     // 复原位置
+      //     self.updateChooseValue(self, 0, chooseData[0]);
+      //     self.updateChooseValue(self, 1, chooseData[1]);
+      //   }
+      // }, 100);
+    },
+    updateChooseValueCustmer(self, index, resValue, cacheValueData) {
+      console.log(cacheValueData);
+      // 本demo为二级联动，所以限制只有首列变动的时候触发事件
+      if (index === 0) {
+        let { label, value } = resValue;
+        console.log(label, value);
+        setTimeout(() => {
+          var resItems = resValue.city_list;
+          if (resItems && resItems.length) {
+            this.$set(this.custmerCityData, 1, resItems);
+            self.updateChooseValue(self, index + 1, resItems[0]);
+          }
+        }, 100);
+      }
+    },
+    bankPickerClose(item) {
+      if (!item) return;
+      this.countInfo.branchBankName = item.name;
+      this.countInfo.bankCode = item.allied_bank_code;
+      this.bankPickerVisible = false;
+    },
+    cellClick() {
+      if (!this.countInfo.bankName) {
+        this.$toast.text('请选择开户城市');
+        return;
+      }
+      this.bankPickerVisible = true;
+    },
+    handlGetSnake() {
+      if (this.isReadonly) return;
+      if (this.loading) return;
+      if (this.timerId) return;
+      if (!regexpMap.regexp_mobile.test(this.countInfo.bankCardMobile)) {
+        this.$toast.text('请输入正确的手机号码');
+        return;
+      }
+      const params = {
+        mobile: this.countInfo.bankCardMobile,
+        type: '102',
+      };
+      ajax
+        .post('/sm/getCode', params, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+        })
+        .then((res) => {
+          if (res.code === 0) {
+            this.$toast.text('验证码下发你手机请查收！');
+            this.handleLoading();
+          } else {
+            this.$toast.text(res.msg);
+          }
+        });
+    },
+    handleLoading() {
+      this.loading = true;
+      clearInterval(this.timerId);
+      this.timerId = setInterval(() => {
+        this.secend--;
+        if (this.secend === 0) {
+          this.loading = false;
+          clearInterval(this.timerId);
+          this.timerId = null;
+          this.secend = 60;
+        }
+      }, 1000);
+    },
     handleSubmit() {
       if (this.auditStatus !== 1) {
         this.$toast.text('银行卡未认证');
@@ -112,7 +288,7 @@ export default {
           this.$toast.text('请输入开户银行名称');
           return;
         }
-        if (!this.countInfo.branchBankName) {
+        if (this.countInfo.branchBankName === '请输入') {
           this.$toast.text('请输入银行网点');
           return;
         }
@@ -156,6 +332,41 @@ export default {
     display: block;
     width: 100px;
     text-align: left;
+  }
+  .input_wrap {
+    padding: 0 20px;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    .ggspan {
+      width: 144px;
+      color: #333333;
+    }
+    .gerginput {
+      flex: 1;
+      font-size: 14px;
+      height: 40px;
+      outline: none;
+    }
+    .triangle {
+      width: 20px;
+      height: 20px;
+    }
+    .smcode {
+      border-radius: 4px;
+      margin-left: 10px;
+      width: 80px;
+      height: 24px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #ffffff;
+      background: #3574f2;
+    }
   }
   .my_btn {
     margin: 40px auto 0;

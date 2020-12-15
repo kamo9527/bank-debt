@@ -6,7 +6,7 @@
       :key="item.bankCardNo"
       :title="item.bankName"
       :sub-title="item.bankCardNo"
-      :desc="item.currentPlanStatus"
+      :desc="statusInfo[item.status]"
       @click-cell="cellClick(item)"
     >
       <div class="my_link" slot="avatar">
@@ -19,27 +19,28 @@
 
 <script>
 // @ is an alias to /src
+import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
-import icon1 from '@/assets/images/refund/icon1@2x.png';
-// import icon2 from '@/assets/images/refund/icon2@2x.png';
-// import icon3 from '@/assets/images/refund/icon3@2x.png';
 export default {
   name: 'cardSelectPage',
   data() {
     return {
       merchantId: '',
       refundCardList: [],
+      statusInfo: {
+        0: '正常',
+        1: '还款中',
+        2: '还款失败',
+      },
     };
   },
   mounted() {
-    ajax.post('/account/info', {}).then((res) => {
+    const info = cache.getLocalStorageData('person_info');
+    const { merchantId } = info.merchantId;
+    this.merchantId = merchantId;
+    ajax.post('/repay/payCardList', { merchantId }).then((res) => {
       if (res.code === 0) {
-        const { merchantCreditQueryResult, merchantInfoQueryResult } = res.data;
-        this.merchantId = merchantInfoQueryResult.merchantId;
-        if (!merchantCreditQueryResult) {
-          return;
-        }
-        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList;
+        this.refundCardList = res.data;
       } else {
         this.$toast.text(res.msg);
       }

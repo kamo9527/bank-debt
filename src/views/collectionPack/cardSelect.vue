@@ -6,7 +6,7 @@
       :key="item.bankCardNo"
       :title="item.bankName"
       :sub-title="item.bankCardNo"
-      :desc="statusInfo[item.status]"
+      :desc="item.currentPlanStatus"
       @click-cell="cellClick(item)"
     >
       <div class="my_link" slot="avatar">
@@ -56,11 +56,13 @@ export default {
     };
   },
   mounted() {
-    const info = cache.getLocalStorageData('person_info');
-    const { merchantId } = info.merchantId;
-    ajax.post('/repay/payCardList', { merchantId }).then((res) => {
+    ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
-        this.refundCardList = res.data;
+        const { merchantCreditQueryResult } = res.data;
+        if (!merchantCreditQueryResult) {
+          return;
+        }
+        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList;
       } else {
         this.$toast.text(res.msg);
       }

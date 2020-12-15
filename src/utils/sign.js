@@ -23,6 +23,7 @@ const otherTimestampApiList = [
   '/debitCard/getBankNameByCardNo',
   '/livingBodyQuery',
   '/livingBodyCheck',
+  '/repay/getTaskById',
 ];
 
 export function addCommonParams(params = {}) {

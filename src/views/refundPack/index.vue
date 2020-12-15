@@ -9,7 +9,6 @@
       :desc="item.currentPlanStatus"
       @click-cell="cellClick(item)"
     >
-      <!-- todo 缺卡状态 -->
       <div class="my_link" slot="avatar">
         <img class="my_icon" :src="item.bankCode | getBankLogo" alt="" />
       </div>
@@ -40,13 +39,7 @@ export default {
         if (!merchantCreditQueryResult) {
           return;
         }
-        // todo 遍历数组映射icon
-        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList.map(
-          (item) => {
-            item.icon = icon1;
-            return item;
-          }
-        );
+        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList;
       } else {
         this.$toast.text(res.msg);
       }
@@ -55,7 +48,6 @@ export default {
   methods: {
     cellClick(item) {
       item.merchantId = this.merchantId;
-      // 读取数据缓存再返回todo
       this.$router.push({ path: '/my_refund_chanel', query: item });
     },
     handleSubmit() {

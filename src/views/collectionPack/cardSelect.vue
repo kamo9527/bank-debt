@@ -60,12 +60,7 @@ export default {
     const { merchantId } = info.merchantId;
     ajax.post('/repay/payCardList', { merchantId }).then((res) => {
       if (res.code === 0) {
-        // todo 遍历数组映射icon
         this.refundCardList = res.data;
-        // this.refundCardList = res.data.map(item => {
-        //   item.icon = icon1;
-        //   return item;
-        // });
       } else {
         this.$toast.text(res.msg);
       }
@@ -78,7 +73,6 @@ export default {
       info.bankCardNo = item.bankCardNo;
       info.payCardId = item.cardId;
       cache.setSessionData('card_collection_form', info);
-      // 读取数据缓存再返回todo
       this.$router.go(-1);
     },
     handleSubmit() {

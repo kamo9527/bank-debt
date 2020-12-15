@@ -50,9 +50,7 @@
     </div>
     <div class="foot_btn">
       <button class="my_btn my_btn_active">负债管理</button>
-      <button @click="goPersonal" class="my_btn">
-        个人信息
-      </button>
+      <button @click="goPersonal" class="my_btn">个人信息</button>
     </div>
   </section>
 </template>
@@ -90,7 +88,7 @@ export default {
       };
       this.showList = false;
       this.showNolist = false;
-      ajax.post('/platform/list', this.jsonData).then(res => {
+      ajax.post('/platform/list', this.jsonData).then((res) => {
         if (res.code === 0) {
           const { obj, records, totalPages } = res.data;
           this.totalPages = totalPages;
@@ -139,7 +137,7 @@ export default {
         this.loading = false;
       } else {
         this.jsonData.currentPage++;
-        ajax.post('/platform/list', this.jsonData).then(res => {
+        ajax.post('/platform/list', this.jsonData).then((res) => {
           if (res.code === 0) {
             const { records } = res.data;
             this.debtList.push(...records);
@@ -155,7 +153,7 @@ export default {
     pulldown() {
       this.loading = true;
       this.jsonData.currentPage = 1;
-      ajax.post('/platform/list', this.jsonData).then(res => {
+      ajax.post('/platform/list', this.jsonData).then((res) => {
         if (res.code === 0) {
           const { obj, records, totalPages } = res.data;
           this.totalPages = totalPages;

@@ -10,12 +10,10 @@
       @click-cell="cellClick(item)"
     >
       <div class="my_link" slot="avatar">
-        <img class="my_icon" :src="item.icon" alt="" />
+        <img class="my_icon" :src="item.bankCode | getBankLogo" alt="" />
       </div>
     </nut-cell>
-    <button @click="handleSubmit" class="my_btn">
-      添加信用卡
-    </button>
+    <button @click="handleSubmit" class="my_btn">添加信用卡</button>
   </section>
 </template>
 
@@ -34,20 +32,14 @@ export default {
     };
   },
   mounted() {
-    ajax.post('/account/info', {}).then(res => {
+    ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
         const { merchantCreditQueryResult, merchantInfoQueryResult } = res.data;
         this.merchantId = merchantInfoQueryResult.merchantId;
         if (!merchantCreditQueryResult) {
           return;
         }
-        // todo 遍历数组映射icon
-        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList.map(
-          item => {
-            item.icon = icon1;
-            return item;
-          }
-        );
+        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList;
       } else {
         this.$toast.text(res.msg);
       }
@@ -56,7 +48,6 @@ export default {
   methods: {
     cellClick(item) {
       item.merchantId = this.merchantId;
-      // 读取数据缓存再返回todo
       this.$router.push({ path: '/my_refund_chanel', query: item });
     },
     handleSubmit() {
@@ -75,6 +66,8 @@ export default {
     height: 105px;
     line-height: 105px;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
     background: linear-gradient(to right, #c7b0f0, #8f9ae9);
     .my_link {
       width: 30px;
@@ -87,6 +80,10 @@ export default {
     .nut-cell-title {
       color: #fff;
       font-size: 15px;
+    }
+    .nut-cell-box {
+      width: 100%;
+      background-image: none;
     }
     .nut-cell-desc {
       color: #fff;

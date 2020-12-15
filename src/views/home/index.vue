@@ -6,14 +6,12 @@
         src="~@/assets/images/home/refund_image@2x.png"
       />
     </router-link>
-    <router-link to="/card_collection" class="home_image">
-      <!-- @click="goCardCollection" -->
-
+    <div @click="goCardCollection" class="home_image">
       <img
         class="home_image_item"
         src="~@/assets/images/home/collection_image@2x.png"
       />
-    </router-link>
+    </div>
     <div class="home_entrance">
       <div
         v-for="item in entranceList"
@@ -93,7 +91,7 @@ export default {
     };
   },
   mounted() {
-    ajax.post('/account/info', {}).then(res => {
+    ajax.post('/account/info', {}).then((res) => {
       console.log(res);
       if (res.code === 0) {
         const { merchantInfoQueryResult } = res.data;
@@ -118,10 +116,10 @@ export default {
         this.$toast.text(res.msg);
       }
     });
-    ajax.post('/index/getIconAndBanner', {}).then(res => {
+    ajax.post('/index/getIconAndBanner', {}).then((res) => {
       if (res.code === 0) {
         const { bannerDTOS, iconDTOS } = res.data;
-        const list = iconDTOS.filter(item => item.name !== '新手教程');
+        const list = iconDTOS.filter((item) => item.name !== '新手教程');
         this.entranceList = list;
         this.dataItem = bannerDTOS;
       } else {
@@ -135,10 +133,14 @@ export default {
         this.$router.push('/certif_step1');
       } else {
         if (this.ocrStatus) {
+          console.log(12312);
           cache.setSessionData('card_collection_form', null);
           this.$router.push('/card_collection');
         } else {
           // todo 跳转去人脸识别
+          console.log(5555555);
+
+          cache.setSessionData('card_collection_form', null);
           this.$router.push('/card_collection');
         }
       }

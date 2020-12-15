@@ -55,22 +55,22 @@ export default {
       showList: false,
       showNolist: false,
       statusInfo: {
-        '1': '待支付/支付中',
-        '2': '支付成功',
-        '3': '支付失败',
+        1: '待支付/支付中',
+        2: '支付成功',
+        3: '支付失败',
       },
     };
   },
   mounted() {
     const info = cache.getLocalStorageData('person_info');
     this.jsonData.merchantId = info.merchantId;
-    ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
+    ajax.post('/quickpay/queryOrderHistory', this.jsonData).then((res) => {
       if (res.code === 0) {
         const records = res.data;
         console.log('records', records);
         // this.totalPages = totalPages;
         if (records && records.length > 0) {
-          records.forEach(item => {
+          records.forEach((item) => {
             item.payCardNo = item.payCardNo.slice(-4);
             item.settleCardNo = item.settleCardNo.slice(-4);
           });
@@ -105,11 +105,11 @@ export default {
       //   });
       // }
       this.jsonData.pageNum++;
-      ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
+      ajax.post('/quickpay/queryOrderHistory', this.jsonData).then((res) => {
         if (res.code === 0) {
           // const { records } = res.data;
           const records = res.data;
-          records.forEach(item => {
+          records.forEach((item) => {
             item.payCardNo = item.payCardNo.slice(-4);
             item.settleCardNo = item.settleCardNo.slice(-4);
           });
@@ -125,12 +125,11 @@ export default {
     pulldown() {
       this.loading = true;
       this.jsonData.pageNum = 1;
-      ajax.post('/quickpay/queryOrderHistory', this.jsonData).then(res => {
+      ajax.post('/quickpay/queryOrderHistory', this.jsonData).then((res) => {
         if (res.code === 0) {
-          const { records, totalPages } = res.data;
-          this.totalPages = totalPages;
+          const records = res.data;
           if (records.length > 0) {
-            records.forEach(item => {
+            records.forEach((item) => {
               item.payCardNo = item.payCardNo.slice(-4);
               item.settleCardNo = item.settleCardNo.slice(-4);
             });
@@ -152,6 +151,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .deal_page {
+  height: 99%;
   .fee_title {
     color: #333;
     font-size: 13px;

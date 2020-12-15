@@ -31,7 +31,7 @@
       placeholder="请输入"
       :hasBorder="false"
       :readonly="isReadonly"
-      v-model="countInfo.alliedBankCode"
+      v-model="countInfo.branchBankName"
     />
     <nut-textinput
       class="my_input"
@@ -41,9 +41,7 @@
       :hasBorder="false"
       v-model="countInfo.bankCardMobile"
     />
-    <button @click="handleSubmit" class="my_btn">
-      修改结算卡
-    </button>
+    <button @click="handleSubmit" class="my_btn">修改结算卡</button>
   </section>
 </template>
 
@@ -58,26 +56,22 @@ export default {
       countInfo: {
         bankCardNo: '',
         bankName: '',
-        alliedBankCode: '',
+        branchBankName: '',
         bankAddress: '',
         bankCardMobile: '',
       },
       isReadonly: true,
-      isCreditVerified: false,
+      auditStatus: 0,
     };
   },
   mounted() {
-    ajax.post('/account/info', {}).then(res => {
+    ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
-        const {
-          isCreditVerified,
-          merchantDebitQueryResult,
-          merchantInfoQueryResult,
-        } = res.data;
-        this.isCreditVerified = isCreditVerified;
+        const { merchantDebitQueryResult, merchantInfoQueryResult } = res.data;
         if (merchantDebitQueryResult) {
           this.countInfo = merchantDebitQueryResult;
           this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
+          this.auditStatus = merchantInfoQueryResult.auditStatus;
         } else {
           this.$toast.text('银行卡未认证');
         }
@@ -88,7 +82,7 @@ export default {
   },
   methods: {
     handleSubmit() {
-      if (!this.isCreditVerified) {
+      if (this.auditStatus !== 1) {
         this.$toast.text('银行卡未认证');
         return;
       }
@@ -99,7 +93,7 @@ export default {
           content: '确定要修改收款账号信息么？',
           onOkBtn() {
             //确定按钮点击事件
-            _this.isReadonly = true;
+            _this.isReadonly = false;
             this.close(); //关闭对话框
           },
           onCancelBtn(event) {
@@ -118,7 +112,7 @@ export default {
           this.$toast.text('请输入开户银行名称');
           return;
         }
-        if (!this.countInfo.alliedBankCode) {
+        if (!this.countInfo.branchBankName) {
           this.$toast.text('请输入银行网点');
           return;
         }
@@ -136,7 +130,7 @@ export default {
         }
         ajax
           .post('/debitCard/updateSettleCardAndPhotos', this.countInfo)
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               this.$toast.text('修改成功');
             } else {

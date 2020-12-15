@@ -13,6 +13,7 @@
           label="信用卡卡号"
           placeholder="请输入卡号或扫描信用卡"
           :hasBorder="false"
+          @blur="onBlur"
           v-model="cardInfo.bankCardNo"
         />
         <sing-image-picker
@@ -41,7 +42,7 @@
         />
       </div>
       <nut-textinput
-        class="my_input "
+        class="my_input"
         label="预留手机号"
         placeholder="请输入银行预留手机号"
         maxlength="11"
@@ -49,9 +50,7 @@
         v-model="cardInfo.bankCardMobile"
       />
     </div>
-    <button @click="handleSubmit" class="my_btn">
-      完成
-    </button>
+    <button @click="handleSubmit" class="my_btn">完成</button>
     <nut-picker
       :is-visible="isVisible"
       :list-data="listData"
@@ -101,7 +100,7 @@ export default {
     };
   },
   mounted() {
-    ajax.post('/account/info', {}).then(res => {
+    ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
         const { isCreditVerified, merchantDebitQueryResult } = res.data;
         // this.merchantDebitQueryResult = merchantDebitQueryResult;
@@ -125,12 +124,32 @@ export default {
     });
   },
   methods: {
+    onBlur(e) {
+      console.log(e.target.value);
+      ajax
+        .post(
+          '/debitCard/getBankNameByCardNo',
+          { bankCardNo: e.target.value },
+          {
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
+          }
+        )
+        .then((res) => {
+          if (res.code === 0 && res.data) {
+            this.cardInfo.bankCode = res.data.bank_code;
+          } else {
+            this.$toast.text(res.message);
+          }
+        });
+    },
     handleUpload(data) {
       const formData = new FormData();
       formData.append('file', data.file);
       ajax
         .post('/ocr/bankcard', formData)
-        .then(res => {
+        .then((res) => {
           const { code, data } = res;
           if (code === 0) {
             this.cardInfo.bankCardNo = data.bankCardNo.replace(' ', '');
@@ -139,7 +158,7 @@ export default {
             this.$toast.text(res.message);
           }
         })
-        .then(bankCardNo => {
+        .then((bankCardNo) => {
           if (!bankCardNo) {
             return;
           }
@@ -153,9 +172,9 @@ export default {
                 },
               }
             )
-            .then(res => {
+            .then((res) => {
               if (res.code === 0 && res.data) {
-                this.cardInfo.bankCode = data.bank_code;
+                this.cardInfo.bankCode = res.data.bank_code;
               } else {
                 this.$toast.text(res.message);
               }
@@ -192,7 +211,7 @@ export default {
         this.$toast.text('请输入正确的手机号码');
         return;
       }
-      ajax.post('/account/bind', this.cardInfo).then(res => {
+      ajax.post('/account/bind', this.cardInfo).then((res) => {
         if (res.code === 0) {
           this.$toast.text('添加成功');
           this.$router.go(-1);

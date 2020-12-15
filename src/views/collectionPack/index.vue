@@ -25,20 +25,20 @@
         :show-icon="true"
         title="支付卡"
         :desc="
-          `${cardCollection.bankName} | 尾号${cardCollection.bankCardNo.slice(
-            -4
-          )}`
+          cardCollection.bankCardNo
+            ? `${
+                cardCollection.bankName
+              } | 尾号${cardCollection.bankCardNo.slice(-4)}`
+            : '请选择'
         "
         @click.native="cellClick"
       />
       <nut-cell
         class="my_cell"
         title="收款账户"
-        :desc="
-          `${
-            merchantDebitQueryResult.bankName
-          } | 尾号${merchantDebitQueryResult.bankCardNo.slice(-4)}`
-        "
+        :desc="`${
+          merchantDebitQueryResult.bankName
+        } | 尾号${merchantDebitQueryResult.bankCardNo.slice(-4)}`"
       />
       <nut-cell class="my_cell" title="到帐金额" :desc="`${feeAmount} `" />
       <nut-cell class="my_cell" title="到账方式" desc="实时到账" />
@@ -46,9 +46,7 @@
     <div class="xxx_cell">
       *费率{{ feeInfo.quickRate }}%+{{ feeInfo.quickPer }}；交易时间00:00-23:00
     </div>
-    <button @click="handleSubmit" class="my_btn">
-      下一步
-    </button>
+    <button @click="handleSubmit" class="my_btn">下一步</button>
   </section>
 </template>
 
@@ -90,7 +88,7 @@ export default {
       if (!this.feeInfo.quickPer) return '0.00元';
       const aa =
         this.cardCollection.amount -
-        1 * this.cardCollection.amount * (1 * this.feeInfo.quickRate) -
+        (1 * this.cardCollection.amount * (1 * this.feeInfo.quickRate)) / 100 -
         this.feeInfo.quickPer;
       return aa + '元';
     },
@@ -98,30 +96,26 @@ export default {
   mounted() {
     const dfff = cache.getLocalStorageData('person_info');
     this.cardCollection.merchantId = dfff.merchantId;
-    const info = cache.getLocalStorageData('card_collection_form');
+    const info = cache.getSessionData('card_collection_form');
     if (info) {
       this.cardCollection = info;
-    } else {
-      ajax.post('/account/info', {}).then(res => {
-        if (res.code === 0) {
-          const {
-            merchantInfoQueryResult,
-            merchantDebitQueryResult,
-          } = res.data;
-          if (merchantDebitQueryResult) {
-            this.merchantDebitQueryResult = merchantDebitQueryResult;
-          }
-          this.feeInfo = merchantInfoQueryResult;
-          // if (isCreditVerified) {
-          //   this.cardCollection = merchantDebitQueryResult;
-          // } else {
-          //   this.$toast.text('银行卡未认证');
-          // }
-        } else {
-          this.$toast.text(res.msg);
-        }
-      });
     }
+    ajax.post('/account/info', {}).then((res) => {
+      if (res.code === 0) {
+        const { merchantInfoQueryResult, merchantDebitQueryResult } = res.data;
+        if (merchantDebitQueryResult) {
+          this.merchantDebitQueryResult = merchantDebitQueryResult;
+        }
+        this.feeInfo = merchantInfoQueryResult;
+        // if (isCreditVerified) {
+        //   this.cardCollection = merchantDebitQueryResult;
+        // } else {
+        //   this.$toast.text('银行卡未认证');
+        // }
+      } else {
+        this.$toast.text(res.msg);
+      }
+    });
   },
   methods: {
     handleSubmit() {
@@ -133,7 +127,8 @@ export default {
         this.$toast.text('请选择支付卡');
         return;
       }
-      ajax.post('/quickpay', this.cardCollection).then(res => {
+      // todo 请求失败提示短信验证码
+      ajax.post('/quickpay', this.cardCollection).then((res) => {
         if (res.code === 0) {
           console.log(res.data);
           const { status, channelData } = res.data;
@@ -147,7 +142,7 @@ export default {
       });
     },
     cellClick() {
-      if (!this.cardInfo.money) {
+      if (!this.cardCollection.amount) {
         this.$toast.text('请输入收款金额');
         return;
       }

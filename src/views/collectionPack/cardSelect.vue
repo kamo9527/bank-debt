@@ -6,16 +6,14 @@
       :key="item.bankCardNo"
       :title="item.bankName"
       :sub-title="item.bankCardNo"
-      :desc="item.currentPlanStatus"
+      :desc="statusInfo[item.status]"
       @click-cell="cellClick(item)"
     >
       <div class="my_link" slot="avatar">
         <img class="my_icon" :src="item.bankCode | getBankLogo" alt="" />
       </div>
     </nut-cell>
-    <button @click="handleSubmit" class="my_btn">
-      添加信用卡
-    </button>
+    <button @click="handleSubmit" class="my_btn">添加信用卡</button>
   </section>
 </template>
 
@@ -50,12 +48,17 @@ export default {
         //   icon: icon3,
         // },
       ],
+      statusInfo: {
+        0: '正常',
+        1: '还款中',
+        2: '还款失败',
+      },
     };
   },
   mounted() {
     const info = cache.getLocalStorageData('person_info');
     const { merchantId } = info.merchantId;
-    ajax.post('/repay/payCardList', { merchantId }).then(res => {
+    ajax.post('/repay/payCardList', { merchantId }).then((res) => {
       if (res.code === 0) {
         // todo 遍历数组映射icon
         this.refundCardList = res.data;
@@ -70,7 +73,7 @@ export default {
   },
   methods: {
     cellClick(item) {
-      const info = cache.getLocalStorageData('card_collection_form');
+      const info = cache.getSessionData('card_collection_form');
       info.bankName = item.bankName;
       info.bankCardNo = item.bankCardNo;
       info.payCardId = item.cardId;
@@ -94,6 +97,8 @@ export default {
     height: 105px;
     line-height: 105px;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
     background: linear-gradient(to right, #c7b0f0, #8f9ae9);
     .my_link {
       width: 30px;
@@ -106,6 +111,10 @@ export default {
     .nut-cell-title {
       color: #fff;
       font-size: 15px;
+    }
+    .nut-cell-box {
+      width: 100%;
+      background-image: none;
     }
     .nut-cell-desc {
       color: #fff;

@@ -62,8 +62,10 @@ export default {
       // password: '',
       // mobile: '15914039385', // 不可发短信
       // password: 'wdc123',
-      mobile: '13528853680', // 可发短信
-      password: '123456',
+      // mobile: '13528853680', // 可发短信
+      // password: '123456',
+      mobile: '15521220234', // 可发短信
+      password: 'ab123456',
     };
   },
   beforeDestroy() {
@@ -86,7 +88,7 @@ export default {
         loginName: this.mobile,
         password: md5.hex_md5(this.password),
       };
-      ajax.post('/account/login', params).then(res => {
+      ajax.post('/account/login', params).then((res) => {
         if (res.code === 0) {
           this.$toast.text('登录成功');
           cache.setLocalStorageData('person_info', res.data);

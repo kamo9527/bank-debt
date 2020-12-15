@@ -66,7 +66,7 @@ class Cache {
   getLocalStorageData(key) {
     if (!this.nonMark && window.localStorage.getItem) {
       const val = window.localStorage.getItem(key);
-      console.log('val', val);
+      // console.log('val', val);
       return val === null || val === '' ? val : JSON.parse(val);
     } else {
       return this.localData[key];

@@ -1,7 +1,7 @@
 <template>
   <div class="sm_imagePicker">
     <input type="file" accept="image/*" class="card_file" @change="change" />
-    <img class="card_preview" v-if="previewSrc" :src="previewSrc" />
+    <img class="card_preview" v-if="previewSrc || initPreview" :src="previewSrc || initPreview" />
     <span class="slot">
       <slot></slot>
     </span>
@@ -12,9 +12,9 @@ import lrz from 'lrz';
 export default {
   name: 'sm_imagePicker',
   props: {
-    accept: {
+    initPreview: {
       type: [String],
-      default: 'image/*',
+      default: '',
     },
   },
   data() {

@@ -17,7 +17,7 @@
     <div class="content">
       <div class="card_line">
         <div class="card">
-          <SmImagePicker @getImg="getBankCardFront">
+          <SmImagePicker :initPreview="info.bankCardFront" @getImg="getBankCardFront">
             <img src="~@/assets/images/certif/step2/plus@2x.png" />
             <span>上传储蓄卡正面</span>
           </SmImagePicker>
@@ -126,6 +126,7 @@ import ajax from '@/rest/ajax';
 import { regexpMap } from '@/utils/common';
 import bank from './bank';
 import SmImagePicker from '@/components/SmImagePicker';
+import md5 from '@/utils/md5';
 
 export default {
   name: 'certif_step2',
@@ -136,17 +137,17 @@ export default {
       timerId: null,
 
       info: {
-        bankName: '北京银行',
+        bankName: '中国民生银行',
         bankCardNo: '15521',
         // bankCode: 'sdfsdf',
-        bankCardFront: 'sdfsdf',
+        bankCardFront: '',
         bankAccountName: '和大家',
         bankAddress: 'sfdf',
         alliedBankCode: 'sdfsdfsdf',
         workProvinceName: 'sdfsfsf',
         workCityName: 'sdfsfsdf',
 
-        merchantId: '',
+        merchantId: '10000054',
         bankCardMobile: '15521220234',
         smCode: '950579',
       },
@@ -159,8 +160,10 @@ export default {
       custmerCityData: [],
     };
   },
-  mounted() {
+  async mounted() {
     this.getList();
+    this.initDataByStorage();
+    this.checkLivingBody();
   },
   methods: {
     getList() {
@@ -186,6 +189,17 @@ export default {
           this.$toast.text(res.msg);
         }
       });
+    },
+    initDataByStorage() {
+      const certif_step2_data_str =
+        localStorage.getItem('certif_step2_data') || '';
+      if (!certif_step2_data_str) return;
+      const certif_step2_data = JSON.parse(certif_step2_data_str);
+      Object.keys(this.info).forEach((item) => {
+        this.info[item] = certif_step2_data[item];
+      });
+      this.bankCity = certif_step2_data.bankCity;
+      this.workCity = certif_step2_data.workCity;
     },
     async getBankCardFront(e) {
       const file = e.file;
@@ -374,13 +388,39 @@ export default {
         return;
       }
 
-      // 四要素验证
-      // const f4ValidateData = await this.f4Validate();
-      // if (f4ValidateData.data.code != 0) {
-      //   this.$toast.text('身份证与银行卡信息配置有误，请检查！');
-      //   return;
-      // }
+      this.gotoFaceLive();
+    },
+    gotoFaceLive() {
+      const person_info = localStorage.getItem('person_info');
+      const personInfo = JSON.parse(person_info);
+      this.info.merchantId = personInfo.merchantId;
 
+      const appid = 'ry91863kGesF16ud';
+      const app_security = 'ry91863kGesF16udcjdNh4wVtheMJ0Kd';
+      const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
+      const returnUrl = window.location.href;
+      const complexity = '1';
+      const timestamp = new Date().getTime();
+      const sign = md5.hex_md5(`${appid}&${timestamp}&${app_security}`);
+      const uid = this.info.merchantId;
+      const title = '账无忧';
+
+      const certif_step1_data_str = localStorage.getItem('certif_step1_data');
+      const certif_step1_data = JSON.parse(certif_step1_data_str);
+      const params = {
+        ...this.info,
+        ...certif_step1_data,
+      };
+      params.bankAccountName = certif_step1_data.name;
+      params.bankCity = this.bankCity;
+      params.workCity = this.workCity;
+
+      localStorage.setItem('certif_step2_data', JSON.stringify(params));
+      localStorage.setItem('faceLiving', new Date().getTime());
+      location.href = `https://lifeh5.shumaidata.com/index.html#/?appid=${appid}&callbackUrl=${callbackUrl}&returnUrl=${returnUrl}&complexity=${complexity}&timestamp=${timestamp}&sign=${sign}&uid=${uid}&title=${title}`;
+    },
+
+    addCardConfirm() {
       const certif_stpe1_data_str = localStorage.getItem('certif_stpe1_data');
       const certif_stpe1_data = JSON.parse(certif_stpe1_data_str);
       const params = {
@@ -388,9 +428,6 @@ export default {
         ...certif_stpe1_data,
       };
       params.bankAccountName = certif_stpe1_data.name;
-      // console.log('certif_stpe1_data', certif_stpe1_data);
-      // console.log('params', params);
-      // return;
       const _this = this;
       ajax.post('/debitCard/addSettleCardAndPhotos', params).then((res) => {
         if (res.code === 0) {
@@ -414,30 +451,100 @@ export default {
       });
     },
 
-    f4Validate() {
+    async checkLivingBody() {
+      const faceLiving = localStorage.getItem('faceLiving') || 0;
+      if (new Date().getTime() - faceLiving < 1000 * 60 * 10) {
+        // this.initDataByStorage();
+        const livingQueryData = await this.livingBodyQuery();
+        if (!livingQueryData) return;
+        if (!livingQueryData.passed) {
+          this.$toast.text('人脸检测不通过，请重试');
+          return;
+        }
+        const featureImage = await this.getBase64Image(
+          `https://api.shumaidata.com/v2/life/check/image?imageId=${
+            livingQueryData.feature_image_id
+          }`
+        );
+        const livingCheckData = await this.livingBodyCheck(featureImage);
+        if (livingCheckData.code == 200) {
+          this.addCardConfirm();
+        }
+      }
+    },
+    livingBodyQuery() {
       return new Promise((resolve, reject) => {
-        const certif_stpe1_data_str = localStorage.getItem('certif_stpe1_data');
-        const certif_stpe1_data = JSON.parse(certif_stpe1_data_str);
         const params = {
-          bankcard: this.info.bankCardNo,
-          identity: certif_stpe1_data.identity,
-          mobile: this.info.bankCardMobile,
-          name: certif_stpe1_data.name,
+          uid: this.info.merchantId,
         };
         ajax
-          .post('/f4/validate', params)
+          .post('/livingBodyQuery', params, {
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
+          })
           .then((res) => {
             if (res.code === 0) {
-              // const data = res.data;
-              resolve(res);
+              resolve(res.data);
             } else {
               // this.$toast.text(res.msg);
               resolve('');
             }
           })
-          .catch((err) => {
-            reject(err);
+          .catch(() => {
+            resolve('');
           });
+      });
+    },
+    livingBodyCheck(image) {
+      return new Promise((resolve, reject) => {
+        const certif_stpe1_data_str = localStorage.getItem('certif_stpe1_data');
+        const certif_stpe1_data = JSON.parse(certif_stpe1_data_str);
+        const params = {
+          idCardNo: certif_stpe1_data.identity,
+          name: certif_stpe1_data.name,
+          image,
+        };
+        ajax
+          .post('/livingBodyCheck', params, {
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
+          })
+          .then((res) => {
+            if (res.code === 0) {
+              resolve(res.data);
+            } else {
+              resolve('');
+            }
+          })
+          .catch(() => {
+            resolve('');
+          });
+      });
+    },
+    getBase64Image(url) {
+      return new Promise((resolve, reject) => {
+        const img = document.createElement('img');
+        img.onload = function() {
+          const data = getBase64Image(img);
+          resolve(data);
+        };
+        img.onerror = function(err) {
+          reject(err);
+        };
+        img.src = url;
+
+        function getBase64Image(img) {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, img.width, img.height);
+          const dataURL = canvas.toDataURL('image/png');
+          return dataURL;
+          // return dataURL.replace("data:image/png;base64,", "");
+        }
       });
     },
   },

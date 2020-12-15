@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       show: false,
-      bankName: '北京银行',
+      bankName: '中国民生银行',
       list: [],
       isSearch: false,
     };

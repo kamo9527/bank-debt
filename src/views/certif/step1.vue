@@ -19,13 +19,13 @@
     <div class="content">
       <div class="card_line">
         <div class="card">
-          <SmImagePicker @getImg="getIdentityFront">
+          <SmImagePicker :initPreview="info.identityFront" @getImg="getIdentityFront">
             <img src="~@/assets/images/certif/step1/camera@2x.png" />
             <span>身份证正面照</span>
           </SmImagePicker>
         </div>
         <div class="card">
-          <SmImagePicker @getImg="getIdentityBack">
+          <SmImagePicker :initPreview="info.identityBack" @getImg="getIdentityBack">
             <img src="~@/assets/images/certif/step1/camera@2x.png" />
             <span>身份证背面照</span>
           </SmImagePicker>
@@ -33,7 +33,7 @@
       </div>
       <div class="card_line">
         <div class="card">
-          <SmImagePicker @getImg="getIdentityInHand">
+          <SmImagePicker :initPreview="info.identityInHand" @getImg="getIdentityInHand">
             <img src="~@/assets/images/certif/step1/camera@2x.png" />
             <span>手持身份证</span>
           </SmImagePicker>
@@ -81,13 +81,16 @@ export default {
   data() {
     return {
       info: {
-        identityFront: 'asdasdad',
-        identityBack: 'dsadasdasd',
-        identityInHand: 'asdasdad',
+        identityFront: '',
+        identityBack: '',
+        identityInHand: '',
         identity: '441723199103292031',
         name: '决定是否',
       },
     };
+  },
+  mounted() {
+    this.initDataByStorage();
   },
   methods: {
     async getIdentityFront(e) {
@@ -149,6 +152,15 @@ export default {
           });
       });
     },
+    initDataByStorage() {
+      const certif_step1_data_str =
+        localStorage.getItem('certif_step1_data') || '';
+      if (!certif_step1_data_str) return;
+      const certif_step1_data = JSON.parse(certif_step1_data_str);
+      Object.keys(this.info).forEach((item) => {
+        this.info[item] = certif_step1_data[item];
+      });
+    },
 
     handle() {
       if (this.info.identityFront == '') {
@@ -172,7 +184,7 @@ export default {
         return;
       }
 
-      localStorage.setItem('certif_stpe1_data', JSON.stringify(this.info));
+      localStorage.setItem('certif_step1_data', JSON.stringify(this.info));
       this.$router.push('/certif_step2');
 
       // const params = {

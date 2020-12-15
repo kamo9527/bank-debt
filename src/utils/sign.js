@@ -21,6 +21,8 @@ const otherTimestampApiList = [
   '/account/updatePassword',
   '/index/noticeList',
   '/debitCard/getBankNameByCardNo',
+  '/livingBodyQuery',
+  '/livingBodyCheck',
 ];
 
 export function addCommonParams(params = {}) {

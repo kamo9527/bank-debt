@@ -80,7 +80,7 @@ export default {
         lrz(item)
           .then(function(rst) {
             // 处理成功会执行
-            const { base64, file } = rst;
+            const { base64, file, origin } = rst;
             const newFile = new File([file], origin.name, {
               type: origin.type,
             });

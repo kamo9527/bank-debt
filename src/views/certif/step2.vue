@@ -455,6 +455,7 @@ export default {
       const faceLiving = localStorage.getItem('faceLiving') || 0;
       if (new Date().getTime() - faceLiving < 1000 * 60 * 10) {
         // this.initDataByStorage();
+        localStorage.removeItem('faceLiving');
         const livingQueryData = await this.livingBodyQuery();
         if (!livingQueryData) return;
         if (!livingQueryData.passed) {

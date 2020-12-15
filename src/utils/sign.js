@@ -21,7 +21,6 @@ const otherTimestampApiList = [
   '/account/updatePassword',
   '/index/noticeList',
   '/debitCard/getBankNameByCardNo',
-  '/debitCard/updateSettleCardAndPhotos',
 ];
 
 export function addCommonParams(params = {}) {

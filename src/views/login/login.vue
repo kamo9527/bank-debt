@@ -62,10 +62,12 @@ export default {
       // password: '',
       // mobile: '15914039385', // 不可发短信
       // password: 'wdc123',
-      mobile: '13528853680', // 可发短信
-      password: '123456',
       // mobile: '13528853680', // 可发短信
       // password: '123456',
+      // mobile: '13528853680', // 可发短信
+      // password: '123456',
+      mobile: '',
+      password: '',
     };
   },
   beforeDestroy() {

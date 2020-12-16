@@ -63,8 +63,12 @@ import home_icon from '@/assets/images/person_icon@2x.png';
 import home_active_icon from '@/assets/images/home_active_icon@2x.png';
 import person_icon from '@/assets/images/person_icon@2x.png';
 import person_active_icon from '@/assets/images/person_active_icon@2x.png';
+
+import homeFaceLive from '@/mixin/homeFaceLive';
+
 export default {
   name: 'homePage',
+  mixins: [homeFaceLive],
   data() {
     return {
       auditStatus: false,
@@ -91,12 +95,17 @@ export default {
     };
   },
   mounted() {
+    this.checkLivingBody();
     ajax.post('/account/info', {}).then((res) => {
       console.log(res);
       if (res.code === 0) {
-        const { merchantInfoQueryResult } = res.data;
+        const { merchantInfoQueryResult, merchantDebitQueryResult } = res.data;
         this.auditStatus = merchantInfoQueryResult.auditStatus;
         this.ocrStatus = merchantInfoQueryResult.ocrStatus;
+        localStorage.setItem(
+          'merchantDebitQueryResult',
+          JSON.stringify(merchantDebitQueryResult)
+        );
         const _this = this;
         if (this.auditStatus !== 1) {
           this.$dialog({
@@ -139,9 +148,9 @@ export default {
         } else {
           // todo 跳转去人脸识别
           console.log(5555555);
-
-          cache.setSessionData('card_collection_form', null);
-          this.$router.push('/card_collection');
+          this.gotoFaceLive();
+          // cache.setSessionData('card_collection_form', null);
+          // this.$router.push('/card_collection');
         }
       }
     },

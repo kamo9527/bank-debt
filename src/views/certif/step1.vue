@@ -84,8 +84,8 @@ export default {
         identityFront: '',
         identityBack: '',
         identityInHand: '',
-        identity: '441723199103292031',
-        name: '决定是否',
+        identity: '',
+        name: '',
       },
     };
   },

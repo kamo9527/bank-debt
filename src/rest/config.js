@@ -13,7 +13,7 @@
 let baseUrl = '';
 if (process.env.NODE_ENV === 'production') {
   // baseUrl = 'http://ydtapi.kuaikuaifu.net/api';
-  // baseUrl = 'http://192.168.0.155:8885';
-  baseUrl = '.';
+  baseUrl = 'http://192.168.0.155:9000';
+  // baseUrl = '.';
 }
 export default baseUrl;

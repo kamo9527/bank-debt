@@ -81,14 +81,14 @@ export default {
           curr: true,
           icon: home_icon,
           activeIcon: home_active_icon,
-          href: '###',
+          href: '',
         },
         {
           tabTitle: '我的',
           curr: false,
           icon: person_icon,
           activeIcon: person_active_icon,
-          href: '/person_info',
+          href: '#/person_info',
         },
       ],
       activeNames: 1,
@@ -96,7 +96,7 @@ export default {
   },
   mounted() {
     this.checkLivingBody();
-    ajax.post('/account/info', {}).then((res) => {
+    ajax.post('/account/info', {}).then(res => {
       console.log(res);
       if (res.code === 0) {
         const { merchantInfoQueryResult, merchantDebitQueryResult } = res.data;
@@ -125,10 +125,10 @@ export default {
         this.$toast.text(res.msg);
       }
     });
-    ajax.post('/index/getIconAndBanner', {}).then((res) => {
+    ajax.post('/index/getIconAndBanner', {}).then(res => {
       if (res.code === 0) {
         const { bannerDTOS, iconDTOS } = res.data;
-        const list = iconDTOS.filter((item) => item.name !== '新手教程');
+        const list = iconDTOS.filter(item => item.name !== '新手教程');
         this.entranceList = list;
         this.dataItem = bannerDTOS;
       } else {

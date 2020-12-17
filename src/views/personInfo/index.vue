@@ -126,7 +126,7 @@ export default {
           curr: false,
           icon: home_icon,
           activeIcon: home_active_icon,
-          href: '/home',
+          href: '#/home',
         },
         {
           tabTitle: '我的',

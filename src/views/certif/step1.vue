@@ -1,11 +1,13 @@
 <template>
   <div class="certif_step1">
-    <img
-      class="page_back"
-      src="~@/assets/images/common/white_back@2x.png"
-      @click="$router.go(-1)"
-    />
-    <h2 class="header">认证中心</h2>
+    <div class="title">
+      <img
+        class="page_back"
+        src="~@/assets/images/common/white_back@2x.png"
+        @click="$router.go(-1)"
+      />
+      <span>认证中心</span>
+    </div>
     <div class="step">
       <span class="num1">1</span>
       <span class="num2">2</span>
@@ -209,20 +211,12 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
-.page_back {
-  position: fixed;
-  top: 36px;
-  left: 15px;
-  width: 8px;
-  height: 14.5px;
-  z-index: 10;
-}
 .certif_step1 {
   height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
-  background: url('"~@/assets/images/certif/step1/bg@2x.png') no-repeat;
+  background: url('~@/assets/images/certif/step1/bg@2x.png') no-repeat;
   // background-size: 100% auto;
   background-size: 100% 197px;
   background-color: #fff;
@@ -231,16 +225,31 @@ export default {
   div {
     line-height: 1;
   }
-  .header {
+  .title {
     position: fixed;
-    top: 33.5px;
+    top: 0;
     left: 0;
     width: 100%;
+    height: 63.5px;
+    padding-top: 33.5px;
+    overflow: hidden;
     font-size: 18px;
     color: #ffffff;
     text-align: center;
     line-height: 1;
     z-index: 9;
+    background: url('~@/assets/images/certif/step1/bg@2x.png') no-repeat;
+    background-size: 100% 197px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    .page_back {
+      position: absolute;
+      top: 36px;
+      left: 15px;
+      width: 8px;
+      height: 14.5px;
+      z-index: 10;
+    }
   }
   .step {
     margin-right: 30px;

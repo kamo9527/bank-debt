@@ -18,9 +18,9 @@ export default {
 
       const appid = 'ry91863kGesF16ud';
       const app_security = 'ry91863kGesF16udcjdNh4wVtheMJ0Kd';
-      // const callbackUrl = 'http://192.168.0.155:8885/livingBodyCallback';
-      const callbackUrl = `${window.location.origin}/livingBodyCallback`;
-      const returnUrl = window.location.href;
+      const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
+      // const callbackUrl = `${window.location.origin}/livingBodyCallback`;
+      const returnUrl = encodeURIComponent(window.location.href);
       const complexity = '1';
       const timestamp = new Date().getTime();
       const sign = md5.hex_md5(`${appid}&${timestamp}&${app_security}`);

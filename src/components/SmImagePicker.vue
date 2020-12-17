@@ -29,11 +29,26 @@ export default {
       // this.$emit('getImg', {
       //   file,
       // });
-      lrz(file)
+      let quality = 1;
+      if (file.size <= 1 * 1024 * 1024) {
+        quality = 1;
+      } else if (1 * 1024 * 1024 < file.size && file.size <= 2 * 1024 * 1024) {
+        quality = 0.7;
+      } else if (2 * 1024 * 1024 < file.size && file.size <= 3 * 1024 * 1024) {
+        quality = 0.5;
+      } else if (3 * 1024 * 1024 < file.size && file.size <= 4 * 1024 * 1024) {
+        quality = 0.3;
+      } else if (4 * 1024 * 1024 < file.size && file.size <= 5 * 1024 * 1024) {
+        quality = 0.2;
+      } else if (5 * 1024 * 1024 < file.size) {
+        quality = 0.1;
+      }
+      lrz(file, { quality })
         .then((rst) => {
           // 处理成功会执行
           const { base64, file, origin } = rst;
           const newFile = new File([file], origin.name, { type: origin.type });
+          console.log('newFile', newFile);
           this.$emit('getImg', {
             file: newFile,
           });

@@ -6,13 +6,12 @@
         src="~@/assets/images/common/white_back@2x.png"
         @click="close"
       />
-      <span @click="getList">开户行网点</span>
+      <span>开户行网点</span>
     </div>
     <div class="search_wrap">
       <img
         class="icon"
         src="~@/assets/images/certif/bank/search@2x.png"
-        @click="$router.go(-1)"
       />
       <input
         type="text"

@@ -1,11 +1,13 @@
 <template>
   <div class="certif_step2">
-    <img
-      class="page_back"
-      src="~@/assets/images/common/white_back@2x.png"
-      @click="$router.go(-1)"
-    />
-    <h2 class="header">卡信息认证</h2>
+    <div class="title">
+      <img
+        class="page_back"
+        src="~@/assets/images/common/white_back@2x.png"
+        @click="$router.go(-1)"
+      />
+      <span>卡信息认证</span>
+    </div>
     <div class="step">
       <img class="step_img" src="~@/assets/images/certif/step2/step@2x.png" />
     </div>
@@ -164,6 +166,10 @@ export default {
     this.getList();
     this.initDataByStorage();
     this.checkLivingBody();
+    console.log(
+      'http://localhost:8080/#/certif_step2',
+      encodeURIComponent('http://localhost:8080/#/certif_step2')
+    );
   },
   methods: {
     getList() {
@@ -397,9 +403,9 @@ export default {
 
       const appid = 'ry91863kGesF16ud';
       const app_security = 'ry91863kGesF16udcjdNh4wVtheMJ0Kd';
-      // const callbackUrl = 'http://192.168.0.155:8885/livingBodyCallback';
-      const callbackUrl = `${window.location.origin}/livingBodyCallback`;
-      const returnUrl = window.location.href;
+      const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
+      // const callbackUrl = `${window.location.origin}/livingBodyCallback`;
+      const returnUrl = encodeURIComponent(window.location.href);
       const complexity = '1';
       const timestamp = new Date().getTime();
       const sign = md5.hex_md5(`${appid}&${timestamp}&${app_security}`);
@@ -422,13 +428,13 @@ export default {
     },
 
     addCardConfirm() {
-      const certif_stpe1_data_str = localStorage.getItem('certif_stpe1_data');
-      const certif_stpe1_data = JSON.parse(certif_stpe1_data_str);
+      const certif_step1_data_str = localStorage.getItem('certif_step1_data');
+      const certif_step1_data = JSON.parse(certif_step1_data_str);
       const params = {
         ...this.info,
-        ...certif_stpe1_data,
+        ...certif_step1_data,
       };
-      params.bankAccountName = certif_stpe1_data.name;
+
       const _this = this;
       ajax.post('/debitCard/addSettleCardAndPhotos', params).then((res) => {
         if (res.code === 0) {
@@ -558,23 +564,6 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
-.page_back {
-  position: fixed;
-  top: 36px;
-  left: 15px;
-  width: 8px;
-  height: 14.5px;
-  z-index: 10;
-  &::before {
-    content: '';
-    position: absolute;
-    left: -10px;
-    right: -10px;
-    top: -10px;
-    bottom: -10px;
-    background: #000;
-  }
-}
 .certif_step2 {
   height: 100vh;
   display: flex;
@@ -589,16 +578,31 @@ export default {
   div {
     line-height: 1;
   }
-  .header {
+  .title {
     position: fixed;
-    top: 33.5px;
+    top: 0;
     left: 0;
     width: 100%;
+    height: 63.5px;
+    padding-top: 33.5px;
+    overflow: hidden;
     font-size: 18px;
     color: #ffffff;
     text-align: center;
     line-height: 1;
     z-index: 9;
+    background: url('~@/assets/images/certif/step1/bg@2x.png') no-repeat;
+    background-size: 100% 197px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    .page_back {
+      position: absolute;
+      top: 36px;
+      left: 15px;
+      width: 8px;
+      height: 14.5px;
+      z-index: 10;
+    }
   }
   .step {
     margin-top: 22px;

@@ -506,11 +506,11 @@ export default {
     },
     livingBodyCheck(image) {
       return new Promise((resolve, reject) => {
-        const certif_stpe1_data_str = localStorage.getItem('certif_stpe1_data');
-        const certif_stpe1_data = JSON.parse(certif_stpe1_data_str);
+        const certif_step1_data_str = localStorage.getItem('certif_step1_data');
+        const certif_step1_data = JSON.parse(certif_step1_data_str);
         const params = {
-          idCardNo: certif_stpe1_data.identity,
-          name: certif_stpe1_data.name,
+          idCardNo: certif_step1_data.identity,
+          name: certif_step1_data.name,
           image,
         };
         ajax

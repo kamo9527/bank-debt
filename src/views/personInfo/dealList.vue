@@ -30,7 +30,14 @@
             交易时间：<span class="b_color">{{ item.tradeTime }}</span>
           </div>
         </div>
-        <div class="mgergerg" v-if="dataList.length === 0">暂无纪录</div>
+        <div class="mgergerg" v-if="dataList.length === 0">
+          <img
+            class="igmegeger"
+            src="~@/assets/images/personInfo/no_list.png"
+            alt=""
+          />
+          <div class="ffffffefefef">暂无相关信息</div>
+        </div>
       </div>
     </nut-scroller>
   </section>
@@ -193,8 +200,19 @@ export default {
     }
   }
   .mgergerg {
-    text-align: center;
-    padding: 20px;
+    padding-top: 80px;
+    .igmegeger {
+      margin: 0 auto;
+      display: block;
+      width: 106px;
+      height: 106px;
+    }
+    .ffffffefefef {
+      text-align: center;
+      padding: 20px;
+      color: #999999;
+      font-size: 15px;
+    }
   }
 }
 </style>

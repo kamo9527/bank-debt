@@ -21,13 +21,19 @@
     <div class="content">
       <div class="card_line">
         <div class="card">
-          <SmImagePicker :initPreview="info.identityFront" @getImg="getIdentityFront">
+          <SmImagePicker
+            :initPreview="info.identityFront"
+            @getImg="getIdentityFront"
+          >
             <img src="~@/assets/images/certif/step1/camera@2x.png" />
             <span>身份证正面照</span>
           </SmImagePicker>
         </div>
         <div class="card">
-          <SmImagePicker :initPreview="info.identityBack" @getImg="getIdentityBack">
+          <SmImagePicker
+            :initPreview="info.identityBack"
+            @getImg="getIdentityBack"
+          >
             <img src="~@/assets/images/certif/step1/camera@2x.png" />
             <span>身份证背面照</span>
           </SmImagePicker>
@@ -35,7 +41,10 @@
       </div>
       <div class="card_line">
         <div class="card">
-          <SmImagePicker :initPreview="info.identityInHand" @getImg="getIdentityInHand">
+          <SmImagePicker
+            :initPreview="info.identityInHand"
+            @getImg="getIdentityInHand"
+          >
             <img src="~@/assets/images/certif/step1/camera@2x.png" />
             <span>手持身份证</span>
           </SmImagePicker>
@@ -119,7 +128,7 @@ export default {
         params.append('file', file);
         ajax
           .post('/upload', params)
-          .then((res) => {
+          .then(res => {
             if (res.code === 0) {
               const picPath = res.data;
               // console.log('picPath', picPath, res);
@@ -129,7 +138,7 @@ export default {
               resolve('');
             }
           })
-          .catch((err) => {
+          .catch(err => {
             reject(err);
           });
       });
@@ -140,7 +149,7 @@ export default {
         params.append('file', file);
         ajax
           .post('/ocr/idcard', params)
-          .then((res) => {
+          .then(res => {
             if (res.code === 0) {
               const resData = res.data;
               resolve(resData);
@@ -149,7 +158,7 @@ export default {
               resolve('');
             }
           })
-          .catch((err) => {
+          .catch(err => {
             reject(err);
           });
       });
@@ -159,7 +168,7 @@ export default {
         localStorage.getItem('certif_step1_data') || '';
       if (!certif_step1_data_str) return;
       const certif_step1_data = JSON.parse(certif_step1_data_str);
-      Object.keys(this.info).forEach((item) => {
+      Object.keys(this.info).forEach(item => {
         this.info[item] = certif_step1_data[item];
       });
     },
@@ -170,7 +179,7 @@ export default {
         return;
       }
       if (this.info.identityBack == '') {
-        this.$toast.text('请上传身份证反面照');
+        this.$toast.text('请上传身份证背面照');
         return;
       }
       if (this.info.identityInHand == '') {

@@ -9,10 +9,7 @@
       <span>开户行网点</span>
     </div>
     <div class="search_wrap">
-      <img
-        class="icon"
-        src="~@/assets/images/certif/bank/search@2x.png"
-      />
+      <img class="icon" src="~@/assets/images/certif/bank/search@2x.png" />
       <input
         type="text"
         placeholder="请输入关键词搜索"
@@ -77,7 +74,7 @@ export default {
         bankName: this.bankName,
         bank_city_code: this.bankInfo.bank_city_code,
       };
-      ajax.post('/bankBranch/search', params).then((res) => {
+      ajax.post('/bankBranch/search', params).then(res => {
         if (res.code === 0) {
           this.list = res.data.branchResult.slice(0, 100);
           this.isSearch = true;
@@ -163,11 +160,14 @@ export default {
     font-size: 13px;
     color: #333333;
     padding-left: 17.5px;
-    box-sizing: border-box;
     li {
-      height: 40px;
-      line-height: 50px;
+      padding-bottom: 3px;
+      box-sizing: border-box;
+      min-height: 40px;
+      line-height: 1.3;
       border-bottom: 0.5px solid #dbdbdb;
+      display: flex;
+      align-items: flex-end;
     }
   }
 }

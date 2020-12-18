@@ -78,7 +78,6 @@ export default {
       isVisible: false,
       listData: [nums],
       defaultValueData: [1],
-      isCreditVerified: false,
       //  bankAccountName 姓名
       //  bankCardMobile 银行卡绑定手机号
       //  bankCardNo 银行卡号
@@ -102,10 +101,11 @@ export default {
   mounted() {
     ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
-        const { isCreditVerified, merchantDebitQueryResult } = res.data;
-        // this.merchantDebitQueryResult = merchantDebitQueryResult;
-        // this.isCreditVerified = isCreditVerified;
-        if (isCreditVerified) {
+        const { merchantDebitQueryResult, merchantInfoQueryResult } = res.data;
+        if (merchantInfoQueryResult.auditStatus !== 1) {
+          this.$toast.text('您未实名认证');
+          this.$router.push('/certif_step1');
+        } else {
           const {
             bankAccountName,
             identity,
@@ -114,9 +114,6 @@ export default {
           this.cardInfo.identity = identity;
           this.cardInfo.bankAccountName = bankAccountName;
           this.cardInfo.merchantId = merchantId;
-          this.isCreditVerified = isCreditVerified;
-        } else {
-          this.$toast.text('银行卡未认证');
         }
       } else {
         this.$toast.text(res.msg);
@@ -269,6 +266,9 @@ export default {
     }
     .my_cell {
       position: relative;
+    }
+    .nut-textinput-disabled input {
+      color: #000;
     }
     .my_cell ::after {
       content: '';

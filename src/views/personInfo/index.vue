@@ -14,7 +14,7 @@
               mobile.slice(7)
             }}
           </div>
-          <div>{{ isVerified ? '已认证' : '未认证' }}</div>
+          <div>{{ auditStatus === 1 ? '已认证' : '未认证' }}</div>
         </div>
       </div>
     </div>
@@ -31,9 +31,7 @@
       </div>
     </nut-cell>
     <div class="logout_btn">
-      <button @click="handleCancle" class="my_btn my_btn_xx">
-        退出登录
-      </button>
+      <button @click="handleCancle" class="my_btn my_btn_xx">退出登录</button>
     </div>
     <nut-popup
       class="my_popup"
@@ -46,9 +44,7 @@
           <a
             style="color: #fff"
             target="blank"
-            :href="
-              `http://wpa.qq.com/msgrd?V=1&Uin=${personInfo.customerServiceQQ}`
-            "
+            :href="`http://wpa.qq.com/msgrd?V=1&Uin=${personInfo.customerServiceQQ}`"
             >在线QQ咨询（9:00-18:00）
           </a>
           <!-- <a
@@ -61,21 +57,17 @@
         <button @click="handlePhone" class="my_btn">
           <a
             style="color: #fff"
-            :href="
-              `tel:${personInfo.customerServicePhone.slice(
-                0,
-                4
-              )}-${personInfo.customerServicePhone.slice(4)}`
-            "
+            :href="`tel:${personInfo.customerServicePhone.slice(
+              0,
+              4
+            )}-${personInfo.customerServicePhone.slice(4)}`"
           >
             电话咨询（{{ personInfo.customerServicePhone.slice(0, 4) }}-{{
               personInfo.customerServicePhone.slice(4)
             }}）
           </a>
         </button>
-        <button @click="handleCancle" class="my_btn my_btn_xx">
-          取消
-        </button>
+        <button @click="handleCancle" class="my_btn my_btn_xx">取消</button>
       </div>
     </nut-popup>
     <nut-tabbar
@@ -143,20 +135,16 @@ export default {
       activeNames: 1,
       showService: false,
       mobile: '',
-      isVerified: false,
+      auditStatus: 0,
       userName: '',
     };
   },
   mounted() {
     this.personInfo = cache.getLocalStorageData('person_info');
-    ajax.post('/account/info', {}).then(res => {
+    ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
-        const {
-          isCreditVerified,
-          isDebitVerified,
-          merchantInfoQueryResult,
-        } = res.data;
-        this.isVerified = isCreditVerified && isDebitVerified;
+        const { merchantInfoQueryResult } = res.data;
+        this.auditStatus = merchantInfoQueryResult.auditStatus;
         this.mobile = merchantInfoQueryResult.mobile;
         this.userName = merchantInfoQueryResult.userName;
       } else {

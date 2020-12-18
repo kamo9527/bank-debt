@@ -1,5 +1,5 @@
 <template>
-  <section class="page_w home_page">
+  <section class="page_w home_pagexxx">
     <router-link to="/my_refund" class="home_image">
       <img
         class="home_image_item"
@@ -96,7 +96,7 @@ export default {
   },
   mounted() {
     this.checkLivingBody();
-    ajax.post('/account/info', {}).then(res => {
+    ajax.post('/account/info', {}).then((res) => {
       console.log(res);
       if (res.code === 0) {
         const { merchantInfoQueryResult, merchantDebitQueryResult } = res.data;
@@ -125,10 +125,10 @@ export default {
         this.$toast.text(res.msg);
       }
     });
-    ajax.post('/index/getIconAndBanner', {}).then(res => {
+    ajax.post('/index/getIconAndBanner', {}).then((res) => {
       if (res.code === 0) {
         const { bannerDTOS, iconDTOS } = res.data;
-        const list = iconDTOS.filter(item => item.name !== '新手教程');
+        const list = iconDTOS.filter((item) => item.name !== '新手教程');
         this.entranceList = list;
         this.dataItem = bannerDTOS;
       } else {
@@ -181,7 +181,8 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
-.home_page {
+.home_pagexxx {
+  padding-bottom: 150px;
   .home_image {
     margin-top: 20px;
     display: block;

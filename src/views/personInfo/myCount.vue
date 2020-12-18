@@ -32,7 +32,7 @@
       @click.native="cellClick"
     />
     <nut-cell
-      class="my_cellxx"
+      class="my_cell"
       :show-icon="true"
       title="选择常住地："
       :desc="cityCustmer"
@@ -123,7 +123,13 @@ export default {
     ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
         const { merchantDebitQueryResult, merchantInfoQueryResult } = res.data;
-        if (merchantDebitQueryResult) {
+        if (
+          !merchantInfoQueryResult ||
+          merchantInfoQueryResult.auditStatus !== 1
+        ) {
+          this.$toast.text('您未实名认证');
+          // this.$router.push('/certif_step1');
+        } else {
           this.countInfo = merchantDebitQueryResult;
           this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
           this.countInfo.workProvinceName =
@@ -134,8 +140,6 @@ export default {
             merchantInfoQueryResult.provinceName +
             '-' +
             merchantInfoQueryResult.cityName;
-        } else {
-          this.$toast.text('银行卡未认证');
         }
       } else {
         this.$toast.text(res.msg);
@@ -333,6 +337,17 @@ export default {
     width: 100px;
     text-align: left;
   }
+  .my_cell {
+    background-image: none;
+    padding: 0 20px;
+    border-bottom: 1px solid #f7f7f7;
+    .nut-cell-box {
+      background-image: none;
+    }
+    .nut-cell-desc {
+      font-size: 14px;
+    }
+  }
   .input_wrap {
     padding: 0 20px;
     height: 40px;
@@ -341,7 +356,7 @@ export default {
     align-items: center;
     background-color: #fff;
     .ggspan {
-      width: 144px;
+      width: 130px;
       color: #333333;
     }
     .gerginput {

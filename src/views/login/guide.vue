@@ -35,14 +35,14 @@ export default {
     margin-top: 63px;
     margin-bottom: 28.5px;
     width: 304px;
-    height: 297.5px;
+    height: 247.5px;
   }
   .img1 {
     width: 150px;
     height: 16px;
   }
   .img2 {
-    margin-top: 2.05px;
+    margin-top: 20.5px;
     margin-bottom: 42.5px;
     width: 218.5px;
     height: 23px;

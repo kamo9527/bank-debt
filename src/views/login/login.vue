@@ -75,6 +75,9 @@ export default {
   },
   mounted() {
     // this.nextUrl = this.$route.query.next;
+    setTimeout(() => {
+      this.getAccount();
+    }, 1000);
   },
   methods: {
     login() {
@@ -90,78 +93,32 @@ export default {
         loginName: this.mobile,
         password: md5.hex_md5(this.password),
       };
-      ajax.post('/account/login', params).then((res) => {
+      ajax.post('/account/login', params).then(res => {
         if (res.code === 0) {
           this.$toast.text('登录成功');
           cache.setLocalStorageData('person_info', res.data);
           cache.setLocalStorageData('signKey', res.data.signKey);
+          localStorage.setItem(
+            'account',
+            JSON.stringify({
+              mobile: this.mobile,
+              password: this.password,
+            })
+          );
           this.$router.push('/home');
         } else {
           this.$toast.text(res.msg);
         }
       });
     },
-    // handleRead(e) {
-    //   this.isRead = e.target.checked;
-    // },
-    // handlGetSnake() {
-    //   if (this.loading) return;
-    //   if (this.timerId) return;
-    //   if (!regexpMap.regexp_mobile.test(this.mobile)) {
-    //     this.$toast.text('请输入正确的手机号码');
-    //     return;
-    //   }
-    //   const query = {
-    //     mobile: this.mobile,
-    //     verifyCode: 223322,
-    //   };
-    //   ajax.get('/getCode', query).then((res) => {
-    //     if (res.code === 0) {
-    //       this.$toast.text('成功获取验证码');
-    //       this.handleLoading();
-    //     } else {
-    //       this.$toast.text(res.message);
-    //     }
-    //   });
-    // },
-    // handleLoading() {
-    //   this.loading = true;
-    //   clearInterval(this.timerId);
-    //   this.timerId = setInterval(() => {
-    //     this.secend--;
-    //     if (this.secend === 0) {
-    //       this.loading = false;
-    //       clearInterval(this.timerId);
-    //       this.timerId = null;
-    //       this.secend = 60;
-    //     }
-    //   }, 1000);
-    // },
-    // handleRegister() {
-    //   if (!regexpMap.regexp_mobile.test(this.mobile)) {
-    //     this.$toast.text('请输入正确的手机号码');
-    //     return;
-    //   }
-    //   if (!regexpMap.regexp_captcha.test(this.smCode)) {
-    //     this.$toast.text('请输入正确的验证码');
-    //     return;
-    //   }
-    //   if (!this.isRead) {
-    //     this.$toast.text('请阅读并同意本债惠协议');
-    //     return;
-    //   }
-    //   const params = { mobile: this.mobile, smCode: this.smCode };
-    //   ajax.post('/login', params).then((res) => {
-    //     if (res.code === 0) {
-    //       this.$toast.text('登录成功');
-    //       cache.setSessionData('person_info', res.data);
-    //       const url = this.nextUrl || 'home';
-    //       this.$router.push(url);
-    //     } else {
-    //       this.$toast.text(res.message);
-    //     }
-    //   });
-    // },
+    getAccount() {
+      const accountStr = localStorage.getItem('account') || '';
+      if (accountStr) {
+        const account = JSON.parse(accountStr);
+        this.mobile = account.mobile;
+        this.password = account.password;
+      }
+    },
   },
 };
 </script>

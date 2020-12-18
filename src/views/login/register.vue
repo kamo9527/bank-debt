@@ -88,7 +88,9 @@
         </span>
 
         <span
-          >已阅读并同意<span class="blue">《账无忧用户使用协议》</span></span
+          >已阅读并同意<span class="blue" @click="gotoAgreement"
+            >《账无忧用户使用协议》</span
+          ></span
         >
       </div>
       <div class="btn login" @click="handleRegister">注册</div>
@@ -216,6 +218,9 @@ export default {
           this.$toast.text(res.msg);
         }
       });
+    },
+    gotoAgreement() {
+      location.href = 'http://pay.fuyungroup.com/pay/zwy/zwyAgreement.html';
     },
   },
 };

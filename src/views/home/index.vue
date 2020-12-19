@@ -152,9 +152,18 @@ export default {
         } else {
           // todo 跳转去人脸识别
           console.log(5555555);
-          this.gotoFaceLive();
-          // cache.setSessionData('card_collection_form', null);
-          // this.$router.push('/card_collection');
+          // 判断是否人脸认证过 认证过，直接提交，没认证过进行人脸检测
+          const merchantInfoQueryResultStr =
+            localStorage.getItem('merchantInfoQueryResult') || null;
+          const merchantInfoQueryResult = JSON.parse(
+            merchantInfoQueryResultStr
+          );
+          if (merchantInfoQueryResult.ocrStatus) {
+            cache.setSessionData('card_collection_form', null);
+            this.$router.push('/card_collection');
+          } else {
+            this.gotoFaceLive();
+          }
         }
       }
     },

@@ -47,12 +47,13 @@
       </div>
       <div class="input_wrap" @click="cityPickerShow('bankCity')">
         <span>开户城市</span>
-        <input
+        <!-- <input
           type="text"
           placeholder="请输入开户城市"
           v-model.trim="bankCity"
           disabled
-        />
+        /> -->
+        <div class="input">{{ bankCity }}</div>
         <img
           class="triangle"
           src="~@/assets/images/certif/step2/triangle@2x.png"
@@ -60,12 +61,13 @@
       </div>
       <div class="input_wrap" @click="bankPickerShow">
         <span>开户支行</span>
-        <input
+        <!-- <input
           type="text"
           placeholder="请输入开户支行"
           v-model.trim="info.bankAddress"
           disabled
-        />
+        /> -->
+        <div class="input">{{ info.bankAddress }}</div>
         <img
           class="triangle"
           src="~@/assets/images/certif/step2/triangle@2x.png"
@@ -73,12 +75,13 @@
       </div>
       <div class="input_wrap" @click="cityPickerShow('workCity')">
         <span>常驻地址</span>
-        <input
+        <!-- <input
           type="text"
           placeholder="请输入常驻地址"
           v-model.trim="workCity"
           disabled
-        />
+        /> -->
+        <div class="input">{{ workCity }}</div>
         <img
           class="triangle"
           src="~@/assets/images/certif/step2/triangle@2x.png"
@@ -147,7 +150,7 @@ export default {
         // bankCode: 'sdfsdf',
         bankCardFront: '',
         bankAccountName: '',
-        bankAddress: '',
+        bankAddress: '请输入开户支行',
         alliedBankCode: '',
         workProvinceName: '',
         workCityName: '',
@@ -156,8 +159,8 @@ export default {
         bankCardMobile: '',
         smCode: '',
       },
-      bankCity: '',
-      workCity: '',
+      bankCity: '请输入开户城市',
+      workCity: '请输入常驻地址',
       cityPickerVisible: false,
       cityPickerType: '',
       bankInfo: {},
@@ -169,10 +172,6 @@ export default {
     this.getList();
     this.initDataByStorage();
     this.checkLivingBody();
-    console.log(
-      'http://localhost:8080/#/certif_step2',
-      encodeURIComponent('http://localhost:8080/#/certif_step2')
-    );
   },
   methods: {
     getList() {
@@ -193,7 +192,6 @@ export default {
           this.custmerCityData = [resData, col2[0]];
           // this.defaultValueData = [col2[0]];
           // this.$set(this.custmerCityData, 1, col2);
-          console.log('this.custmerCityData', this.custmerCityData);
         } else {
           this.$toast.text(res.msg);
         }
@@ -280,9 +278,12 @@ export default {
       }
     },
     bankPickerClose(item) {
-      if (!item) return;
-      this.info.bankAddress = item.name;
-      this.info.alliedBankCode = item.allied_bank_code;
+      if (!item.allied_bank_code) {
+        this.info.bankAddress = this.info.bankAddress || '请输入开户支行';
+      } else {
+        this.info.bankAddress = item.name;
+        this.info.alliedBankCode = item.allied_bank_code;
+      }
       this.bankPickerVisible = false;
     },
 
@@ -396,8 +397,15 @@ export default {
         this.$toast.text('请输入验证码');
         return;
       }
-
-      this.gotoFaceLive();
+      // 判断是否人脸认证过 认证过，直接提交，没认证过进行人脸检测
+      const merchantInfoQueryResultStr =
+        localStorage.getItem('merchantInfoQueryResult') || null;
+      const merchantInfoQueryResult = JSON.parse(merchantInfoQueryResultStr);
+      if (merchantInfoQueryResult.ocrStatus) {
+        this.addCardConfirm();
+      } else {
+        this.gotoFaceLive();
+      }
     },
     gotoFaceLive() {
       const person_info = localStorage.getItem('person_info');
@@ -406,7 +414,8 @@ export default {
 
       const appid = 'ry91863kGesF16ud';
       const app_security = 'ry91863kGesF16udcjdNh4wVtheMJ0Kd';
-      const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
+      // const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
+      const callbackUrl = 'http://pay.fuyungroup.com/livingBodyCallback';
       // const callbackUrl = `${window.location.origin}/livingBodyCallback`;
       const returnUrl = encodeURIComponent(window.location.href);
       const complexity = '1';
@@ -472,12 +481,19 @@ export default {
           this.$toast.text('人脸检测不通过，请重试');
           return;
         }
+        localStorage.removeItem('certif_step1_data');
+        localStorage.removeItem('certif_step2_data');
+
         const featureImage = await this.getBase64Image(
           `https://api.shumaidata.com/v2/life/check/image?imageId=${livingQueryData.feature_image_id}`
         );
         const livingCheckData = await this.livingBodyCheck(featureImage);
         if (livingCheckData.code == 200) {
-          this.addCardConfirm();
+          const updateOcrResult = await this.updateOcrResult();
+          if (updateOcrResult.code == 200) {
+            this.addCardConfirm();
+          }
+          await this.updateAccountInfo();
         }
       }
     },
@@ -556,6 +572,58 @@ export default {
         }
       });
     },
+    updateOcrResult() {
+      return new Promise((resolve, reject) => {
+        const params = {
+          ocrStatus: true,
+        };
+        ajax
+          .post('/account/updateOcrResult', params, {
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
+          })
+          .then(res => {
+            if (res.code === 0) {
+              resolve(res.data);
+            } else {
+              resolve('');
+            }
+          })
+          .catch(() => {
+            resolve('');
+          });
+      });
+    },
+    updateAccountInfo() {
+      return new Promise((resolve, reject) => {
+        ajax
+          .post('/account/info', {})
+          .then(res => {
+            if (res.code === 0) {
+              const {
+                merchantInfoQueryResult,
+                merchantDebitQueryResult,
+              } = res.data;
+              localStorage.setItem(
+                'merchantDebitQueryResult',
+                JSON.stringify(merchantDebitQueryResult)
+              );
+              localStorage.setItem(
+                'merchantInfoQueryResult',
+                JSON.stringify(merchantInfoQueryResult)
+              );
+              resolve(res.data);
+            } else {
+              resolve('');
+              // this.$toast.text(res.msg);
+            }
+          })
+          .catch(() => {
+            resolve('');
+          });
+      });
+    },
   },
   components: {
     bank,
@@ -574,7 +642,7 @@ export default {
   // background-size: 100% auto;
   background-size: 100% 197px;
   background-color: #fff;
-  padding-top: 51px;
+  padding-top: 43.5px;
   padding-bottom: 28.5px;
   div {
     line-height: 1;
@@ -584,8 +652,8 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: 63.5px;
-    padding-top: 33.5px;
+    height: 45px;
+    // padding-top: 33.5px;
     overflow: hidden;
     font-size: 18px;
     color: #ffffff;
@@ -596,9 +664,12 @@ export default {
     background-size: 100% 197px;
     background-color: #ffffff;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .page_back {
       position: absolute;
-      top: 36px;
+      top: 16px;
       left: 15px;
       width: 8px;
       height: 14.5px;
@@ -666,7 +737,7 @@ export default {
     .input_wrap {
       margin-top: 5px;
       width: 330px;
-      height: 25px;
+      min-height: 25px;
       display: flex;
       align-items: center;
       border-bottom: 0.5px solid #999999;
@@ -680,6 +751,13 @@ export default {
         height: 18px;
         width: 203.5px;
         outline: none;
+      }
+      .input {
+        font-size: 13px;
+        min-height: 18px;
+        width: 203.5px;
+        color: #757575;
+        line-height: 1.3;
       }
       .triangle {
         margin-right: 35px;

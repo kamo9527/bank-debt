@@ -1,7 +1,11 @@
 <template>
   <div class="sm_imagePicker">
     <input type="file" accept="image/*" class="card_file" @change="change" />
-    <img class="card_preview" v-if="previewSrc || initPreview" :src="previewSrc || initPreview" />
+    <img
+      class="card_preview"
+      v-if="previewSrc || initPreview"
+      :src="previewSrc || initPreview"
+    />
     <span class="slot">
       <slot></slot>
     </span>
@@ -44,7 +48,7 @@ export default {
         quality = 0.1;
       }
       lrz(file, { quality })
-        .then((rst) => {
+        .then(rst => {
           // 处理成功会执行
           const { base64, file, origin } = rst;
           const newFile = new File([file], origin.name, { type: origin.type });
@@ -82,6 +86,7 @@ export default {
     width: 100% !important;
     height: 100% !important;
     z-index: 0;
+    object-fit: contain;
   }
   .slot {
     display: flex;

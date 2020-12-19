@@ -229,7 +229,7 @@ export default {
   // background-size: 100% auto;
   background-size: 100% 197px;
   background-color: #fff;
-  padding-top: 51px;
+  padding-top: 43.5px;
   padding-bottom: 28.5px;
   div {
     line-height: 1;
@@ -239,8 +239,8 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: 63.5px;
-    padding-top: 33.5px;
+    height: 45px;
+    // padding-top: 33.5px;
     overflow: hidden;
     font-size: 18px;
     color: #ffffff;
@@ -251,9 +251,12 @@ export default {
     background-size: 100% 197px;
     background-color: #ffffff;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .page_back {
       position: absolute;
-      top: 36px;
+      top: 16px;
       left: 15px;
       width: 8px;
       height: 14.5px;

@@ -18,7 +18,8 @@ export default {
 
       const appid = 'ry91863kGesF16ud';
       const app_security = 'ry91863kGesF16udcjdNh4wVtheMJ0Kd';
-      const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
+      // const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
+      const callbackUrl = 'http://pay.fuyungroup.com/livingBodyCallback';
       // const callbackUrl = `${window.location.origin}/livingBodyCallback`;
       const returnUrl = encodeURIComponent(window.location.href);
       const complexity = '1';
@@ -46,7 +47,11 @@ export default {
         );
         const livingCheckData = await this.livingBodyCheck(featureImage);
         if (livingCheckData.code == 200) {
-          this.$router.go(0);
+          const updateOcrResult = await this.updateOcrResult();
+          if (updateOcrResult.code == 200) {
+            this.$router.go(0);
+          }
+          await this.updateAccountInfo();
         }
       }
     },
@@ -129,6 +134,58 @@ export default {
           return dataURL;
           // return dataURL.replace("data:image/png;base64,", "");
         }
+      });
+    },
+    updateOcrResult() {
+      return new Promise((resolve, reject) => {
+        const params = {
+          ocrStatus: true,
+        };
+        ajax
+          .post('/account/updateOcrResult', params, {
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
+          })
+          .then(res => {
+            if (res.code === 0) {
+              resolve(res.data);
+            } else {
+              resolve('');
+            }
+          })
+          .catch(() => {
+            resolve('');
+          });
+      });
+    },
+    updateAccountInfo() {
+      return new Promise((resolve, reject) => {
+        ajax
+          .post('/account/info', {})
+          .then(res => {
+            if (res.code === 0) {
+              const {
+                merchantInfoQueryResult,
+                merchantDebitQueryResult,
+              } = res.data;
+              localStorage.setItem(
+                'merchantDebitQueryResult',
+                JSON.stringify(merchantDebitQueryResult)
+              );
+              localStorage.setItem(
+                'merchantInfoQueryResult',
+                JSON.stringify(merchantInfoQueryResult)
+              );
+              resolve(res.data);
+            } else {
+              resolve('');
+              // this.$toast.text(res.msg);
+            }
+          })
+          .catch(() => {
+            resolve('');
+          });
       });
     },
   },

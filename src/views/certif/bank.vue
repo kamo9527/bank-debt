@@ -102,7 +102,7 @@ export default {
   align-items: center;
   flex-direction: column;
   background-color: #fff;
-  padding-top: 63.5px;
+  padding-top: 43.5px;
   // padding-bottom: 28.5px;
   box-sizing: border-box;
   .title {
@@ -110,8 +110,8 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: 63.5px;
-    padding-top: 33.5px;
+    height: 45px;
+    // padding-top: 33.5px;
     overflow: hidden;
     font-size: 18px;
     color: #ffffff;
@@ -119,11 +119,15 @@ export default {
     line-height: 1;
     z-index: 9;
     background: url('~@/assets/images/certif/bank/title_bg@2x.png') no-repeat;
-    background-size: 100% 63.5px;
+    background-size: 100% 197px;
+    background-color: #ffffff;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .page_back {
       position: absolute;
-      top: 36px;
+      top: 16px;
       left: 15px;
       width: 8px;
       height: 14.5px;

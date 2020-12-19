@@ -14,7 +14,7 @@ let baseUrl = '';
 if (process.env.NODE_ENV === 'production') {
   // baseUrl = 'http://ydtapi.kuaikuaifu.net/api';
   // baseUrl = 'http://192.168.0.155:9000';
-  baseUrl = 'http://pay.fuyungroup.com';
+  baseUrl = 'http://newpay.kuaikuaifu.net';
   // baseUrl = '.';
 }
 export default baseUrl;

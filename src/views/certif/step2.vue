@@ -397,15 +397,16 @@ export default {
         this.$toast.text('请输入验证码');
         return;
       }
+      this.addCardConfirm();
       // 判断是否人脸认证过 认证过，直接提交，没认证过进行人脸检测
-      const merchantInfoQueryResultStr =
-        localStorage.getItem('merchantInfoQueryResult') || null;
-      const merchantInfoQueryResult = JSON.parse(merchantInfoQueryResultStr);
-      if (merchantInfoQueryResult.ocrStatus) {
-        this.addCardConfirm();
-      } else {
-        this.gotoFaceLive();
-      }
+      // const merchantInfoQueryResultStr =
+      //   localStorage.getItem('merchantInfoQueryResult') || null;
+      // const merchantInfoQueryResult = JSON.parse(merchantInfoQueryResultStr);
+      // if (merchantInfoQueryResult.ocrStatus) {
+      //   this.addCardConfirm();
+      // } else {
+      //   this.gotoFaceLive();
+      // }
     },
     gotoFaceLive() {
       const person_info = localStorage.getItem('person_info');

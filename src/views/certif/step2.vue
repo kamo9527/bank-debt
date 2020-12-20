@@ -1,11 +1,12 @@
 <template>
   <div class="certif_step2">
     <div class="title">
-      <img
-        class="page_back"
-        src="~@/assets/images/common/white_back@2x.png"
-        @click="$router.go(-1)"
-      />
+      <span class="page_back_wrap" @click="$router.go(-1)">
+        <img
+          class="page_back"
+          src="~@/assets/images/common/white_back@2x.png"
+        />
+      </span>
       <span>卡信息认证</span>
     </div>
     <div class="step">
@@ -683,6 +684,15 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    .page_back_wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: inline-block;
+      width: 45px;
+      height: 45px;
+      z-index: 10;
+    }
     .page_back {
       position: absolute;
       top: 16px;

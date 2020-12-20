@@ -1,11 +1,12 @@
 <template>
   <div class="certif_bank">
     <div class="title">
-      <img
-        class="page_back"
-        src="~@/assets/images/common/white_back@2x.png"
-        @click="close"
-      />
+      <span class="page_back_wrap" @click="close">
+        <img
+          class="page_back"
+          src="~@/assets/images/common/white_back@2x.png"
+        />
+      </span>
       <span>开户行网点</span>
     </div>
     <div class="search_wrap">
@@ -62,7 +63,7 @@ export default {
     // this.getList();
   },
   methods: {
-    inputing: _debounce(function () {
+    inputing: _debounce(function() {
       this.getList();
     }, 400),
     getList() {
@@ -74,7 +75,7 @@ export default {
         bankName: this.bankName,
         bank_city_code: this.bankInfo.bank_city_code,
       };
-      ajax.post('/bankBranch/search', params).then((res) => {
+      ajax.post('/bankBranch/search', params).then(res => {
         if (res.code === 0) {
           this.list = res.data.branchResult.slice(0, 100);
           this.isSearch = true;
@@ -125,6 +126,15 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    .page_back_wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: inline-block;
+      width: 45px;
+      height: 45px;
+      z-index: 10;
+    }
     .page_back {
       position: absolute;
       top: 16px;

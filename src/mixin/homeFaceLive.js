@@ -19,7 +19,7 @@ export default {
       const appid = 'ry91863kGesF16ud';
       const app_security = 'ry91863kGesF16udcjdNh4wVtheMJ0Kd';
       // const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
-      const callbackUrl = 'http://pay.fuyungroup.com/livingBodyCallback';
+      const callbackUrl = 'http://newpay.kuaikuaifu.net/livingBodyCallback';
       // const callbackUrl = `${window.location.origin}/livingBodyCallback`;
       const returnUrl = encodeURIComponent(window.location.href);
       const complexity = '1';

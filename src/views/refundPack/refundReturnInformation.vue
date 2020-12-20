@@ -3,7 +3,8 @@
     <nut-cell
       class="my_cell"
       :title="queryInfo.bankName"
-      :sub-title="queryInfo.bankCardNo"
+      :sub-title="`${queryInfo.bankCardNo.slice(0, 3)}***********
+            ${queryInfo.bankCardNo.slice(-4)}`"
     />
     <div class="operate_input">
       <nut-cell
@@ -88,7 +89,10 @@ export default {
       refund: '',
       defaultValueData: null,
       cityCustmer: '请选择常住地址',
-      queryInfo: {},
+      queryInfo: {
+        bankName: '',
+        bankCardNo: '',
+      },
       params: {
         province: '',
         cityCode: '',
@@ -101,7 +105,9 @@ export default {
     };
   },
   mounted() {
-    const { cardId, channelId } = this.$route.query;
+    const { cardId, channelId, bankName, bankCardNo } = this.$route.query;
+    this.queryInfo.bankName = bankName;
+    this.queryInfo.bankCardNo = bankCardNo;
     this.params.cardId = cardId;
     this.params.channelId = channelId;
     ajax.post('/area/list', {}).then((res) => {

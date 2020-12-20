@@ -1,12 +1,12 @@
 <template>
   <section class="page_w home_pagexxx">
-    <router-link to="/my_refund" class="home_image">
+    <div @click="goCardCollection('/my_refund')" class="home_image">
       <img
         class="home_image_item"
         src="~@/assets/images/home/refund_image@2x.png"
       />
-    </router-link>
-    <div @click="goCardCollection" class="home_image">
+    </div>
+    <div @click="goCardCollection('/card_collection')" class="home_image">
       <img
         class="home_image_item"
         src="~@/assets/images/home/collection_image@2x.png"
@@ -71,7 +71,7 @@ export default {
   mixins: [homeFaceLive],
   data() {
     return {
-      auditStatus: false,
+      auditStatus: 0,
       ocrStatus: false,
       entranceList: [],
       dataItem: [],
@@ -141,14 +141,14 @@ export default {
     });
   },
   methods: {
-    goCardCollection() {
+    goCardCollection(link) {
       if (this.auditStatus !== 1) {
         this.$router.push('/certif_step1');
       } else {
         if (this.ocrStatus) {
           console.log(12312);
           cache.setSessionData('card_collection_form', null);
-          this.$router.push('/card_collection');
+          this.$router.push(link);
         } else {
           // todo 跳转去人脸识别
           console.log(5555555);
@@ -157,22 +157,22 @@ export default {
       }
     },
     cellClick(name) {
-      switch (name) {
-        case '交易明细':
-          this.$router.push('/my_deal_list');
-          break;
-        case '还款记录':
-          this.$router.push('/payback_list');
-          break;
-        case '实名认证':
-          if (this.auditStatus) {
+      if (this.auditStatus === 1) {
+        switch (name) {
+          case '交易明细':
+            this.$router.push('/my_deal_list');
+            break;
+          case '还款记录':
+            this.$router.push('/payback_list');
+            break;
+          case '实名认证':
             this.$toast.text('已实名认证成功');
-          } else {
-            this.$router.push('/certif_step1');
-          }
-          break;
-        default:
-          break;
+            break;
+          default:
+            break;
+        }
+      } else {
+        this.$router.push('/certif_step1');
       }
     },
     tabSwitch3(value, index) {
@@ -184,6 +184,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .home_pagexxx {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   padding-bottom: 150px;
   .home_image {
     margin-top: 20px;

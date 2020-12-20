@@ -8,8 +8,8 @@
     </div>
     <div class="my_fee">
       <span class="fee_item"></span>
-      <span class="fee_item">{{ info.quickRate }}%</span>
-      <span class="fee_item">{{ info.quickPer }}元</span>
+      <span class="fee_item">{{ info.quickRate / 100 }}%</span>
+      <span class="fee_item">{{ info.quickPer / 100 }}元</span>
     </div>
     <div class="fee_title">我要还款费率</div>
     <div class="my_fee">
@@ -19,8 +19,8 @@
     </div>
     <div class="my_fee">
       <span class="fee_item"></span>
-      <span class="fee_item">{{ info.repayRate }}%</span>
-      <span class="fee_item">{{ info.repayPer }}元</span>
+      <span class="fee_item">{{ info.repayRate / 100 }}%</span>
+      <span class="fee_item">{{ info.repayPer / 100 }}元</span>
     </div>
   </section>
 </template>
@@ -36,7 +36,7 @@ export default {
     };
   },
   mounted() {
-    ajax.post('/account/info', {}).then(res => {
+    ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
         const { merchantInfoQueryResult } = res.data;
         this.info = merchantInfoQueryResult;

@@ -3,7 +3,8 @@
     <nut-cell
       class="my_cell"
       :title="queryInfo.bankName"
-      :sub-title="queryInfo.bankCardNo"
+      :sub-title="`${queryInfo.bankCardNo.slice(0, 3)}***********
+            ${queryInfo.bankCardNo.slice(-4)}`"
     />
     <div
       class="my_chanel"
@@ -50,12 +51,15 @@ export default {
         //   link: '/my_return_information?cardId=123',
         // },
       ],
-      queryInfo: {},
+      queryInfo: {
+        bankName: '',
+        bankCardNo: '',
+      },
     };
   },
   mounted() {
     this.queryInfo = this.$route.query;
-    ajax.post('/repay/channelList', this.queryInfo).then(res => {
+    ajax.post('/repay/channelList', this.queryInfo).then((res) => {
       if (res.code === 0) {
         this.refundChannelList = res.data;
       } else {
@@ -65,10 +69,10 @@ export default {
   },
   methods: {
     handleGo(info) {
-      console.log('info', info);
       // 交互说明：选择渠道需判断是否要开通业务，需开通跳到开通业务界面，不需要开通业务跳到填写代还信息页
       if (!info.mccSelectable) {
         const pagea = { ...info, ...this.queryInfo };
+        console.log(pagea);
         this.$router.push({ path: '/my_return_information', query: pagea });
       } else {
         // todo 缺开通业务界面path

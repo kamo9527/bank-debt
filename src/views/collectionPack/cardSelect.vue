@@ -5,7 +5,7 @@
       v-for="item in refundCardList"
       :key="item.bankCardNo"
       :title="item.bankName"
-      :sub-title="item.bankCardNo"
+      :sub-title="item.bankCardNoCopy"
       :desc="item.currentPlanStatus"
       @click-cell="cellClick(item)"
     >
@@ -13,6 +13,13 @@
         <img class="my_icon" :src="item.bankCode | getBankLogo" alt="" />
       </div>
     </nut-cell>
+    <div class="no_list" v-if="refundCardList.length === 0">
+      <img
+        class="igmegeger"
+        src="~@/assets/images/personInfo/no_list.png"
+        alt=""
+      />
+    </div>
     <button @click="handleSubmit" class="my_btn">添加信用卡</button>
   </section>
 </template>
@@ -62,7 +69,15 @@ export default {
         if (!merchantCreditQueryResult) {
           return;
         }
-        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList;
+        this.refundCardList = merchantCreditQueryResult.merchantCreditCardList.map(
+          (item) => {
+            item.bankCardNoCopy =
+              item.bankCardNo.slice(0, 3) +
+              '***********' +
+              item.bankCardNo.slice(-4);
+            return item;
+          }
+        );
       } else {
         this.$toast.text(res.msg);
       }
@@ -119,6 +134,15 @@ export default {
     .nut-cell-sub-title {
       color: #fff;
       font-size: 15px;
+    }
+  }
+  .no_list {
+    padding-top: 80px;
+    .igmegeger {
+      margin: 0 auto;
+      display: block;
+      width: 106px;
+      height: 106px;
     }
   }
   .my_btn {

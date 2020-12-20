@@ -40,11 +40,13 @@
           merchantDebitQueryResult.bankName
         } | 尾号${merchantDebitQueryResult.bankCardNo.slice(-4)}`"
       />
-      <nut-cell class="my_cell" title="到帐金额" :desc="`${feeAmount} `" />
+      <nut-cell class="my_cell" title="到账金额" :desc="`${feeAmount} `" />
       <nut-cell class="my_cell" title="到账方式" desc="实时到账" />
     </div>
     <div class="xxx_cell">
-      *费率{{ feeInfo.quickRate }}%+{{ feeInfo.quickPer }}；交易时间00:00-23:00
+      *费率{{ feeInfo.quickRate }}%+{{
+        feeInfo.quickPer
+      }}元；交易时间00:00-23:00
     </div>
     <button @click="handleSubmit" class="my_btn">下一步</button>
   </section>
@@ -106,12 +108,11 @@ export default {
         if (merchantDebitQueryResult) {
           this.merchantDebitQueryResult = merchantDebitQueryResult;
         }
-        this.feeInfo = merchantInfoQueryResult;
-        // if (isCreditVerified) {
-        //   this.cardCollection = merchantDebitQueryResult;
-        // } else {
-        //   this.$toast.text('银行卡未认证');
-        // }
+        if (merchantInfoQueryResult) {
+          const { quickRate, quickPer } = merchantInfoQueryResult;
+          this.feeInfo.quickRate = quickRate / 100;
+          this.feeInfo.quickPer = quickPer / 100;
+        }
       } else {
         this.$toast.text(res.msg);
       }

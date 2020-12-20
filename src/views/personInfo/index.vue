@@ -31,7 +31,7 @@
       </div>
     </nut-cell>
     <div class="logout_btn">
-      <button @click="handleCancle" class="my_btn my_btn_xx">退出登录</button>
+      <button @click="handleLogout" class="my_btn my_btn_xx">退出登录</button>
     </div>
     <nut-popup
       class="my_popup"
@@ -40,7 +40,7 @@
       :style="{ height: '170px' }"
     >
       <div class="service_list">
-        <button @click="handleQQ" class="my_btn">
+        <button class="my_btn">
           <a
             style="color: #fff"
             target="blank"
@@ -54,7 +54,7 @@
           </a> -->
           <!-- <a href="tencent://message/?uin=你的QQ号&Site=QQ交谈bai&Menu=yes" target="blank"><img border="0" src="http://wpa.qq.com/pa?p=1:你的QQ号:7" alt="图片不正常时显示的文字du" width="71" height="24" /></a> -->
         </button>
-        <button @click="handlePhone" class="my_btn">
+        <button class="my_btn">
           <a
             style="color: #fff"
             :href="`tel:${personInfo.customerServicePhone.slice(
@@ -176,8 +176,10 @@ export default {
       console.log(222);
     },
     handleCancle() {
-      // this.$router.push('/login_login');
       this.showService = false;
+    },
+    handleLogout() {
+      this.$router.push('/login_login');
     },
   },
 };

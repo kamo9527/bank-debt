@@ -339,6 +339,7 @@ export default {
         background: url('"~@/assets/images/certif/step1/card_bg@2x.png')
           no-repeat;
         background-size: 100% 100%;
+        overflow: hidden;
         img {
           width: 40px;
           height: 40px;

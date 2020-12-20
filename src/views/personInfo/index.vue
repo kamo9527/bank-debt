@@ -211,6 +211,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .person_page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   // background-color: #fff;
   background-color: #f5f5f5;
   padding-bottom: 70px;

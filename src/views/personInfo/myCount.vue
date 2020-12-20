@@ -124,6 +124,13 @@ export default {
     ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
         const { merchantDebitQueryResult, merchantInfoQueryResult } = res.data;
+        const { bankCardNo, bankCardMobile } = merchantDebitQueryResult;
+        merchantDebitQueryResult.bankCardNoCopy = bankCardNo;
+        merchantDebitQueryResult.bankCardMobileCopy = bankCardMobile;
+        merchantDebitQueryResult.bankCardNo =
+          bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
+        merchantDebitQueryResult.bankCardMobile =
+          bankCardMobile.slice(0, 3) + '****' + bankCardMobile.slice(-4);
         this.countInfo = merchantDebitQueryResult;
         this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
         this.countInfo.workProvinceName = merchantInfoQueryResult.provinceName;
@@ -276,6 +283,8 @@ export default {
           onOkBtn() {
             //确定按钮点击事件
             _this.isReadonly = false;
+            _this.countInfo.bankCardNo = _this.countInfo.bankCardNoCopy;
+            _this.countInfo.bankCardMobile = _this.countInfo.bankCardMobileCopy;
             this.close(); //关闭对话框
           },
           onCancelBtn(event) {
@@ -315,6 +324,13 @@ export default {
           .then((res) => {
             if (res.code === 0) {
               this.$toast.text('修改成功');
+              const { bankCardNo, bankCardMobile } = this.bankInfo;
+              this.bankInfo.bankCardNoCopy = bankCardNo;
+              this.bankInfo.bankCardMobileCopy = bankCardMobile;
+              this.bankInfo.bankCardNo =
+                bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
+              this.bankInfo.bankCardMobile =
+                bankCardMobile.slice(0, 3) + '****' + bankCardMobile.slice(-4);
             } else {
               this.$toast.text(res.msg);
             }
@@ -347,6 +363,7 @@ export default {
       background-image: none;
     }
     .nut-cell-desc {
+      color: #000;
       font-size: 14px;
     }
   }

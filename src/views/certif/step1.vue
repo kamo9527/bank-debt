@@ -129,7 +129,7 @@ export default {
         params.append('file', file);
         ajax
           .post('/upload', params)
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               const picPath = res.data;
               // console.log('picPath', picPath, res);
@@ -139,7 +139,7 @@ export default {
               resolve('');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             reject(err);
           });
       });
@@ -150,7 +150,7 @@ export default {
         params.append('file', file);
         ajax
           .post('/ocr/idcard', params)
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               const resData = res.data;
               resolve(resData);
@@ -159,7 +159,7 @@ export default {
               resolve('');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             reject(err);
           });
       });
@@ -169,7 +169,7 @@ export default {
         localStorage.getItem('certif_step1_data') || '';
       if (!certif_step1_data_str) return;
       const certif_step1_data = JSON.parse(certif_step1_data_str);
-      Object.keys(this.info).forEach(item => {
+      Object.keys(this.info).forEach((item) => {
         this.info[item] = certif_step1_data[item];
       });
     },
@@ -222,7 +222,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .certif_step1 {
-  height: 100vh;
+  height: 600px;
   display: flex;
   align-items: center;
   flex-direction: column;

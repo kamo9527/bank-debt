@@ -62,7 +62,7 @@ export default {
     // this.getList();
   },
   methods: {
-    inputing: _debounce(function() {
+    inputing: _debounce(function () {
       this.getList();
     }, 400),
     getList() {
@@ -74,7 +74,7 @@ export default {
         bankName: this.bankName,
         bank_city_code: this.bankInfo.bank_city_code,
       };
-      ajax.post('/bankBranch/search', params).then(res => {
+      ajax.post('/bankBranch/search', params).then((res) => {
         if (res.code === 0) {
           this.list = res.data.branchResult.slice(0, 100);
           this.isSearch = true;
@@ -172,6 +172,10 @@ export default {
       border-bottom: 0.5px solid #dbdbdb;
       display: flex;
       align-items: flex-end;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
     }
   }
 }

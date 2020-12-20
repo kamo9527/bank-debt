@@ -183,7 +183,6 @@ export default {
         if (this.auditStatus === 1) {
           this.$router.push(link);
         } else {
-          this.$toast.text('您未实名认证');
           this.$router.push('/certif_step1');
         }
       } else {

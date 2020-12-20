@@ -19,7 +19,12 @@
           />
         </collapse>
         <div class="no_list" v-if="showNolist">
-          您暂无消息
+          <img
+            class="igmegeger"
+            src="~@/assets/images/personInfo/no_list.png"
+            alt=""
+          />
+          <div class="ffffffefefef">您暂无消息</div>
         </div>
       </div>
     </nut-scroller>
@@ -62,7 +67,7 @@ export default {
           'content-type': 'application/x-www-form-urlencoded',
         },
       })
-      .then(res => {
+      .then((res) => {
         if (res.code === 0) {
           const { records, totalPages } = res.data;
           this.totalPages = totalPages;
@@ -85,7 +90,7 @@ export default {
         this.loading = false;
       } else {
         this.jsonData.currentPage++;
-        ajax.post('/index/noticeList', this.jsonData).then(res => {
+        ajax.post('/index/noticeList', this.jsonData).then((res) => {
           if (res.code === 0) {
             const { records } = res.data;
             this.debtList.push(...records);
@@ -101,7 +106,7 @@ export default {
     pulldown() {
       this.loading = true;
       this.jsonData.currentPage = 1;
-      ajax.post('/index/noticeList', this.jsonData).then(res => {
+      ajax.post('/index/noticeList', this.jsonData).then((res) => {
         if (res.code === 0) {
           const { records, totalPages } = res.data;
           this.totalPages = totalPages;
@@ -147,8 +152,19 @@ export default {
     border-bottom: 1px solid #f7f7f7;
   }
   .no_list {
-    text-align: center;
-    padding: 20px;
+    padding-top: 80px;
+    .igmegeger {
+      margin: 0 auto;
+      display: block;
+      width: 106px;
+      height: 106px;
+    }
+    .ffffffefefef {
+      text-align: center;
+      padding: 20px;
+      color: #999999;
+      font-size: 15px;
+    }
   }
 }
 </style>

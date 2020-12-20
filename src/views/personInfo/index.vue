@@ -24,7 +24,7 @@
       :key="item.link"
       :show-icon="true"
       :title="item.text"
-      @click-cell="cellClick(item.link)"
+      @click-cell="cellClick(item)"
     >
       <div class="my_link" slot="avatar">
         <img class="my_icon" :src="item.icon" alt="" />
@@ -100,10 +100,25 @@ export default {
   data() {
     return {
       entranceList: [
-        { icon: fee_icon, text: '我的费率', link: '/my_fee' },
-        { icon: account_icon, text: '收款账户', link: '/my_count' },
-        { icon: card_icon, text: '我的付款卡', link: '/add_new_card' },
-        { icon: count_detail_icon, text: '收款明细', link: '/my_deal_list' },
+        { icon: fee_icon, text: '我的费率', link: '/my_fee', checked: true },
+        {
+          icon: account_icon,
+          text: '收款账户',
+          link: '/my_count',
+          checked: true,
+        },
+        {
+          icon: card_icon,
+          text: '我的付款卡',
+          link: '/add_new_card',
+          checked: true,
+        },
+        {
+          icon: count_detail_icon,
+          text: '收款明细',
+          link: '/my_deal_list',
+          checked: true,
+        },
         {
           icon: change_number_icon,
           text: '修改密码',
@@ -162,11 +177,21 @@ export default {
     tabSwitch3(value, index) {
       console.log(index);
     },
-    cellClick(link) {
-      if (link) {
-        this.$router.push(link);
+    cellClick(info) {
+      const { checked, link } = info;
+      if (checked) {
+        if (this.auditStatus === 1) {
+          this.$router.push(link);
+        } else {
+          this.$toast.text('您未实名认证');
+          this.$router.push('/certif_step1');
+        }
       } else {
-        this.showService = true;
+        if (link) {
+          this.$router.push(link);
+        } else {
+          this.showService = true;
+        }
       }
     },
     handleQQ() {

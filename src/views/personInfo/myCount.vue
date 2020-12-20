@@ -123,24 +123,15 @@ export default {
     ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
         const { merchantDebitQueryResult, merchantInfoQueryResult } = res.data;
-        if (
-          !merchantInfoQueryResult ||
-          merchantInfoQueryResult.auditStatus !== 1
-        ) {
-          this.$toast.text('您未实名认证');
-          // this.$router.push('/certif_step1');
-        } else {
-          this.countInfo = merchantDebitQueryResult;
-          this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
-          this.countInfo.workProvinceName =
-            merchantInfoQueryResult.provinceName;
-          this.countInfo.workCityName = merchantInfoQueryResult.cityName;
-          this.auditStatus = merchantInfoQueryResult.auditStatus;
-          this.cityCustmer =
-            merchantInfoQueryResult.provinceName +
-            '-' +
-            merchantInfoQueryResult.cityName;
-        }
+        this.countInfo = merchantDebitQueryResult;
+        this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
+        this.countInfo.workProvinceName = merchantInfoQueryResult.provinceName;
+        this.countInfo.workCityName = merchantInfoQueryResult.cityName;
+        this.auditStatus = merchantInfoQueryResult.auditStatus;
+        this.cityCustmer =
+          merchantInfoQueryResult.provinceName +
+          '-' +
+          merchantInfoQueryResult.cityName;
       } else {
         this.$toast.text(res.msg);
       }

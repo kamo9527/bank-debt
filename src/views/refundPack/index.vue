@@ -5,7 +5,7 @@
       v-for="item in refundCardList"
       :key="item.bankCardNo"
       :title="item.bankName"
-      :sub-title="item.bankCardNo"
+      :sub-title="item.bankCardNoCopy"
       :desc="statusInfo[item.status]"
       @click-cell="cellClick(item)"
     >
@@ -40,7 +40,13 @@ export default {
     this.merchantId = merchantId;
     ajax.post('/repay/payCardList', { merchantId }).then((res) => {
       if (res.code === 0) {
-        this.refundCardList = res.data;
+        this.refundCardList = res.data.map((item) => {
+          item.bankCardNoCopy =
+            item.bankCardNo.slice(0, 3) +
+            '***********' +
+            item.bankCardNo.slice(-4);
+          return item;
+        });
       } else {
         this.$toast.text(res.msg);
       }

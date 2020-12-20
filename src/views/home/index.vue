@@ -1,12 +1,12 @@
 <template>
   <section class="page_w home_pagexxx">
-    <router-link to="/my_refund" class="home_image">
+    <div @click="goCardCollection('/my_refund')" class="home_image">
       <img
         class="home_image_item"
         src="~@/assets/images/home/refund_image@2x.png"
       />
-    </router-link>
-    <div @click="goCardCollection" class="home_image">
+    </div>
+    <div @click="goCardCollection('/card_collection')" class="home_image">
       <img
         class="home_image_item"
         src="~@/assets/images/home/collection_image@2x.png"
@@ -96,7 +96,7 @@ export default {
   },
   mounted() {
     this.checkLivingBody();
-    ajax.post('/account/info', {}).then(res => {
+    ajax.post('/account/info', {}).then((res) => {
       console.log(res);
       if (res.code === 0) {
         const { merchantInfoQueryResult, merchantDebitQueryResult } = res.data;
@@ -129,10 +129,10 @@ export default {
         this.$toast.text(res.msg);
       }
     });
-    ajax.post('/index/getIconAndBanner', {}).then(res => {
+    ajax.post('/index/getIconAndBanner', {}).then((res) => {
       if (res.code === 0) {
         const { bannerDTOS, iconDTOS } = res.data;
-        const list = iconDTOS.filter(item => item.name !== '新手教程');
+        const list = iconDTOS.filter((item) => item.name !== '新手教程');
         this.entranceList = list;
         this.dataItem = bannerDTOS;
       } else {
@@ -141,14 +141,14 @@ export default {
     });
   },
   methods: {
-    goCardCollection() {
+    goCardCollection(link) {
       if (this.auditStatus !== 1) {
         this.$router.push('/certif_step1');
       } else {
         if (this.ocrStatus) {
           console.log(12312);
           cache.setSessionData('card_collection_form', null);
-          this.$router.push('/card_collection');
+          this.$router.push(link);
         } else {
           // todo 跳转去人脸识别
           console.log(5555555);
@@ -160,7 +160,7 @@ export default {
           );
           if (merchantInfoQueryResult.ocrStatus) {
             cache.setSessionData('card_collection_form', null);
-            this.$router.push('/card_collection');
+            this.$router.push(link);
           } else {
             this.gotoFaceLive();
           }

@@ -4,7 +4,11 @@
     <div class="basic_info">
       <div class="basic_info_tips">*请绑定您本人的信用卡</div>
       <div class="basic_info_title">用户名: {{ cardInfo.bankAccountName }}</div>
-      <div class="basic_info_title">身份证号码：{{ cardInfo.identity }}</div>
+      <div class="basic_info_title">
+        身份证号码：{{ cardInfo.identity.slice(0, 3) }}***********{{
+          cardInfo.identity.slice(-4)
+        }}
+      </div>
     </div>
     <div class="operate_input">
       <div class="iinpu_ophne">
@@ -33,7 +37,7 @@
       />
       <div @click="openSwitch">
         <nut-textinput
-          class="my_input my_cell"
+          class="my_input my_cellxxx"
           label="账单日"
           placeholder="请选择信用卡账单日"
           :hasBorder="false"
@@ -101,20 +105,15 @@ export default {
   mounted() {
     ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
-        const { merchantDebitQueryResult, merchantInfoQueryResult } = res.data;
-        if (merchantInfoQueryResult.auditStatus !== 1) {
-          this.$toast.text('您未实名认证');
-          this.$router.push('/certif_step1');
-        } else {
-          const {
-            bankAccountName,
-            identity,
-            merchantId,
-          } = merchantDebitQueryResult;
-          this.cardInfo.identity = identity;
-          this.cardInfo.bankAccountName = bankAccountName;
-          this.cardInfo.merchantId = merchantId;
-        }
+        const { merchantDebitQueryResult } = res.data;
+        const {
+          bankAccountName,
+          identity,
+          merchantId,
+        } = merchantDebitQueryResult;
+        this.cardInfo.identity = identity;
+        this.cardInfo.bankAccountName = bankAccountName;
+        this.cardInfo.merchantId = merchantId;
       } else {
         this.$toast.text(res.msg);
       }
@@ -264,13 +263,14 @@ export default {
       height: 46px;
       background-color: #fff;
     }
-    .my_cell {
+    .my_cellxxx {
       position: relative;
     }
     .nut-textinput-disabled input {
-      color: #000;
+      color: #000 !important;
+      opacity: 1;
     }
-    .my_cell ::after {
+    .my_cellxxx ::after {
       content: '';
       position: absolute;
       right: 0;

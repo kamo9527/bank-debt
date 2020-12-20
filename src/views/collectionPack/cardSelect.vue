@@ -13,6 +13,13 @@
         <img class="my_icon" :src="item.bankCode | getBankLogo" alt="" />
       </div>
     </nut-cell>
+    <div class="no_list" v-if="refundCardList.length === 0">
+      <img
+        class="igmegeger"
+        src="~@/assets/images/personInfo/no_list.png"
+        alt=""
+      />
+    </div>
     <button @click="handleSubmit" class="my_btn">添加信用卡</button>
   </section>
 </template>
@@ -127,6 +134,15 @@ export default {
     .nut-cell-sub-title {
       color: #fff;
       font-size: 15px;
+    }
+  }
+  .no_list {
+    padding-top: 80px;
+    .igmegeger {
+      margin: 0 auto;
+      display: block;
+      width: 106px;
+      height: 106px;
     }
   }
   .my_btn {

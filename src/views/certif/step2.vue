@@ -181,11 +181,11 @@ export default {
           const resData = res.data;
           const col2 = [];
           resData.forEach((item) => {
-            item.label = item.bank_area_code;
-            item.value = item.bank_area;
+            item.label = item.bank_area_code.replace(/\s+/g, '');
+            item.value = item.bank_area.replace(/\s+/g, '');
             item.city_list.forEach((city) => {
-              city.label = city.bank_city_code;
-              city.value = city.bank_city;
+              city.label = city.bank_city_code.replace(/\s+/g, '');
+              city.value = city.bank_city.replace(/\s+/g, '');
             });
             col2.push(item.city_list);
           });
@@ -228,6 +228,17 @@ export default {
       if (this.bankCity == '') {
         this.$toast.text('请选择开户城市');
         return;
+      }
+      const provinceInfo = this.custmerCityData[0].find(({ value }) =>
+        this.bankCity.includes(value)
+      );
+      if (provinceInfo) {
+        const xss = provinceInfo.city_list.find(({ value }) =>
+          this.bankCity.includes(value)
+        );
+        if (xss) {
+          this.bankInfo.bank_city_code = xss.label;
+        }
       }
       this.bankPickerVisible = true;
       // this.$refs.bankBranch.getList();

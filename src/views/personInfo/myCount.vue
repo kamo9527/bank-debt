@@ -69,7 +69,8 @@
       @choose="updateChooseValueCustmer"
       @close-update="closeUpdateChooseValueCustmer"
     />
-    <nut-popup position="right" v-model="bankPickerVisible">
+
+    <nut-popup position="right" class="dkdkdkkdk" v-model="bankPickerVisible">
       <bank
         ref="bankBranch"
         class="bank"
@@ -130,7 +131,6 @@ export default {
         this.auditStatus = merchantInfoQueryResult.auditStatus;
         this.cityCustmer =
           merchantInfoQueryResult.provinceName +
-          '-' +
           merchantInfoQueryResult.cityName;
       } else {
         this.$toast.text(res.msg);
@@ -141,11 +141,11 @@ export default {
         const resData = res.data;
         const col2 = [];
         resData.forEach((item) => {
-          item.label = item.bank_area_code;
-          item.value = item.bank_area;
+          item.label = item.bank_area_code.replace(/\s+/g, '');
+          item.value = item.bank_area.replace(/\s+/g, '');
           item.city_list.forEach((city) => {
-            city.label = city.bank_city_code;
-            city.value = city.bank_city;
+            city.label = city.bank_city_code.replace(/\s+/g, '');
+            city.value = city.bank_city.replace(/\s+/g, '');
           });
           col2.push(item.city_list);
         });
@@ -163,7 +163,6 @@ export default {
       this.addressVisible = false;
     },
     setChooseValueCustmer(chooseData) {
-      console.log(chooseData);
       let str = chooseData.map((item) => item.value).join('-');
       this.cityCustmer = str;
       this.countInfo.workProvinceName = chooseData[0].bank_area;
@@ -185,11 +184,9 @@ export default {
       // }, 100);
     },
     updateChooseValueCustmer(self, index, resValue, cacheValueData) {
-      console.log(cacheValueData);
       // 本demo为二级联动，所以限制只有首列变动的时候触发事件
       if (index === 0) {
-        let { label, value } = resValue;
-        console.log(label, value);
+        // let { label, value } = resValue;
         setTimeout(() => {
           var resItems = resValue.city_list;
           if (resItems && resItems.length) {
@@ -206,9 +203,23 @@ export default {
       this.bankPickerVisible = false;
     },
     cellClick() {
+      if (this.isReadonly) {
+        return;
+      }
       if (!this.countInfo.bankName) {
         this.$toast.text('请选择开户城市');
         return;
+      }
+      const provinceInfo = this.custmerCityData[0].find(({ value }) =>
+        this.countInfo.bankAddress.includes(value)
+      );
+      if (provinceInfo) {
+        const xss = provinceInfo.city_list.find(({ value }) =>
+          this.countInfo.bankAddress.includes(value)
+        );
+        if (xss) {
+          this.bankInfo.bank_city_code = xss.label;
+        }
       }
       this.bankPickerVisible = true;
     },
@@ -373,6 +384,10 @@ export default {
       color: #ffffff;
       background: #3574f2;
     }
+  }
+  .dkdkdkkdk {
+    width: 100%;
+    height: 100%;
   }
   .my_btn {
     margin: 40px auto 0;

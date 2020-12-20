@@ -747,6 +747,7 @@ export default {
         justify-content: center;
         flex-direction: column;
         background: #f5f5f5;
+        overflow: hidden;
         img {
           width: 62px;
           height: 62px;

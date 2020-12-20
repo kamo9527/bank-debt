@@ -17,7 +17,5 @@ if (process.env.NODE_ENV === 'production') {
   // baseUrl = 'http://192.168.0.155:9000'; // 内网测试
   baseUrl = 'http://newpay.kuaikuaifu.net'; // 生产
   // baseUrl = '.';
-} else {
-  baseUrl = 'http://120.79.102.97:9000'; // 开发环境
 }
 export default baseUrl;

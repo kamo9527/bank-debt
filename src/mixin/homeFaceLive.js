@@ -37,7 +37,10 @@ export default {
         // this.initDataByStorage();
         localStorage.removeItem('faceLiving');
         const livingQueryData = await this.livingBodyQuery();
-        if (!livingQueryData) return;
+        if (!livingQueryData) {
+          this.$toast.text('人脸识别结果已失效，请重试');
+          return;
+        }
         if (!livingQueryData.passed) {
           this.$toast.text('人脸检测不通过，请重试');
           return;

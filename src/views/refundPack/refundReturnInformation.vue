@@ -267,6 +267,14 @@ export default {
       background-color: #fff;
       padding: 0 20px;
       margin-bottom: 6px;
+      .nut-cell-desc {
+        display: inline-block;
+        max-width: 230px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-break: break-all;
+      }
     }
     .my_cellxx .nut-cell-right {
       font-size: 14px;

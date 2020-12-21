@@ -363,8 +363,14 @@ export default {
       background-image: none;
     }
     .nut-cell-desc {
+      display: inline-block;
+      max-width: 230px;
       color: #000;
       font-size: 14px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
     }
   }
   .input_wrap {

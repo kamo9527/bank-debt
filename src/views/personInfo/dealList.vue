@@ -62,7 +62,7 @@ export default {
       showList: false,
       showNolist: false,
       statusInfo: {
-        1: '待支付/支付中',
+        1: '支付中',
         2: '支付成功',
         3: '支付失败',
       },

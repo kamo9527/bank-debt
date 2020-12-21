@@ -92,7 +92,7 @@ export default {
         this.cardCollection.amount -
         (1 * this.cardCollection.amount * (1 * this.feeInfo.quickRate)) / 100 -
         this.feeInfo.quickPer;
-      return aa + '元';
+      return aa.toFixed(2) + '元';
     },
   },
   mounted() {

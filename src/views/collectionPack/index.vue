@@ -124,6 +124,10 @@ export default {
         this.$toast.text('请输入收款金额');
         return;
       }
+      if (+this.cardCollection.amount <= 50) {
+        this.$toast.text('收款金额不得小于50元');
+        return;
+      }
       if (!this.cardCollection.payCardId) {
         this.$toast.text('请选择支付卡');
         return;
@@ -145,6 +149,10 @@ export default {
     cellClick() {
       if (!this.cardCollection.amount) {
         this.$toast.text('请输入收款金额');
+        return;
+      }
+      if (+this.cardCollection.amount <= 50) {
+        this.$toast.text('收款金额不得小于50元');
         return;
       }
       // 表单缓存

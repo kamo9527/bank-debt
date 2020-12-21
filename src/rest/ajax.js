@@ -4,6 +4,8 @@
  */
 import Fly from 'flyio/dist/npm/fly';
 // import cache from '@/utils/cache';
+import { Toast } from '@nutui/nutui';
+
 import baseUrl from './config';
 import {
   addCommonParams,
@@ -12,8 +14,10 @@ import {
   checkTimestampToSign,
 } from '@/utils/sign';
 
+let toast;
 let fly = new Fly();
 fly.interceptors.request.use(request => {
+  toast = Toast.loading();
   // 给所有请求添加自定义header
   request.headers['X-Tag'] = 'flyio';
   request.headers['channelType'] = 'wx';
@@ -35,6 +39,7 @@ fly.interceptors.request.use(request => {
 });
 fly.interceptors.response.use(
   response => {
+    toast.hide();
     const { code } = response.data;
     if (code === 8017 || code === 8014) {
       // cache.clearLocalStorageData('person_info');

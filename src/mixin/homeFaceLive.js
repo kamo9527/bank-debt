@@ -49,7 +49,7 @@ export default {
         if (livingCheckData.code == 200) {
           const updateOcrResult = await this.updateOcrResult();
           if (updateOcrResult.code == 200) {
-            this.$router.go(0);
+            this.$router.push('/card_collection');
           }
           await this.updateAccountInfo();
         }

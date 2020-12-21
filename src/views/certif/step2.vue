@@ -780,7 +780,7 @@ export default {
         outline: none;
       }
       .input {
-        font-size: 13px;
+        font-size: 12px;
         min-height: 18px;
         width: 203.5px;
         color: #757575;

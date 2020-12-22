@@ -209,7 +209,14 @@ export default {
       });
     },
     createPlan() {
-      this.$router.push('/my_refund_chanel');
+      this.$router.push('/my_refund');
+      // this.$router.push({
+      //   path: '/my_refund_chanel',
+      //   query: {
+      //     bankName: this.item.bankName,
+      //     bankCardNo: this.item.bankCardNo,
+      //   },
+      // });
     },
   },
 };

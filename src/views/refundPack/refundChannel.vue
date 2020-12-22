@@ -21,11 +21,19 @@
         src="~@/assets/images/refund/refund_icon@2x.png"
       />
     </div>
+    <div class="no_list" v-if="refundChannelList.length === 0">
+      <img
+        class="igmegeger"
+        src="~@/assets/images/personInfo/no_list.png"
+        alt=""
+      />
+    </div>
   </section>
 </template>
 
 <script>
 // @ is an alias to /src
+import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 export default {
   name: 'refundChannelPage',
@@ -69,15 +77,22 @@ export default {
   },
   methods: {
     handleGo(info) {
+      const pagea = { ...info, ...this.queryInfo };
+      console.log(pagea);
       // 交互说明：选择渠道需判断是否要开通业务，需开通跳到开通业务界面，不需要开通业务跳到填写代还信息页
-      if (!info.mccSelectable) {
-        const pagea = { ...info, ...this.queryInfo };
-        console.log(pagea);
-        this.$router.push({ path: '/my_return_information', query: pagea });
-      } else {
-        // todo 缺开通业务界面path
-        // window.location.href = '///';
-      }
+      ajax.post('/repay/channelListSelect', pagea).then((res) => {
+        if (res.code === 0) {
+          const { status, bindingUrl } = res.data;
+          if (status === '0') {
+            window.location.href = bindingUrl;
+          } else {
+            cache.setLocalStorageData('my_return_information', pagea);
+            this.$router.push('/my_return_information');
+          }
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
     },
   },
 };
@@ -114,6 +129,15 @@ export default {
     }
     .nut-cell-desc {
       color: #fff;
+    }
+  }
+  .no_list {
+    padding-top: 80px;
+    .igmegeger {
+      margin: 0 auto;
+      display: block;
+      width: 106px;
+      height: 106px;
     }
   }
   .my_chanel {

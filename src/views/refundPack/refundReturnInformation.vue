@@ -200,7 +200,10 @@ export default {
         this.$toast.text('请选择常住地');
         return;
       }
-      ajax.post('/repay/generatePlan', this.params).then((res) => {
+      const info = { ...this.params };
+      info.cardBalance = info.cardBalance * 100;
+      info.repaymentAmount = info.repaymentAmount * 100;
+      ajax.post('/repay/generatePlan', info).then((res) => {
         if (res.code === 0) {
           const taskId = res.data.taskId;
           this.$router.push(`/payback_GDetail?taskId=${taskId}`);

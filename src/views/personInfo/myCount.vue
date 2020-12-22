@@ -117,11 +117,9 @@ export default {
     ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
         const { merchantDebitQueryResult, merchantInfoQueryResult } = res.data;
-        const { bankCardNo, bankCardMobile } = merchantDebitQueryResult;
+        const { bankCardNo } = merchantDebitQueryResult;
         merchantDebitQueryResult.bankCardNo =
           bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
-        merchantDebitQueryResult.bankCardMobile =
-          bankCardMobile.slice(0, 3) + '****' + bankCardMobile.slice(-4);
         this.countInfo = merchantDebitQueryResult;
         this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
         this.countInfo.workProvinceName = merchantInfoQueryResult.provinceName;
@@ -311,11 +309,9 @@ export default {
         .then((res) => {
           if (res.code === 0) {
             this.$toast.text('修改成功');
-            const { bankCardNo, bankCardMobile } = this.bankInfo;
+            const { bankCardNo } = this.bankInfo;
             this.bankInfo.bankCardNo =
               bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
-            this.bankInfo.bankCardMobile =
-              bankCardMobile.slice(0, 3) + '****' + bankCardMobile.slice(-4);
           } else {
             this.$toast.text(res.msg);
           }

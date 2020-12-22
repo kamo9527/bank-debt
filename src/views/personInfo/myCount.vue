@@ -152,6 +152,9 @@ export default {
       }
     });
   },
+  beforeDestroy() {
+    clearInterval(this.timerId);
+  },
   methods: {
     openAddressSwitch() {
       this.addressVisible = true;

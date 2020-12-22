@@ -49,6 +49,14 @@
       }}元；交易时间00:00-23:00
     </div>
     <button @click="handleSubmit" class="my_btn">下一步</button>
+    <nut-popup position="right" class="dkdkdkkdk" v-model="showMore">
+      <iframe
+        :src="channelData"
+        frameborder="0"
+        width="100%"
+        height="100%"
+      ></iframe>
+    </nut-popup>
   </section>
 </template>
 
@@ -60,6 +68,8 @@ export default {
   name: 'cardCollectionPage',
   data() {
     return {
+      channelData: '',
+      showMore: false,
       visible: false,
       merchantDebitQueryResult: {
         bankCardNo: '',
@@ -80,6 +90,7 @@ export default {
         quickRate: '',
         quickPer: '',
       },
+      timerId: null,
     };
   },
   computed: {
@@ -118,6 +129,9 @@ export default {
       }
     });
   },
+  beforeDestroy() {
+    clearInterval(this.timerId);
+  },
   methods: {
     handleSubmit() {
       if (!this.cardCollection.amount) {
@@ -133,18 +147,34 @@ export default {
         return;
       }
       // todo 请求失败提示短信验证码
-      ajax.post('/quickpay', this.cardCollection).then((res) => {
+      const info = { ...this.cardCollection };
+      info.amount = info.amount * 100;
+      ajax.post('/quickpay', info).then((res) => {
         if (res.code === 0) {
-          console.log(res.data);
-          const { status, channelData } = res.data;
+          const { orderId, channelData, status } = res.data;
           if (status === 1) {
-            window.location.href = channelData;
+            this.channelData = channelData;
+            this.showMore = true;
           }
-          this.$router.push(`/card_succuss?isOk=${status}`);
+          this.getStatusTime(orderId);
         } else {
           this.$toast.text(res.msg);
         }
       });
+    },
+    getStatusTime(orderId) {
+      this.timerId = setInterval(() => {
+        ajax.post('/quickpay/queryOrderStatus', { orderId }).then((res) => {
+          if (res.code === 0) {
+            const { status } = res.data;
+            if (status === 2 || status === 3) {
+              this.showMore = false;
+              clearInterval(this.timerId);
+              this.$router.push(`/card_succuss?isOk=${status}`);
+            }
+          }
+        });
+      }, 2000);
     },
     cellClick() {
       if (!this.cardCollection.amount) {
@@ -229,6 +259,10 @@ export default {
     padding: 10px 35px;
     font-size: 12px;
     color: #d51523;
+  }
+  .dkdkdkkdk {
+    width: 100%;
+    height: 100%;
   }
   .my_btn {
     margin: 40px auto 0;

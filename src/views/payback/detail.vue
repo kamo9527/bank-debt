@@ -224,6 +224,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .payback_detail {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   height: 100vh;
   display: flex;
   align-items: center;

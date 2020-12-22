@@ -66,6 +66,7 @@
 
 <script>
 // @ is an alias to /src
+import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 import { formatTime } from '@/utils/common';
 const toDay = new Date().getTime();
@@ -105,7 +106,8 @@ export default {
     };
   },
   mounted() {
-    const { cardId, channelId, bankName, bankCardNo } = this.$route.query;
+    const fefwefff = cache.getLocalStorageData('my_return_information') || {};
+    const { cardId, channelId, bankName, bankCardNo } = fefwefff;
     this.queryInfo.bankName = bankName;
     this.queryInfo.bankCardNo = bankCardNo;
     this.params.cardId = cardId;

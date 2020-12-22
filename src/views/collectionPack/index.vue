@@ -90,6 +90,7 @@ export default {
         quickRate: '',
         quickPer: '',
       },
+      statusInfo: {},
       timerId: null,
     };
   },
@@ -132,6 +133,13 @@ export default {
   beforeDestroy() {
     clearInterval(this.timerId);
   },
+  watch: {
+    statusInfo(val) {
+      if (val.orderId) {
+        this.getStatusTime(val);
+      }
+    },
+  },
   methods: {
     handleSubmit() {
       if (!this.cardCollection.amount) {
@@ -146,30 +154,35 @@ export default {
         this.$toast.text('请选择支付卡');
         return;
       }
-      // todo 请求失败提示短信验证码
       const info = { ...this.cardCollection };
       info.amount = info.amount * 100;
+      info.from = 'h5';
       ajax.post('/quickpay', info).then((res) => {
         if (res.code === 0) {
-          const { orderId, channelData, status } = res.data;
+          const { channelData, status } = res.data;
           if (status === 1) {
             this.channelData = channelData;
             this.showMore = true;
+            let _this = this;
+            window.addEventListener('message', function (e) {
+              if (e.data) {
+                _this.showMore = false;
+                _this.statusInfo = e.data;
+              }
+            });
           }
-          this.getStatusTime(orderId);
+          if (status === 2 || status === 3) {
+            this.$router.push(`/card_succuss?isOk=${status}`);
+          }
         } else {
           this.$toast.text(res.msg);
         }
       });
     },
-    getStatusTime(orderId) {
+    getStatusTime(info) {
       this.timerId = setInterval(() => {
         ajax
-          .post(
-            '/quickpay/queryOrderStatus',
-            { orderId },
-            { closeloading: true }
-          )
+          .post('/quickpay/queryOrderStatus', info, { closeloading: true })
           .then((res) => {
             if (res.code === 0) {
               const { status } = res.data;

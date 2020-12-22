@@ -28,6 +28,14 @@
         alt=""
       />
     </div>
+    <nut-popup position="right" class="dkdkdkkdk" v-model="showMore">
+      <iframe
+        :src="channelData"
+        frameborder="0"
+        width="100%"
+        height="100%"
+      ></iframe>
+    </nut-popup>
   </section>
 </template>
 
@@ -39,52 +47,48 @@ export default {
   name: 'refundChannelPage',
   data() {
     return {
-      refundChannelList: [
-        // {
-        //   title: 'I入口',
-        //   detail:
-        //     '费率0.8%+1，该入口是大额分期入口，可单笔1000以 上，当天单卡5000元内，当天单卡最多五笔消费',
-        //   link: '/my_return_information?cardId=3333',
-        // },
-        // {
-        //   title: 'G入口',
-        //   detail:
-        //     '费率0.8%+1，该入口是大额分期入口，可单笔1000以 上，当天单卡20000元内，当天单卡最多五笔消费,能短 时间还大额账',
-        //   link: '/my_return_information?cardId=1111',
-        // },
-        // {
-        //   title: 'H入口',
-        //   detail:
-        //     '费率0.7%+1，该入口是小额分期入口，可单笔1000以 内，当天单卡5000元内，当天单卡最多五笔消费。',
-        //   link: '/my_return_information?cardId=123',
-        // },
-      ],
+      refundChannelList: [],
       queryInfo: {
         bankName: '',
         bankCardNo: '',
       },
+      channelData: '',
+      timerId: null,
     };
   },
   mounted() {
     this.queryInfo = this.$route.query;
-    ajax.post('/repay/channelList', this.queryInfo).then((res) => {
-      if (res.code === 0) {
-        this.refundChannelList = res.data;
-      } else {
-        this.$toast.text(res.msg);
-      }
-    });
+    this.getList();
   },
   methods: {
+    getList() {
+      const info = this.queryInfo;
+      ajax.post('/repay/channelList', info).then((res) => {
+        if (res.code === 0) {
+          this.refundChannelList = res.data;
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    },
     handleGo(info) {
       const pagea = { ...info, ...this.queryInfo };
-      console.log(pagea);
+      pagea.from = 'h5';
       // 交互说明：选择渠道需判断是否要开通业务，需开通跳到开通业务界面，不需要开通业务跳到填写代还信息页
       ajax.post('/repay/channelListSelect', pagea).then((res) => {
         if (res.code === 0) {
           const { status, bindingUrl } = res.data;
           if (status === '0') {
-            window.location.href = bindingUrl;
+            this.channelData = bindingUrl;
+            this.showMore = true;
+            let _this = this;
+            window.addEventListener('message', function (e) {
+              const a = e.data + '';
+              if (a === '2' || a === '3') {
+                _this.showMore = false;
+                _this.getList();
+              }
+            });
           } else {
             cache.setLocalStorageData('my_return_information', pagea);
             this.$router.push('/my_return_information');
@@ -139,6 +143,10 @@ export default {
       width: 106px;
       height: 106px;
     }
+  }
+  .dkdkdkkdk {
+    width: 100%;
+    height: 100%;
   }
   .my_chanel {
     border-radius: 10px;

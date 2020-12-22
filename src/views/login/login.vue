@@ -1,10 +1,10 @@
 <template>
   <div class="login_login">
-    <img
+    <!-- <img
       class="page_back"
       src="~@/assets/images/common/black_back@2x.png"
       @click="$router.go(-1)"
-    />
+    /> -->
     <h2 class="title">登录</h2>
     <div class="operate_input">
       <div class="input_wrap">
@@ -93,7 +93,7 @@ export default {
         loginName: this.mobile,
         password: md5.hex_md5(this.password),
       };
-      ajax.post('/account/login', params).then(res => {
+      ajax.post('/account/login', params).then((res) => {
         if (res.code === 0) {
           this.$toast.text('登录成功');
           cache.setLocalStorageData('person_info', res.data);

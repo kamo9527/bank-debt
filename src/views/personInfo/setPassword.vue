@@ -1,11 +1,12 @@
 <template>
   <div class="my_setPassword">
     <div class="title">
-      <img
-        class="page_back"
-        src="~@/assets/images/common/white_back@2x.png"
-        @click="$router.go(-1)"
-      />
+      <span class="page_back_wrap" @click="$router.go(-1)">
+        <img
+          class="page_back"
+          src="~@/assets/images/common/white_back@2x.png"
+        />
+      </span>
       <span>修改密码</span>
     </div>
     <div class="operate_input">
@@ -117,7 +118,7 @@ export default {
             'content-type': 'application/x-www-form-urlencoded',
           },
         })
-        .then(res => {
+        .then((res) => {
           if (res.code === 0) {
             this.$toast.text('密码修改成功');
             this.$router.go(-1);
@@ -136,7 +137,7 @@ export default {
   align-items: center;
   flex-direction: column;
   background-color: #fff;
-  padding-top: 63.5px;
+  padding-top: 45px;
   // padding-bottom: 28.5px;
   box-sizing: border-box;
   .title {
@@ -144,8 +145,8 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: 63.5px;
-    padding-top: 33.5px;
+    height: 45px;
+    // padding-top: 33.5px;
     overflow: hidden;
     font-size: 18px;
     color: #ffffff;
@@ -155,9 +156,21 @@ export default {
     background: url('~@/assets/images/certif/bank/title_bg@2x.png') no-repeat;
     background-size: 100% 63.5px;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .page_back_wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: inline-block;
+      width: 45px;
+      height: 45px;
+      z-index: 10;
+    }
     .page_back {
       position: absolute;
-      top: 36px;
+      top: 16px;
       left: 15px;
       width: 8px;
       height: 14.5px;

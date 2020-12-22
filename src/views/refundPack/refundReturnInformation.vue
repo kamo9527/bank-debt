@@ -66,6 +66,7 @@
 
 <script>
 // @ is an alias to /src
+import cache from '@/utils/cache';
 import ajax from '@/rest/ajax';
 import { formatTime } from '@/utils/common';
 const toDay = new Date().getTime();
@@ -105,7 +106,8 @@ export default {
     };
   },
   mounted() {
-    const { cardId, channelId, bankName, bankCardNo } = this.$route.query;
+    const fefwefff = cache.getLocalStorageData('my_return_information') || {};
+    const { cardId, channelId, bankName, bankCardNo } = fefwefff;
     this.queryInfo.bankName = bankName;
     this.queryInfo.bankCardNo = bankCardNo;
     this.params.cardId = cardId;
@@ -200,7 +202,10 @@ export default {
         this.$toast.text('请选择常住地');
         return;
       }
-      ajax.post('/repay/generatePlan', this.params).then((res) => {
+      const info = { ...this.params };
+      info.cardBalance = info.cardBalance * 100;
+      info.repaymentAmount = info.repaymentAmount * 100;
+      ajax.post('/repay/generatePlan', info).then((res) => {
         if (res.code === 0) {
           const taskId = res.data.taskId;
           this.$router.push(`/payback_GDetail?taskId=${taskId}`);
@@ -267,6 +272,14 @@ export default {
       background-color: #fff;
       padding: 0 20px;
       margin-bottom: 6px;
+      .nut-cell-desc {
+        display: inline-block;
+        max-width: 230px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-break: break-all;
+      }
     }
     .my_cellxx .nut-cell-right {
       font-size: 14px;

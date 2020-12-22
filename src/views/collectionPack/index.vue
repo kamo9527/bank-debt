@@ -49,6 +49,14 @@
       }}元；交易时间00:00-23:00
     </div>
     <button @click="handleSubmit" class="my_btn">下一步</button>
+    <nut-popup position="right" class="dkdkdkkdk" v-model="showMore">
+      <iframe
+        :src="channelData"
+        frameborder="0"
+        width="100%"
+        height="100%"
+      ></iframe>
+    </nut-popup>
   </section>
 </template>
 
@@ -60,6 +68,8 @@ export default {
   name: 'cardCollectionPage',
   data() {
     return {
+      channelData: '',
+      showMore: false,
       visible: false,
       merchantDebitQueryResult: {
         bankCardNo: '',
@@ -80,6 +90,8 @@ export default {
         quickRate: '',
         quickPer: '',
       },
+      statusInfo: {},
+      timerId: null,
     };
   },
   computed: {
@@ -92,7 +104,7 @@ export default {
         this.cardCollection.amount -
         (1 * this.cardCollection.amount * (1 * this.feeInfo.quickRate)) / 100 -
         this.feeInfo.quickPer;
-      return aa + '元';
+      return aa.toFixed(2) + '元';
     },
   },
   mounted() {
@@ -118,33 +130,78 @@ export default {
       }
     });
   },
+  beforeDestroy() {
+    clearInterval(this.timerId);
+  },
+  watch: {
+    statusInfo(val) {
+      if (val.orderId) {
+        this.getStatusTime(val);
+      }
+    },
+  },
   methods: {
     handleSubmit() {
       if (!this.cardCollection.amount) {
         this.$toast.text('请输入收款金额');
         return;
       }
+      if (+this.cardCollection.amount < 50) {
+        this.$toast.text('收款金额不得小于50元');
+        return;
+      }
       if (!this.cardCollection.payCardId) {
         this.$toast.text('请选择支付卡');
         return;
       }
-      // todo 请求失败提示短信验证码
-      ajax.post('/quickpay', this.cardCollection).then((res) => {
+      const info = { ...this.cardCollection };
+      info.amount = info.amount * 100;
+      info.from = 'h5';
+      ajax.post('/quickpay', info).then((res) => {
         if (res.code === 0) {
-          console.log(res.data);
-          const { status, channelData } = res.data;
+          const { channelData, status } = res.data;
           if (status === 1) {
-            window.location.href = channelData;
+            this.channelData = channelData;
+            this.showMore = true;
+            let _this = this;
+            window.addEventListener('message', function (e) {
+              if (e.data) {
+                _this.showMore = false;
+                _this.statusInfo = e.data;
+              }
+            });
           }
-          this.$router.push(`/card_succuss?isOk=${status}`);
+          if (status === 2 || status === 3) {
+            this.$router.push(`/card_succuss?isOk=${status}`);
+          }
         } else {
           this.$toast.text(res.msg);
         }
       });
     },
+    getStatusTime(info) {
+      this.timerId = setInterval(() => {
+        ajax
+          .post('/quickpay/queryOrderStatus', info, { closeloading: true })
+          .then((res) => {
+            if (res.code === 0) {
+              const { status } = res.data;
+              if (status === 2 || status === 3) {
+                this.showMore = false;
+                clearInterval(this.timerId);
+                this.$router.push(`/card_succuss?isOk=${status}`);
+              }
+            }
+          });
+      }, 2000);
+    },
     cellClick() {
       if (!this.cardCollection.amount) {
         this.$toast.text('请输入收款金额');
+        return;
+      }
+      if (+this.cardCollection.amount <= 50) {
+        this.$toast.text('收款金额不得小于50元');
         return;
       }
       // 表单缓存
@@ -221,6 +278,10 @@ export default {
     padding: 10px 35px;
     font-size: 12px;
     color: #d51523;
+  }
+  .dkdkdkkdk {
+    width: 100%;
+    height: 100%;
   }
   .my_btn {
     margin: 40px auto 0;

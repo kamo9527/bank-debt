@@ -18,8 +18,8 @@ export default {
 
       const appid = 'ry91863kGesF16ud';
       const app_security = 'ry91863kGesF16udcjdNh4wVtheMJ0Kd';
-      // const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
-      const callbackUrl = 'http://newpay.kuaikuaifu.net/livingBodyCallback';
+      const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
+      // const callbackUrl = 'http://newpay.kuaikuaifu.net/livingBodyCallback';
       // const callbackUrl = `${window.location.origin}/livingBodyCallback`;
       const returnUrl = encodeURIComponent(window.location.href);
       const complexity = '1';
@@ -31,29 +31,37 @@ export default {
       localStorage.setItem('faceLiving', new Date().getTime());
       location.href = `https://lifeh5.shumaidata.com/index.html#/?appid=${appid}&callbackUrl=${callbackUrl}&returnUrl=${returnUrl}&complexity=${complexity}&timestamp=${timestamp}&sign=${sign}&uid=${uid}&title=${title}`;
     },
-    async checkLivingBody() {
-      const faceLiving = localStorage.getItem('faceLiving') || 0;
-      if (new Date().getTime() - faceLiving < 1000 * 60 * 10) {
-        // this.initDataByStorage();
-        localStorage.removeItem('faceLiving');
-        const livingQueryData = await this.livingBodyQuery();
-        if (!livingQueryData) return;
-        if (!livingQueryData.passed) {
-          this.$toast.text('人脸检测不通过，请重试');
-          return;
-        }
-        const featureImage = await this.getBase64Image(
-          `https://api.shumaidata.com/v2/life/check/image?imageId=${livingQueryData.feature_image_id}`
-        );
-        const livingCheckData = await this.livingBodyCheck(featureImage);
-        if (livingCheckData.code == 200) {
-          const updateOcrResult = await this.updateOcrResult();
-          if (updateOcrResult.code == 200) {
-            this.$router.go(0);
+    checkLivingBody() {
+      return new Promise(async (resolve, reject) => {
+        const faceLiving = localStorage.getItem('faceLiving') || 0;
+        if (new Date().getTime() - faceLiving < 1000 * 60 * 10) {
+          // this.initDataByStorage();
+          localStorage.removeItem('faceLiving');
+          const livingQueryData = await this.livingBodyQuery();
+          if (!livingQueryData) {
+            this.$toast.text('人脸识别结果已失效，请重试');
+            return;
           }
-          await this.updateAccountInfo();
+          if (!livingQueryData.passed) {
+            this.$toast.text('人脸检测不通过，请重试');
+            return;
+          }
+          const featureImage = await this.getBase64Image(
+            `https://api.shumaidata.com/v2/life/check/image?imageId=${livingQueryData.feature_image_id}`
+          );
+          const livingCheckData = await this.livingBodyCheck(featureImage);
+          if (livingCheckData.code == 200) {
+            const updateOcrResult = await this.updateOcrResult();
+            if (updateOcrResult.code == 0) {
+              this.$router.push('/card_collection');
+            }
+            await this.updateAccountInfo();
+          }
+          resolve('');
+        } else {
+          reject('');
         }
-      }
+      });
     },
     livingBodyQuery() {
       return new Promise((resolve, reject) => {
@@ -92,6 +100,8 @@ export default {
         const params = {
           idCardNo: merchantDebitQueryResult.identity,
           name: merchantDebitQueryResult.bankAccountName,
+          // idCardNo: '441723199103292031',
+          // name: '冯国威',
           image,
         };
         ajax
@@ -115,6 +125,7 @@ export default {
     getBase64Image(url) {
       return new Promise((resolve, reject) => {
         const img = document.createElement('img');
+        img.setAttribute('crossOrigin', 'anonymous');
         img.onload = function() {
           const data = getBase64Image(img);
           resolve(data);
@@ -149,7 +160,7 @@ export default {
           })
           .then(res => {
             if (res.code === 0) {
-              resolve(res.data);
+              resolve(res);
             } else {
               resolve('');
             }
@@ -169,6 +180,8 @@ export default {
                 merchantInfoQueryResult,
                 merchantDebitQueryResult,
               } = res.data;
+              this.auditStatus = merchantInfoQueryResult.auditStatus;
+              this.ocrStatus = merchantInfoQueryResult.ocrStatus;
               localStorage.setItem(
                 'merchantDebitQueryResult',
                 JSON.stringify(merchantDebitQueryResult)

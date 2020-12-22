@@ -12,7 +12,7 @@
           <div class="deal_line">订单号：{{ item.orderId }}</div>
           <div class="deal_info">
             <div class="item_left">
-              交易金额：<span class="red_color">{{ item.amount }}元</span>
+              交易金额：<span class="red_color">{{ item.amount / 100 }}元</span>
             </div>
             <div class="item_right">
               状态：<span class="y_color">{{ statusInfo[item.status] }}</span>
@@ -53,7 +53,7 @@ export default {
     return {
       jsonData: {
         merchantId: '',
-        pageNum: 1,
+        pageNum: 0,
         pageSize: 10,
       },
       dataList: [],
@@ -62,7 +62,7 @@ export default {
       showList: false,
       showNolist: false,
       statusInfo: {
-        1: '待支付/支付中',
+        1: '支付中',
         2: '支付成功',
         3: '支付失败',
       },
@@ -131,7 +131,7 @@ export default {
     },
     pulldown() {
       this.loading = true;
-      this.jsonData.pageNum = 1;
+      this.jsonData.pageNum = 0;
       ajax.post('/quickpay/queryOrderHistory', this.jsonData).then((res) => {
         if (res.code === 0) {
           const records = res.data;

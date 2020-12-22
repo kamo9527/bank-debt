@@ -1,13 +1,13 @@
 <template>
   <div class="payback_detail">
-    <div class="title">
+    <!-- <div class="title">
       <img
         class="page_back"
         src="~@/assets/images/common/black_back@2x.png"
         @click="$router.go(-1)"
       />
       <span>还款详情</span>
-    </div>
+    </div> -->
     <div class="card">
       <div class="head">
         <span class="left">
@@ -146,7 +146,7 @@ export default {
       if (!itemStr) return;
       const item = JSON.parse(itemStr);
 
-      item.detailList.forEach(item => {
+      item.detailList.forEach((item) => {
         const payTime = formatTime(
           new Date(item.payTime),
           'yyyy-MM-dd hh:mm'
@@ -165,23 +165,19 @@ export default {
           item.payStatus == 0
             ? '待执行'
             : item.payStatus == 1
-            ? '扣款中'
-            : item.payStatus == 2
-            ? '成功'
-            : item.payStatus == 3
-            ? '失败'
-            : '';
+              ? '扣款中'
+              : item.payStatus == 2
+                ? '成功'
+                : item.payStatus == 3 ? '失败' : '';
 
         item.repayStatusStr =
           item.repayStatus == 0
             ? '待执行'
             : item.repayStatus == 1
-            ? '还款中'
-            : item.repayStatus == 2
-            ? '成功'
-            : item.repayStatus == 3
-            ? '失败'
-            : '';
+              ? '还款中'
+              : item.repayStatus == 2
+                ? '成功'
+                : item.repayStatus == 3 ? '失败' : '';
       });
       this.item = item;
     },
@@ -198,7 +194,7 @@ export default {
           const params = {
             taskId: _this.item.taskId,
           };
-          ajax.post('/repay/stopPlan', params).then(res => {
+          ajax.post('/repay/stopPlan', params).then((res) => {
             if (res.code === 0) {
               __this.close(); //关闭对话框
               // this.list = res.data;
@@ -213,7 +209,14 @@ export default {
       });
     },
     createPlan() {
-      this.$router.push('/my_refund_chanel');
+      this.$router.push('/my_refund');
+      // this.$router.push({
+      //   path: '/my_refund_chanel',
+      //   query: {
+      //     bankName: this.item.bankName,
+      //     bankCardNo: this.item.bankCardNo,
+      //   },
+      // });
     },
   },
 };
@@ -221,12 +224,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .payback_detail {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
   background-color: #f2f2f2;
-  padding: 63.5px 15px 0;
+  padding: 0px 15px 0;
   // padding-bottom: 28.5px;
   box-sizing: border-box;
   .title {

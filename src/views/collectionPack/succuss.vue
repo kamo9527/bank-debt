@@ -30,7 +30,7 @@ export default {
     };
   },
   mounted() {
-    this.isOk = this.$route.query.isOk;
+    this.isOk = this.$route.query.isOk + '';
   },
   methods: {
     handleSubmit() {

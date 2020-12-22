@@ -5,7 +5,6 @@
       label="银行卡号"
       placeholder="请输入"
       :hasBorder="false"
-      :readonly="isReadonly"
       v-model="countInfo.bankCardNo"
     />
     <nut-textinput
@@ -13,7 +12,6 @@
       label="开户名"
       placeholder="请输入"
       :hasBorder="false"
-      :readonly="isReadonly"
       v-model="countInfo.bankName"
     />
     <nut-textinput
@@ -21,7 +19,6 @@
       label="银行所在地"
       placeholder="请输入"
       :hasBorder="false"
-      :readonly="isReadonly"
       v-model="countInfo.bankAddress"
     />
     <nut-cell
@@ -42,7 +39,6 @@
       class="my_input"
       label="预留手机号"
       placeholder="请输入"
-      :readonly="isReadonly"
       :hasBorder="false"
       v-model="countInfo.bankCardMobile"
     />
@@ -53,7 +49,6 @@
         class="gerginput"
         type="text"
         placeholder="请输入验证码"
-        :readonly="isReadonly"
         v-model.trim="countInfo.smCode"
         maxlength="6"
       />
@@ -116,26 +111,19 @@ export default {
       },
       bankInfo: {},
       bankPickerVisible: false,
-      isReadonly: true,
-      auditStatus: 0,
     };
   },
   mounted() {
     ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
         const { merchantDebitQueryResult, merchantInfoQueryResult } = res.data;
-        const { bankCardNo, bankCardMobile } = merchantDebitQueryResult;
-        merchantDebitQueryResult.bankCardNoCopy = bankCardNo;
-        merchantDebitQueryResult.bankCardMobileCopy = bankCardMobile;
+        const { bankCardNo } = merchantDebitQueryResult;
         merchantDebitQueryResult.bankCardNo =
           bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
-        merchantDebitQueryResult.bankCardMobile =
-          bankCardMobile.slice(0, 3) + '****' + bankCardMobile.slice(-4);
         this.countInfo = merchantDebitQueryResult;
         this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
         this.countInfo.workProvinceName = merchantInfoQueryResult.provinceName;
         this.countInfo.workCityName = merchantInfoQueryResult.cityName;
-        this.auditStatus = merchantInfoQueryResult.auditStatus;
         this.cityCustmer =
           merchantInfoQueryResult.provinceName +
           merchantInfoQueryResult.cityName;
@@ -161,6 +149,9 @@ export default {
         this.$toast.text(res.msg);
       }
     });
+  },
+  beforeDestroy() {
+    clearInterval(this.timerId);
   },
   methods: {
     openAddressSwitch() {
@@ -205,14 +196,13 @@ export default {
     },
     bankPickerClose(item) {
       if (!item) return;
-      this.countInfo.branchBankName = item.name;
-      this.countInfo.bankCode = item.allied_bank_code;
+      if (item.name && item.allied_bank_code) {
+        this.countInfo.branchBankName = item.name;
+        this.countInfo.bankCode = item.allied_bank_code;
+      }
       this.bankPickerVisible = false;
     },
     cellClick() {
-      if (this.isReadonly) {
-        return;
-      }
       if (!this.countInfo.bankName) {
         this.$toast.text('请选择开户城市');
         return;
@@ -231,7 +221,6 @@ export default {
       this.bankPickerVisible = true;
     },
     handlGetSnake() {
-      if (this.isReadonly) return;
       if (this.loading) return;
       if (this.timerId) return;
       if (!regexpMap.regexp_mobile.test(this.countInfo.bankCardMobile)) {
@@ -271,71 +260,62 @@ export default {
       }, 1000);
     },
     handleSubmit() {
-      if (this.auditStatus !== 1) {
-        this.$toast.text('银行卡未认证');
+      // if (this.isReadonly) {
+      //   const _this = this;
+      //   this.$dialog({
+      //     title: '温馨提示',
+      //     content: '确定要修改收款账号信息么？',
+      //     onOkBtn() {
+      //       //确定按钮点击事件
+      //       _this.isReadonly = false;
+      //       _this.countInfo.bankCardNo = _this.countInfo.bankCardNoCopy;
+      //       _this.countInfo.bankCardMobile = _this.countInfo.bankCardMobileCopy;
+      //       this.close(); //关闭对话框
+      //     },
+      //     onCancelBtn(event) {
+      //       console.log(event);
+      //       //取消按钮点击事件，默认行为关闭对话框
+      //       //return false;  //阻止默认“关闭对话框”的行为
+      //     },
+      //   });
+      // } else {
+      // 表单校验
+      if (!this.countInfo.bankCardNo) {
+        this.$toast.text('请输入银行卡号');
         return;
       }
-      if (this.isReadonly) {
-        const _this = this;
-        this.$dialog({
-          title: '温馨提示',
-          content: '确定要修改收款账号信息么？',
-          onOkBtn() {
-            //确定按钮点击事件
-            _this.isReadonly = false;
-            _this.countInfo.bankCardNo = _this.countInfo.bankCardNoCopy;
-            _this.countInfo.bankCardMobile = _this.countInfo.bankCardMobileCopy;
-            this.close(); //关闭对话框
-          },
-          onCancelBtn(event) {
-            console.log(event);
-            //取消按钮点击事件，默认行为关闭对话框
-            //return false;  //阻止默认“关闭对话框”的行为
-          },
-        });
-      } else {
-        // 表单校验
-        if (!this.countInfo.bankCardNo) {
-          this.$toast.text('请输入银行卡号');
-          return;
-        }
-        if (!this.countInfo.bankName) {
-          this.$toast.text('请输入开户银行名称');
-          return;
-        }
-        if (this.countInfo.branchBankName === '请输入') {
-          this.$toast.text('请输入银行网点');
-          return;
-        }
-        if (!this.countInfo.bankAddress) {
-          this.$toast.text('请输入银行所在地');
-          return;
-        }
-        if (!this.countInfo.bankCardMobile) {
-          this.$toast.text('请输入预留手机号');
-          return;
-        }
-        if (!regexpMap.regexp_mobile.test(this.countInfo.bankCardMobile)) {
-          this.$toast.text('请输入正确的手机号码');
-          return;
-        }
-        ajax
-          .post('/debitCard/updateSettleCardAndPhotos', this.countInfo)
-          .then((res) => {
-            if (res.code === 0) {
-              this.$toast.text('修改成功');
-              const { bankCardNo, bankCardMobile } = this.bankInfo;
-              this.bankInfo.bankCardNoCopy = bankCardNo;
-              this.bankInfo.bankCardMobileCopy = bankCardMobile;
-              this.bankInfo.bankCardNo =
-                bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
-              this.bankInfo.bankCardMobile =
-                bankCardMobile.slice(0, 3) + '****' + bankCardMobile.slice(-4);
-            } else {
-              this.$toast.text(res.msg);
-            }
-          });
+      if (!this.countInfo.bankName) {
+        this.$toast.text('请输入开户银行名称');
+        return;
       }
+      if (this.countInfo.branchBankName === '请输入') {
+        this.$toast.text('请输入银行网点');
+        return;
+      }
+      if (!this.countInfo.bankAddress) {
+        this.$toast.text('请输入银行所在地');
+        return;
+      }
+      if (!this.countInfo.bankCardMobile) {
+        this.$toast.text('请输入预留手机号');
+        return;
+      }
+      if (!regexpMap.regexp_mobile.test(this.countInfo.bankCardMobile)) {
+        this.$toast.text('请输入正确的手机号码');
+        return;
+      }
+      ajax
+        .post('/debitCard/updateSettleCardAndPhotos', this.countInfo)
+        .then((res) => {
+          if (res.code === 0) {
+            this.$toast.text('修改成功');
+            const { bankCardNo } = this.bankInfo;
+            this.bankInfo.bankCardNo =
+              bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
+          } else {
+            this.$toast.text(res.msg);
+          }
+        });
     },
   },
 };
@@ -363,8 +343,14 @@ export default {
       background-image: none;
     }
     .nut-cell-desc {
+      display: inline-block;
+      max-width: 230px;
       color: #000;
       font-size: 14px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
     }
   }
   .input_wrap {

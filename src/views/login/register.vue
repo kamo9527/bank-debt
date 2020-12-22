@@ -1,10 +1,10 @@
 <template>
   <div class="login_register">
-    <img
+    <!-- <img
       class="page_back"
       src="~@/assets/images/common/black_back@2x.png"
       @click="$router.go(-1)"
-    />
+    /> -->
     <h2 class="title">注册</h2>
     <div class="operate_input">
       <div class="input_wrap">
@@ -157,7 +157,7 @@ export default {
             'content-type': 'application/x-www-form-urlencoded',
           },
         })
-        .then(res => {
+        .then((res) => {
           if (res.code === 0) {
             this.$toast.text('成功获取验证码');
             this.handleLoading();
@@ -210,7 +210,7 @@ export default {
         password: md5.hex_md5(this.password),
         agentMobile: this.agentMobile,
       };
-      ajax.post('/account/register', params).then(res => {
+      ajax.post('/account/register', params).then((res) => {
         if (res.code === 0) {
           this.$toast.text('注册成功');
           this.$router.push('/login_login');

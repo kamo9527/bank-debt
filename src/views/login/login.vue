@@ -102,7 +102,7 @@ export default {
             'account',
             JSON.stringify({
               mobile: this.mobile,
-              password: this.password,
+              // password: this.password,
             })
           );
           this.$router.push('/home');
@@ -116,7 +116,7 @@ export default {
       if (accountStr) {
         const account = JSON.parse(accountStr);
         this.mobile = account.mobile;
-        this.password = account.password;
+        // this.password = account.password;
       }
     },
   },

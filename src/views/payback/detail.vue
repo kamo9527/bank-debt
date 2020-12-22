@@ -1,13 +1,13 @@
 <template>
   <div class="payback_detail">
-    <div class="title">
+    <!-- <div class="title">
       <img
         class="page_back"
         src="~@/assets/images/common/black_back@2x.png"
         @click="$router.go(-1)"
       />
       <span>还款详情</span>
-    </div>
+    </div> -->
     <div class="card">
       <div class="head">
         <span class="left">
@@ -165,23 +165,19 @@ export default {
           item.payStatus == 0
             ? '待执行'
             : item.payStatus == 1
-            ? '扣款中'
-            : item.payStatus == 2
-            ? '成功'
-            : item.payStatus == 3
-            ? '失败'
-            : '';
+              ? '扣款中'
+              : item.payStatus == 2
+                ? '成功'
+                : item.payStatus == 3 ? '失败' : '';
 
         item.repayStatusStr =
           item.repayStatus == 0
             ? '待执行'
             : item.repayStatus == 1
-            ? '还款中'
-            : item.repayStatus == 2
-            ? '成功'
-            : item.repayStatus == 3
-            ? '失败'
-            : '';
+              ? '还款中'
+              : item.repayStatus == 2
+                ? '成功'
+                : item.repayStatus == 3 ? '失败' : '';
       });
       this.item = item;
     },
@@ -230,7 +226,7 @@ export default {
   align-items: center;
   flex-direction: column;
   background-color: #f2f2f2;
-  padding: 63.5px 15px 0;
+  padding: 0px 15px 0;
   // padding-bottom: 28.5px;
   box-sizing: border-box;
   .title {

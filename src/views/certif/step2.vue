@@ -177,14 +177,14 @@ export default {
   methods: {
     getList() {
       const params = {};
-      ajax.post('/area/list', params).then(res => {
+      ajax.post('/area/list', params).then((res) => {
         if (res.code === 0) {
           const resData = res.data;
           const col2 = [];
-          resData.forEach(item => {
+          resData.forEach((item) => {
             item.label = item.bank_area_code.replace(/\s+/g, '');
             item.value = item.bank_area.replace(/\s+/g, '');
-            item.city_list.forEach(city => {
+            item.city_list.forEach((city) => {
               city.label = city.bank_city_code.replace(/\s+/g, '');
               city.value = city.bank_city.replace(/\s+/g, '');
             });
@@ -203,7 +203,7 @@ export default {
         localStorage.getItem('certif_step2_data') || '';
       if (!certif_step2_data_str) return;
       const certif_step2_data = JSON.parse(certif_step2_data_str);
-      Object.keys(this.info).forEach(item => {
+      Object.keys(this.info).forEach((item) => {
         this.info[item] = certif_step2_data[item];
       });
       this.bankCity = certif_step2_data.bankCity;
@@ -251,11 +251,11 @@ export default {
 
     setChooseValueCustmer(chooseData) {
       if (this.cityPickerType == 'bankCity') {
-        this.bankCity = chooseData.map(item => item.value.trim()).join('-');
+        this.bankCity = chooseData.map((item) => item.value.trim()).join('-');
         this.bankInfo.data = chooseData;
         this.bankInfo.bank_city_code = chooseData[1].bank_city_code;
       } else {
-        this.workCity = chooseData.map(item => item.value.trim()).join('-');
+        this.workCity = chooseData.map((item) => item.value.trim()).join('-');
         this.info.workProvinceName = chooseData[0].value.trim();
         this.info.workCityName = chooseData[1].value.trim();
       }
@@ -316,7 +316,7 @@ export default {
             'content-type': 'application/x-www-form-urlencoded',
           },
         })
-        .then(res => {
+        .then((res) => {
           if (res.code === 0) {
             this.$toast.text('验证码下发您手机请查收！');
             this.handleLoading();
@@ -344,7 +344,7 @@ export default {
         params.append('file', file);
         ajax
           .post('/upload', params)
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               const picPath = res.data;
               console.log('picPath', res);
@@ -354,7 +354,7 @@ export default {
               resolve('');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             reject(err);
           });
       });
@@ -365,7 +365,7 @@ export default {
         params.append('file', file);
         ajax
           .post('/ocr/bankcard', params)
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               const resData = res.data;
               resolve(resData);
@@ -374,7 +374,7 @@ export default {
               resolve('');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             reject(err);
           });
       });
@@ -465,7 +465,7 @@ export default {
       };
 
       const _this = this;
-      ajax.post('/debitCard/addSettleCardAndPhotos', params).then(res => {
+      ajax.post('/debitCard/addSettleCardAndPhotos', params).then((res) => {
         if (res.code === 0) {
           this.$dialog({
             id: 'my-dialogxxx',
@@ -502,7 +502,9 @@ export default {
         localStorage.removeItem('certif_step2_data');
 
         const featureImage = await this.getBase64Image(
-          `https://api.shumaidata.com/v2/life/check/image?imageId=${livingQueryData.feature_image_id}`
+          `https://api.shumaidata.com/v2/life/check/image?imageId=${
+            livingQueryData.feature_image_id
+          }`
         );
         const livingCheckData = await this.livingBodyCheck(featureImage);
         if (livingCheckData.code == 200) {
@@ -525,7 +527,7 @@ export default {
               'content-type': 'application/x-www-form-urlencoded',
             },
           })
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               resolve(res.data);
             } else {
@@ -553,7 +555,7 @@ export default {
               'content-type': 'application/x-www-form-urlencoded',
             },
           })
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               resolve(res.data);
             } else {
@@ -568,6 +570,7 @@ export default {
     getBase64Image(url) {
       return new Promise((resolve, reject) => {
         const img = document.createElement('img');
+        img.setAttribute('crossOrigin', 'anonymous');
         img.onload = function() {
           const data = getBase64Image(img);
           resolve(data);
@@ -600,7 +603,7 @@ export default {
               'content-type': 'application/x-www-form-urlencoded',
             },
           })
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               resolve(res.data);
             } else {
@@ -616,7 +619,7 @@ export default {
       return new Promise((resolve, reject) => {
         ajax
           .post('/account/info', {})
-          .then(res => {
+          .then((res) => {
             if (res.code === 0) {
               const {
                 merchantInfoQueryResult,

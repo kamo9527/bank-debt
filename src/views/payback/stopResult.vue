@@ -1,13 +1,13 @@
 <template>
   <div class="payback_result">
-    <div class="title">
+    <!-- <div class="title">
       <img
         class="page_back"
         src="~@/assets/images/common/black_back@2x.png"
         @click="$router.go(-1)"
       />
       <span>我要还款</span>
-    </div>
+    </div> -->
     <img class="icon" src="~@/assets/images/payback/emoji@2x.png" alt />
     <span class="tips">终止计划成功</span>
     <div class="btn index">去首页</div>
@@ -34,7 +34,7 @@ export default {
   align-items: center;
   flex-direction: column;
   background-color: #fff;
-  padding: 63.5px 15px 0;
+  padding: 0px 15px 0;
   box-sizing: border-box;
   .title {
     position: fixed;

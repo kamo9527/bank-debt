@@ -1,11 +1,12 @@
 <template>
   <div class="payback_list">
     <div class="title">
-      <img
-        class="page_back"
-        src="~@/assets/images/common/white_back@2x.png"
-        @click="$router.go(-1)"
-      />
+      <span class="page_back_wrap" @click="$router.go(-1)">
+        <img
+          class="page_back"
+          src="~@/assets/images/common/white_back@2x.png"
+        />
+      </span>
       <span>还款记录</span>
     </div>
     <!-- <div class="time">2020年04月</div> -->
@@ -99,7 +100,7 @@ export default {
         pageNum: this.pageNum,
         endDate: this.endDate,
       };
-      ajax.post('/repay/getTaskHistory', params).then(res => {
+      ajax.post('/repay/getTaskHistory', params).then((res) => {
         if (res.code === 0) {
           this.list = res.data;
         } else {
@@ -120,7 +121,7 @@ export default {
         pageNum: ++this.pageNum,
         endDate: this.endDate,
       };
-      ajax.post('/repay/getTaskHistory', params).then(res => {
+      ajax.post('/repay/getTaskHistory', params).then((res) => {
         if (res.code === 0) {
           if (this.list.length < this.pageSize) this.isUnMore = true;
 
@@ -149,7 +150,7 @@ export default {
   align-items: center;
   flex-direction: column;
   background-color: #f2f2f2;
-  padding: 63.5px 15px 0;
+  padding: 45px 15px 0;
   // padding-bottom: 28.5px;
   box-sizing: border-box;
   .title {
@@ -157,8 +158,8 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: 63.5px;
-    padding-top: 33.5px;
+    height: 45px;
+    // padding-top: 33.5px;
     overflow: hidden;
     font-size: 18px;
     color: #ffffff;
@@ -168,9 +169,21 @@ export default {
     background: url('~@/assets/images/certif/bank/title_bg@2x.png') no-repeat;
     background-size: 100% 63.5px;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .page_back_wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: inline-block;
+      width: 45px;
+      height: 45px;
+      z-index: 10;
+    }
     .page_back {
       position: absolute;
-      top: 36px;
+      top: 16px;
       left: 15px;
       width: 8px;
       height: 14.5px;

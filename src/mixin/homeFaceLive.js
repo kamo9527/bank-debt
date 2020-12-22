@@ -51,7 +51,7 @@ export default {
         const livingCheckData = await this.livingBodyCheck(featureImage);
         if (livingCheckData.code == 200) {
           const updateOcrResult = await this.updateOcrResult();
-          if (updateOcrResult.code == 200) {
+          if (updateOcrResult.code == 0) {
             this.$router.push('/card_collection');
           }
           await this.updateAccountInfo();
@@ -152,7 +152,7 @@ export default {
           })
           .then(res => {
             if (res.code === 0) {
-              resolve(res.data);
+              resolve(res);
             } else {
               resolve('');
             }
@@ -172,6 +172,8 @@ export default {
                 merchantInfoQueryResult,
                 merchantDebitQueryResult,
               } = res.data;
+              this.auditStatus = merchantInfoQueryResult.auditStatus;
+              this.ocrStatus = merchantInfoQueryResult.ocrStatus;
               localStorage.setItem(
                 'merchantDebitQueryResult',
                 JSON.stringify(merchantDebitQueryResult)

@@ -138,7 +138,7 @@ export default {
         this.$toast.text('请输入收款金额');
         return;
       }
-      if (+this.cardCollection.amount <= 50) {
+      if (+this.cardCollection.amount < 50) {
         this.$toast.text('收款金额不得小于50元');
         return;
       }
@@ -164,16 +164,22 @@ export default {
     },
     getStatusTime(orderId) {
       this.timerId = setInterval(() => {
-        ajax.post('/quickpay/queryOrderStatus', { orderId }).then((res) => {
-          if (res.code === 0) {
-            const { status } = res.data;
-            if (status === 2 || status === 3) {
-              this.showMore = false;
-              clearInterval(this.timerId);
-              this.$router.push(`/card_succuss?isOk=${status}`);
+        ajax
+          .post(
+            '/quickpay/queryOrderStatus',
+            { orderId },
+            { closeloading: true }
+          )
+          .then((res) => {
+            if (res.code === 0) {
+              const { status } = res.data;
+              if (status === 2 || status === 3) {
+                this.showMore = false;
+                clearInterval(this.timerId);
+                this.$router.push(`/card_succuss?isOk=${status}`);
+              }
             }
-          }
-        });
+          });
       }, 2000);
     },
     cellClick() {

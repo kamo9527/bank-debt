@@ -146,7 +146,7 @@ export default {
       if (!itemStr) return;
       const item = JSON.parse(itemStr);
 
-      item.detailList.forEach(item => {
+      item.detailList.forEach((item) => {
         const payTime = formatTime(
           new Date(item.payTime),
           'yyyy-MM-dd hh:mm'
@@ -198,7 +198,7 @@ export default {
           const params = {
             taskId: _this.item.taskId,
           };
-          ajax.post('/repay/stopPlan', params).then(res => {
+          ajax.post('/repay/stopPlan', params).then((res) => {
             if (res.code === 0) {
               __this.close(); //关闭对话框
               // this.list = res.data;
@@ -221,6 +221,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .payback_detail {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   height: 100vh;
   display: flex;
   align-items: center;

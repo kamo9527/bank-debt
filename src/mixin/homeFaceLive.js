@@ -18,8 +18,8 @@ export default {
 
       const appid = 'ry91863kGesF16ud';
       const app_security = 'ry91863kGesF16udcjdNh4wVtheMJ0Kd';
-      // const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
-      const callbackUrl = 'http://newpay.kuaikuaifu.net/livingBodyCallback';
+      const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
+      // const callbackUrl = 'http://newpay.kuaikuaifu.net/livingBodyCallback';
       // const callbackUrl = `${window.location.origin}/livingBodyCallback`;
       const returnUrl = encodeURIComponent(window.location.href);
       const complexity = '1';
@@ -51,7 +51,7 @@ export default {
         const livingCheckData = await this.livingBodyCheck(featureImage);
         if (livingCheckData.code == 200) {
           const updateOcrResult = await this.updateOcrResult();
-          if (updateOcrResult.code == 200) {
+          if (updateOcrResult.code == 0) {
             this.$router.push('/card_collection');
           }
           await this.updateAccountInfo();
@@ -152,7 +152,7 @@ export default {
           })
           .then(res => {
             if (res.code === 0) {
-              resolve(res.data);
+              resolve(res);
             } else {
               resolve('');
             }
@@ -172,6 +172,8 @@ export default {
                 merchantInfoQueryResult,
                 merchantDebitQueryResult,
               } = res.data;
+              this.auditStatus = merchantInfoQueryResult.auditStatus;
+              this.ocrStatus = merchantInfoQueryResult.ocrStatus;
               localStorage.setItem(
                 'merchantDebitQueryResult',
                 JSON.stringify(merchantDebitQueryResult)

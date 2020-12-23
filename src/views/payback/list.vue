@@ -1,6 +1,6 @@
 <template>
   <div class="payback_list">
-    <div class="title">
+    <!-- <div class="title">
       <span class="page_back_wrap" @click="$router.go(-1)">
         <img
           class="page_back"
@@ -8,7 +8,7 @@
         />
       </span>
       <span>还款记录</span>
-    </div>
+    </div> -->
     <!-- <div class="time">2020年04月</div> -->
     <nut-scroller
       :is-un-more="isUnMore"

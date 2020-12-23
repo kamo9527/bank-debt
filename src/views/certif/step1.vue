@@ -1,6 +1,6 @@
 <template>
   <div class="certif_step1">
-    <div class="title">
+    <!-- <div class="title">
       <span class="page_back_wrap" @click="$router.go(-1)">
         <img
           class="page_back"
@@ -8,7 +8,7 @@
         />
       </span>
       <span>认证中心</span>
-    </div>
+    </div> -->
     <div class="step">
       <span class="num1">1</span>
       <span class="num2">2</span>

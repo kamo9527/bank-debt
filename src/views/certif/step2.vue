@@ -1,6 +1,6 @@
 <template>
   <div class="certif_step2">
-    <div class="title">
+    <!-- <div class="title">
       <span class="page_back_wrap" @click="$router.go(-1)">
         <img
           class="page_back"
@@ -8,7 +8,7 @@
         />
       </span>
       <span>卡信息认证</span>
-    </div>
+    </div> -->
     <div class="step">
       <img class="step_img" src="~@/assets/images/certif/step2/step@2x.png" />
     </div>
@@ -502,9 +502,7 @@ export default {
         localStorage.removeItem('certif_step2_data');
 
         const featureImage = await this.getBase64Image(
-          `https://api.shumaidata.com/v2/life/check/image?imageId=${
-            livingQueryData.feature_image_id
-          }`
+          `https://api.shumaidata.com/v2/life/check/image?imageId=${livingQueryData.feature_image_id}`
         );
         const livingCheckData = await this.livingBodyCheck(featureImage);
         if (livingCheckData.code == 200) {
@@ -571,11 +569,11 @@ export default {
       return new Promise((resolve, reject) => {
         const img = document.createElement('img');
         img.setAttribute('crossOrigin', 'anonymous');
-        img.onload = function() {
+        img.onload = function () {
           const data = getBase64Image(img);
           resolve(data);
         };
-        img.onerror = function(err) {
+        img.onerror = function (err) {
           reject(err);
         };
         img.src = url;

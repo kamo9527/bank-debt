@@ -61,7 +61,7 @@ const routes = [
     path: '/certif_step2',
     name: 'certif_step2',
     meta: {
-      title: '认证中心',
+      title: '卡信息认证',
     },
     component: () =>
       import(/* webpackChunkName: "certif_pack" */ '../views/certif/step2.vue'),

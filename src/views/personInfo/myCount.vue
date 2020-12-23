@@ -239,7 +239,7 @@ export default {
         })
         .then((res) => {
           if (res.code === 0) {
-            this.$toast.text('验证码下发你手机请查收！');
+            this.$toast.text('验证码已发送');
             this.handleLoading();
           } else {
             this.$toast.text(res.msg);
@@ -302,6 +302,14 @@ export default {
       }
       if (!regexpMap.regexp_mobile.test(this.countInfo.bankCardMobile)) {
         this.$toast.text('请输入正确的手机号码');
+        return;
+      }
+      if (!this.countInfo.smCode) {
+        this.$toast.text('请输入验证码');
+        return;
+      }
+      if (!regexpMap.regexp_captcha.test(this.countInfo.smCode)) {
+        this.$toast.text('请输入正确的验证码');
         return;
       }
       ajax

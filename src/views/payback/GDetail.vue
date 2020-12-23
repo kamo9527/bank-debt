@@ -149,19 +149,23 @@ export default {
           item.payStatus == 0
             ? '待执行'
             : item.payStatus == 1
-              ? '扣款中'
-              : item.payStatus == 2
-                ? '成功'
-                : item.payStatus == 3 ? '失败' : '';
+            ? '扣款中'
+            : item.payStatus == 2
+            ? '成功'
+            : item.payStatus == 3
+            ? '失败'
+            : '';
 
         item.repayStatusStr =
           item.repayStatus == 0
             ? '待执行'
             : item.repayStatus == 1
-              ? '还款中'
-              : item.repayStatus == 2
-                ? '成功'
-                : item.repayStatus == 3 ? '失败' : '';
+            ? '还款中'
+            : item.repayStatus == 2
+            ? '成功'
+            : item.repayStatus == 3
+            ? '失败'
+            : '';
       });
       this.item = item;
     },
@@ -196,19 +200,23 @@ export default {
                 item.payStatus == 0
                   ? '待执行'
                   : item.payStatus == 1
-                    ? '扣款中'
-                    : item.payStatus == 2
-                      ? '成功'
-                      : item.payStatus == 3 ? '失败' : '';
+                  ? '扣款中'
+                  : item.payStatus == 2
+                  ? '成功'
+                  : item.payStatus == 3
+                  ? '失败'
+                  : '';
 
               item.repayStatusStr =
                 item.repayStatus == 0
                   ? '待执行'
                   : item.repayStatus == 1
-                    ? '还款中'
-                    : item.repayStatus == 2
-                      ? '成功'
-                      : item.repayStatus == 3 ? '失败' : '';
+                  ? '还款中'
+                  : item.repayStatus == 2
+                  ? '成功'
+                  : item.repayStatus == 3
+                  ? '失败'
+                  : '';
             });
             this.item = res.data;
           } else {
@@ -258,7 +266,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .payback_GDetail {
-  height: 100vh;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  // height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;

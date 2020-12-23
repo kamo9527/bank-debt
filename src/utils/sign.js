@@ -26,6 +26,7 @@ const otherTimestampApiList = [
   '/repay/getTaskById',
   '/repay/getTaskByCardNo',
   '/account/updateOcrResult',
+  '/quickpay/queryOrderStatus',
 ];
 
 export function addCommonParams(params = {}) {

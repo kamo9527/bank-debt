@@ -85,7 +85,7 @@ export default {
       list: [],
       endDate: formatTime(new Date(), 'yyyy-MM-dd'),
       pageSize: 10,
-      pageNum: 1,
+      pageNum: 0,
       isUnMore: false,
       loading: false,
     };
@@ -139,7 +139,7 @@ export default {
       });
     },
     pulldown() {
-      this.pageNum = 1;
+      this.pageNum = 0;
       this.loading = true;
       this.isUnMore = false;
       this.getList();

@@ -90,6 +90,7 @@ export default {
         quickRate: '',
         quickPer: '',
       },
+      count: 1,
       statusInfo: {},
       timerId: null,
     };
@@ -192,12 +193,20 @@ export default {
           })
           .then((res) => {
             if (res.code === 0) {
-              const { status } = res.data;
+              const { status, memo } = res.data;
               if (status === 2 || status === 3) {
                 this.showMore = false;
                 clearInterval(this.timerId);
-                this.$router.push(`/card_succuss?isOk=${status}`);
+                this.$router.push(`/card_succuss?isOk=${status}&memo=${memo}`);
               }
+              if (this.count === 15) {
+                this.showMore = false;
+                clearInterval(this.timerId);
+                this.$router.push(
+                  '/card_succuss?isOk=3&memo=交易失败，请联系客服'
+                );
+              }
+              this.count++;
             }
           });
       }, 2000);

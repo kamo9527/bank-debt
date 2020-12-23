@@ -135,6 +135,8 @@ export default {
   },
   watch: {
     statusInfo(val) {
+      console.log('statusInfo val', val);
+      console.log('statusInfo', JSON.stringify(val));
       if (val.orderId) {
         this.getStatusTime(val);
       }

@@ -25,6 +25,7 @@ const otherTimestampApiList = [
   '/livingBodyCheck',
   '/repay/getTaskById',
   '/account/updateOcrResult',
+  '/quickpay/queryOrderStatus',
 ];
 
 export function addCommonParams(params = {}) {

@@ -78,7 +78,7 @@
             <span>{{ detail.repayTime }}</span>
             <span>还款:{{ detail.payAmount }}</span>
           </div>
-          <span class="right">{{ detail.payStatusStr }}</span>
+          <span class="right">{{ detail.repayStatusStr }}</span>
         </div>
       </li>
     </ul>

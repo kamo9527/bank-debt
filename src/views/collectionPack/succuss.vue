@@ -12,7 +12,8 @@
       src="~@/assets/images/personInfo/fuck_icon@2x.png"
       alt=""
     />
-    <div class="gtthh">{{ isOk === '2' ? '交易成功' : '交易失败' }}</div>
+    <div v-if="isOk === '2'" class="gtthh">交易成功</div>
+    <div v-if="isOk === '3'" class="gtthh">{{ memo }}</div>
     <button @click="handleSubmit" class="my_btn">
       {{ isOk === '2' ? '完成' : '重新交易' }}
     </button>
@@ -27,10 +28,12 @@ export default {
   data() {
     return {
       isOk: '0',
+      memo: '',
     };
   },
   mounted() {
     this.isOk = this.$route.query.isOk + '';
+    this.memo = this.$route.query.memo;
   },
   methods: {
     handleSubmit() {

@@ -61,8 +61,12 @@ export default {
   },
   methods: {
     cellClick(item) {
-      item.merchantId = this.merchantId;
-      this.$router.push({ path: '/my_refund_chanel', query: item });
+      if (item.status === 0) {
+        item.merchantId = this.merchantId;
+        this.$router.push({ path: '/my_refund_chanel', query: item });
+      } else {
+        this.$router.push({ path: '/payback_detail', query: item });
+      }
     },
     handleSubmit() {
       this.$router.push('/add_new_card');

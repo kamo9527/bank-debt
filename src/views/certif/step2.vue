@@ -644,6 +644,31 @@ export default {
           });
       });
     },
+    getBankNameByCardNo() {
+      const params = {
+        bankCardNo: this.info.bankCardNo,
+      };
+      ajax
+        .post('/debitCard/getBankNameByCardNo', params, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+        })
+        .then((res) => {
+          if (res.code === 0) {
+            this.info.bankName = res.data.bank_name;
+          } else {
+          }
+        });
+    },
+  },
+  watch: {
+    'info.bankCardNo'(val) {
+      if (val.length > 15) {
+        this.getBankNameByCardNo();
+      }
+      console.log('bankCardNo', val);
+    },
   },
   components: {
     bank,

@@ -121,11 +121,14 @@ export default {
   },
   methods: {
     onBlur(e) {
-      console.log(e.target.value);
+      if (!e.target.value) {
+        return;
+      }
+      const bankCardNo = e.target.value.replace(/\s/g, '');
       ajax
         .post(
           '/debitCard/getBankNameByCardNo',
-          { bankCardNo: e.target.value },
+          { bankCardNo },
           {
             headers: {
               'content-type': 'application/x-www-form-urlencoded',
@@ -134,6 +137,7 @@ export default {
         )
         .then((res) => {
           if (res.code === 0 && res.data) {
+            this.cardInfo.bankName = res.data.bank_name;
             this.cardInfo.bankCode = res.data.bank_code;
           } else {
             this.$toast.text(res.message);
@@ -172,6 +176,7 @@ export default {
             .then((res) => {
               loading.hide();
               if (res.code === 0 && res.data) {
+                this.cardInfo.bankName = res.data.bank_name;
                 this.cardInfo.bankCode = res.data.bank_code;
               } else {
                 this.$toast.text(res.message);
@@ -209,7 +214,14 @@ export default {
         this.$toast.text('请输入正确的手机号码');
         return;
       }
-      ajax.post('/account/bind', this.cardInfo).then((res) => {
+      const info = {};
+      for (const key in this.cardInfo) {
+        if (this.cardInfo[key]) {
+          info[key] = this.cardInfo[key].replace(/\s/g, '');
+        }
+      }
+      console.log(info);
+      ajax.post('/account/bind', info).then((res) => {
         if (res.code === 0) {
           this.$toast.text('添加成功');
           this.$router.go(-1);

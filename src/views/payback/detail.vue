@@ -239,8 +239,8 @@ export default {
             if (res.code === 0) {
               __this.close(); //关闭对话框
               // 区分 还款记录 进来还是 还款确认进来
-              if (this.isRefundPack) {
-                this.$router.push('/payback_stopResult');
+              if (_this.isRefundPack) {
+                _this.$router.push('/payback_stopResult');
               }
               // this.list = res.data;
             } else {

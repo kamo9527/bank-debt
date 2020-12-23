@@ -10,8 +10,8 @@
     </div> -->
     <img class="icon" src="~@/assets/images/payback/emoji@2x.png" alt />
     <span class="tips">终止计划成功</span>
-    <div class="btn index">去首页</div>
-    <div class="btn rebuild">重新创建</div>
+    <div class="btn index" @click="gotoIndex">去首页</div>
+    <div class="btn rebuild" @click="gotoRebuild">重新创建</div>
   </div>
 </template>
 
@@ -23,6 +23,14 @@ export default {
     return {
       show: false,
     };
+  },
+  methods: {
+    gotoIndex() {
+      this.$router.push('/home');
+    },
+    gotoRebuild() {
+      this.$router.push('/my_refund');
+    },
   },
 };
 </script>

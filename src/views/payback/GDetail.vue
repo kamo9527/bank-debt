@@ -49,15 +49,17 @@
             <span>{{ detail.payTime }}</span>
             <span>消费:{{ detail.payAmount }}</span>
           </div>
-          <span class="rightx">{{ statusInfo[detail.payStatus] }}</span>
+          <!-- <span class="rightx">{{ statusInfo[detail.payStatus] }}</span> -->
+          <span class="rightx">等待</span>
         </div>
         <div class="line3">
           <div class="left">
             <span></span>
             <span>{{ detail.repayTime }}</span>
-            <span>消费:{{ detail.repayAmount }}</span>
+            <span>还款:{{ detail.repayAmount }}</span>
           </div>
-          <span class="rightx">{{ statusInfo[detail.repayStatus] }}</span>
+          <!-- <span class="rightx">{{ statusInfo[detail.repayStatus] }}</span> -->
+          <span class="rightx">等待</span>
         </div>
       </li>
     </ul>
@@ -230,8 +232,15 @@ export default {
           ajax.post('/repay/confirmPlan', params).then((res) => {
             if (res.code === 0) {
               __this.close(); //关闭对话框
-              _this.$toast.text('确认成功');
-              this.isConfirm = true;
+              // _this.$toast.text('确认成功');
+              _this.isConfirm = true;
+              _this.$router.push({
+                path: '/payback_detail',
+                query: {
+                  taskId: _this.taskId,
+                  isRefundPack: 1,
+                },
+              });
               // this.list = res.data;
             } else {
               _this.$toast.text(res.msg);

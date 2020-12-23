@@ -102,7 +102,7 @@ export default {
       if (!this.feeInfo.quickPer) return '0.00元';
       const aa =
         this.cardCollection.amount -
-        (1 * this.cardCollection.amount * (1 * this.feeInfo.quickRate)) / 100 -
+        1 * this.cardCollection.amount * (1 * this.feeInfo.quickRate) / 100 -
         this.feeInfo.quickPer;
       return aa.toFixed(2) + '元';
     },
@@ -164,7 +164,7 @@ export default {
             this.channelData = channelData;
             this.showMore = true;
             let _this = this;
-            window.addEventListener('message', function (e) {
+            window.addEventListener('message', function(e) {
               if (e.data) {
                 _this.showMore = false;
                 _this.statusInfo = e.data;
@@ -200,7 +200,8 @@ export default {
         this.$toast.text('请输入收款金额');
         return;
       }
-      if (+this.cardCollection.amount <= 50) {
+
+      if (+this.cardCollection.amount < 50) {
         this.$toast.text('收款金额不得小于50元');
         return;
       }

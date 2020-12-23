@@ -110,8 +110,13 @@ export default {
       });
     },
     gotoDetail(item) {
-      localStorage.setItem('paybackDetail', JSON.stringify(item));
-      this.$router.push('/payback_detail');
+      // localStorage.setItem('paybackDetail', JSON.stringify(item));
+      this.$router.push({
+        path: '/payback_detail',
+        query: {
+          taskId: item.taskId,
+        },
+      });
       // this.$router.push('/payback_GDetail');
     },
     loadMoreVert() {

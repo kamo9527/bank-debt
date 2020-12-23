@@ -102,7 +102,7 @@ export default {
       if (!this.feeInfo.quickPer) return '0.00元';
       const aa =
         this.cardCollection.amount -
-        1 * this.cardCollection.amount * (1 * this.feeInfo.quickRate) / 100 -
+        (1 * this.cardCollection.amount * (1 * this.feeInfo.quickRate)) / 100 -
         this.feeInfo.quickPer;
       return aa.toFixed(2) + '元';
     },
@@ -164,7 +164,7 @@ export default {
             this.channelData = channelData;
             this.showMore = true;
             let _this = this;
-            window.addEventListener('message', function(e) {
+            window.addEventListener('message', function (e) {
               if (e.data) {
                 _this.showMore = false;
                 _this.statusInfo = e.data;
@@ -182,7 +182,12 @@ export default {
     getStatusTime(info) {
       this.timerId = setInterval(() => {
         ajax
-          .post('/quickpay/queryOrderStatus', info, { closeloading: true })
+          .post('/quickpay/queryOrderStatus', info, {
+            closeloading: true,
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
+          })
           .then((res) => {
             if (res.code === 0) {
               const { status } = res.data;

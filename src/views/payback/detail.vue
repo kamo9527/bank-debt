@@ -106,6 +106,7 @@ export default {
   name: 'payback_detail',
   data() {
     return {
+      bankCardNo: '',
       show: false,
       isRefundPack: false,
       item: {
@@ -140,9 +141,9 @@ export default {
   },
   mounted() {
     this.taskId = this.$route.query.taskId;
+    this.bankCardNo = this.$route.query.bankCardNo;
     this.isRefundPack = this.$route.query.isRefundPack;
     this.getTaskById();
-    // this.initData();
   },
   methods: {
     initData() {
@@ -169,28 +170,43 @@ export default {
           item.payStatus == 0
             ? '待执行'
             : item.payStatus == 1
-              ? '扣款中'
-              : item.payStatus == 2
-                ? '成功'
-                : item.payStatus == 3 ? '失败' : '';
+            ? '扣款中'
+            : item.payStatus == 2
+            ? '成功'
+            : item.payStatus == 3
+            ? '失败'
+            : '';
 
         item.repayStatusStr =
           item.repayStatus == 0
             ? '待执行'
             : item.repayStatus == 1
-              ? '还款中'
-              : item.repayStatus == 2
-                ? '成功'
-                : item.repayStatus == 3 ? '失败' : '';
+            ? '还款中'
+            : item.repayStatus == 2
+            ? '成功'
+            : item.repayStatus == 3
+            ? '失败'
+            : '';
       });
       this.item = item;
     },
     getTaskById() {
-      const params = {
-        taskId: this.taskId,
-      };
+      let params = {};
+      let url = '';
+      if (this.taskId) {
+        url = '/repay/getTaskByIds';
+        params = {
+          taskId: this.taskId,
+        };
+      }
+      if (this.bankCardNo) {
+        url = '/repay/getTaskByCardNo';
+        params = {
+          bankCardNo: this.bankCardNo,
+        };
+      }
       ajax
-        .post('/repay/getTaskById', params, {
+        .post(url, params, {
           headers: {
             'content-type': 'application/x-www-form-urlencoded',
           },
@@ -202,19 +218,23 @@ export default {
                 item.payStatus == 0
                   ? '待执行'
                   : item.payStatus == 1
-                    ? '扣款中'
-                    : item.payStatus == 2
-                      ? '成功'
-                      : item.payStatus == 3 ? '失败' : '';
+                  ? '扣款中'
+                  : item.payStatus == 2
+                  ? '成功'
+                  : item.payStatus == 3
+                  ? '失败'
+                  : '';
 
               item.repayStatusStr =
                 item.repayStatus == 0
                   ? '待执行'
                   : item.repayStatus == 1
-                    ? '还款中'
-                    : item.repayStatus == 2
-                      ? '成功'
-                      : item.repayStatus == 3 ? '失败' : '';
+                  ? '还款中'
+                  : item.repayStatus == 2
+                  ? '成功'
+                  : item.repayStatus == 3
+                  ? '失败'
+                  : '';
             });
             this.item = res.data;
           } else {

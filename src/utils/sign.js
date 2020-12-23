@@ -24,6 +24,7 @@ const otherTimestampApiList = [
   '/livingBodyQuery',
   '/livingBodyCheck',
   '/repay/getTaskById',
+  '/repay/getTaskByCardNo',
   '/account/updateOcrResult',
   '/quickpay/queryOrderStatus',
   '/debitCard/getBankNameByCardNo',

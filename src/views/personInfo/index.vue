@@ -110,8 +110,8 @@ export default {
         {
           icon: card_icon,
           text: '我的付款卡',
-          link: '/add_new_card',
-          checked: true,
+          link: '/my_refund',
+          // checked: true,
         },
         {
           icon: count_detail_icon,

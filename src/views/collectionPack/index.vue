@@ -1,6 +1,6 @@
 <template>
   <section class="page_w collection_page">
-    <div class="collection_title">无卡收款</div>
+    <div class="collection_title"></div>
     <div class="mony_info">
       <div class="mony_info_title">请输入收款金额(元）</div>
       <div class="boardValue" @click="showKeyBoard">

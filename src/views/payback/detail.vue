@@ -29,7 +29,9 @@
                 : '分期还款失败'
             }}
           </p>
-          <p class="desc_lable">还款失败：{{ item.statusDesc }}</p>
+          <p class="desc_lable">
+            {{ item.statusDesc ? '还款失败：' + item.statusDesc : '' }}
+          </p>
         </span>
 
         <!-- <span class="lable">{{ item.statusDesc }}</span> -->
@@ -99,7 +101,7 @@
       </li>
     </ul>
 
-    <template v-if="item.status == 1 || item.status == 3">
+    <template v-if="!isRecordEnter && (item.status == 1 || item.status == 3)">
       <div class="mock-bottom"></div>
       <div class="btn-wrap">
         <span class="btn" @click="stopPlan" v-if="item.status == 1"
@@ -125,6 +127,7 @@ export default {
       bankCardNo: '',
       show: false,
       isRefundPack: false,
+      isRecordEnter: 1,
       item: {
         bankCardNo: '',
         bankCode: '',
@@ -159,6 +162,8 @@ export default {
     this.taskId = this.$route.query.taskId;
     this.bankCardNo = this.$route.query.bankCardNo;
     this.isRefundPack = this.$route.query.isRefundPack;
+    this.isRecordEnter = this.$route.query.isRecordEnter;
+
     this.getTaskById();
   },
   methods: {
@@ -290,14 +295,11 @@ export default {
       });
     },
     createPlan() {
-      this.$router.push('/my_refund');
-      // this.$router.push({
-      //   path: '/my_refund_chanel',
-      //   query: {
-      //     bankName: this.item.bankName,
-      //     bankCardNo: this.item.bankCardNo,
-      //   },
-      // });
+      // this.$router.push('/my_refund');
+      this.$router.push({
+        path: '/my_refund_chanel',
+        query: this.$route.query,
+      });
     },
   },
 };

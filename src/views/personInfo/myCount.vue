@@ -102,7 +102,7 @@ export default {
         bankCode: '',
         bankCardNo: '',
         bankName: '',
-        branchBankName: '请输入',
+        branchBankName: '请选择',
         bankAddress: '',
         bankCardMobile: '',
         smCode: '',
@@ -312,6 +312,16 @@ export default {
         this.$toast.text('请输入正确的验证码');
         return;
       }
+      const info = {};
+      for (const key in this.countInfo) {
+        if (this.countInfo[key]) {
+          info[key] = `${this.countInfo[key]}`.replace(/\s/g, '');
+        }
+      }
+      const list = ['bankCardNo', 'bankName', 'bankAddress'];
+      list.forEach((key) => {
+        this.countInfo[key] = `${this.countInfo[key]}`.replace(/\s/g, '');
+      });
       ajax
         .post('/debitCard/updateSettleCardAndPhotos', this.countInfo)
         .then((res) => {

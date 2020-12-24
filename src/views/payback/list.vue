@@ -100,7 +100,7 @@ export default {
         pageNum: this.pageNum,
         endDate: this.endDate,
       };
-      ajax.post('/repay/getTaskHistory', params).then((res) => {
+      ajax.post('/repay/getTaskHistory', params).then(res => {
         if (res.code === 0) {
           this.list = res.data;
         } else {
@@ -115,6 +115,7 @@ export default {
         path: '/payback_detail',
         query: {
           taskId: item.taskId,
+          isRecordEnter: 1,
         },
       });
       // this.$router.push('/payback_GDetail');
@@ -126,7 +127,7 @@ export default {
         pageNum: ++this.pageNum,
         endDate: this.endDate,
       };
-      ajax.post('/repay/getTaskHistory', params).then((res) => {
+      ajax.post('/repay/getTaskHistory', params).then(res => {
         if (res.code === 0) {
           if (this.list.length < this.pageSize) this.isUnMore = true;
 

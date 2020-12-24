@@ -194,7 +194,7 @@ export default {
       let params = {};
       let url = '';
       if (this.taskId) {
-        url = '/repay/getTaskByIds';
+        url = '/repay/getTaskById';
         params = {
           taskId: this.taskId,
         };
@@ -294,7 +294,7 @@ export default {
   height: 100%;
   overflow: hidden;
   overflow-y: auto;
-  height: 100vh;
+  // height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;

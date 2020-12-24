@@ -155,7 +155,7 @@ export default {
   align-items: center;
   flex-direction: column;
   background-color: #f2f2f2;
-  padding: 45px 15px 0;
+  padding: 0 15px;
   // padding-bottom: 28.5px;
   box-sizing: border-box;
   .title {

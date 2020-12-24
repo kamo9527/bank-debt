@@ -1,54 +1,72 @@
 <template>
   <section class="page_w count_page">
-    <nut-textinput
-      class="my_input"
-      label="银行卡号"
-      placeholder="请输入"
-      :hasBorder="false"
-      v-model="countInfo.bankCardNo"
-    />
+    <div class="iinpu_ophne">
+      <nut-textinput
+        class="my_input flexx1"
+        label="银行卡号"
+        placeholder="请输入卡号或扫描"
+        :hasBorder="false"
+        @blur="onBlur"
+        :readonly="isReadonly"
+        v-model="countInfo.bankCardNo"
+      />
+      <sing-image-picker
+        v-if="!isReadonly"
+        class="upload_item"
+        :ismultiple="false"
+        :showImage="false"
+        max="1"
+        @getImg="handleUpload"
+      />
+    </div>
     <nut-textinput
       class="my_input"
       label="开户名"
       placeholder="请输入"
       :hasBorder="false"
-      v-model="countInfo.bankName"
+      readonly
+      v-model="countInfo.bankAccountName"
     />
     <nut-textinput
-      class="my_input"
-      label="银行所在地"
+      class="my_input efwefwe"
+      label="开户行"
       placeholder="请输入"
       :hasBorder="false"
-      v-model="countInfo.bankAddress"
+      :readonly="isReadonly"
+      v-model="countInfo.bankName"
+    />
+    <nut-cell
+      class="my_cell"
+      :show-icon="true"
+      title="银行所在地"
+      :showIcon="!isReadonly"
+      :desc="countInfo.bankAddress"
+      @click.native="openAddressSwitch"
     />
     <nut-cell
       class="my_cell"
       :show-icon="true"
       title="银行网点"
+      :showIcon="!isReadonly"
       :desc="countInfo.branchBankName"
       @click.native="cellClick"
     />
-    <nut-cell
-      class="my_cell"
-      :show-icon="true"
-      title="选择常住地："
-      :desc="cityCustmer"
-      @click.native="openAddressSwitch"
-    />
     <nut-textinput
-      class="my_input"
+      class="my_input efwefwe"
       label="预留手机号"
       placeholder="请输入"
+      :readonly="isReadonly"
       :hasBorder="false"
       v-model="countInfo.bankCardMobile"
     />
 
-    <div class="input_wrap">
+    <div class="input_wrap" v-if="!isReadonly">
       <span class="ggspan">验证码</span>
       <input
         class="gerginput"
         type="text"
         placeholder="请输入验证码"
+        :readonly="isReadonly"
         v-model.trim="countInfo.smCode"
         maxlength="6"
       />
@@ -73,23 +91,28 @@
         @close="bankPickerClose"
       />
     </nut-popup>
-    <button @click="handleSubmit" class="my_btn">修改结算卡</button>
+    <button @click="handleSubmit" class="my_btn">
+      {{ isReadonly ? '修改结算卡' : '完成' }}
+    </button>
   </section>
 </template>
 
 <script>
 // @ is an alias to /src
 import { regexpMap } from '@/utils/common';
+import SingImagePicker from '@/components/SingImagePicker.vue';
 import ajax from '@/rest/ajax';
 import bank from '../certif/bank';
 
 export default {
   name: 'myCountPage',
   components: {
+    SingImagePicker,
     bank,
   },
   data() {
     return {
+      isReadonly: true,
       cityCustmer: '请选择常住地址',
       dateVisible: false,
       defaultValueData: null,
@@ -100,14 +123,14 @@ export default {
       timerId: null,
       countInfo: {
         bankCode: '',
+        bankAddress: '',
         bankCardNo: '',
+        bankCardMobile: '',
         bankName: '',
         branchBankName: '请选择',
-        bankAddress: '',
-        bankCardMobile: '',
         smCode: '',
-        workProvinceName: '',
-        workCityName: '',
+        // workProvinceName: '',
+        // workCityName: '',
       },
       bankInfo: {},
       bankPickerVisible: false,
@@ -116,17 +139,21 @@ export default {
   mounted() {
     ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
-        const { merchantDebitQueryResult, merchantInfoQueryResult } = res.data;
-        const { bankCardNo } = merchantDebitQueryResult;
-        merchantDebitQueryResult.bankCardNo =
-          bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
+        const { merchantDebitQueryResult } = res.data;
+        const { bankCardNo, bankCardMobile } = merchantDebitQueryResult;
         this.countInfo = merchantDebitQueryResult;
-        this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
-        this.countInfo.workProvinceName = merchantInfoQueryResult.provinceName;
-        this.countInfo.workCityName = merchantInfoQueryResult.cityName;
-        this.cityCustmer =
-          merchantInfoQueryResult.provinceName +
-          merchantInfoQueryResult.cityName;
+        this.countInfo.bankCardNoCopy = bankCardNo;
+        this.countInfo.bankCardNo =
+          bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
+        this.countInfo.bankCardMobileCopy = bankCardMobile;
+        this.countInfo.bankCardMobile =
+          bankCardMobile.slice(0, 3) + '****' + bankCardMobile.slice(-4);
+        // this.countInfo.merchantId = merchantInfoQueryResult.merchantId;
+        // this.countInfo.workProvinceName = merchantInfoQueryResult.provinceName;
+        // this.countInfo.workCityName = merchantInfoQueryResult.cityName;
+        // this.cityCustmer =
+        //   merchantInfoQueryResult.provinceName +
+        //   merchantInfoQueryResult.cityName;
       } else {
         this.$toast.text(res.msg);
       }
@@ -154,17 +181,85 @@ export default {
     clearInterval(this.timerId);
   },
   methods: {
+    onBlur(e) {
+      if (this.isReadonly) {
+        return;
+      }
+      if (!e.target.value) {
+        return;
+      }
+      const bankCardNo = e.target.value.replace(/\s/g, '');
+      ajax
+        .post(
+          '/debitCard/getBankNameByCardNo',
+          { bankCardNo },
+          {
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
+          }
+        )
+        .then((res) => {
+          if (res.code === 0 && res.data) {
+            this.countInfo.bankName = res.data.bank_name;
+            this.countInfo.bankCode = res.data.bank_code;
+          } else {
+            this.$toast.text(res.message);
+          }
+        });
+    },
+    handleUpload(data) {
+      const loading = this.$toast.loading('加载中');
+      const formData = new FormData();
+      formData.append('file', data.file);
+      ajax
+        .post('/ocr/bankcard', formData)
+        .then((res) => {
+          const { code, data } = res;
+          if (code === 0) {
+            this.countInfo.bankCardNo = data.bankCardNo.replace(/\s/g, '');
+            return this.countInfo.bankCardNo;
+          } else {
+            this.$toast.text(res.message);
+          }
+        })
+        .then((bankCardNo) => {
+          if (!bankCardNo) {
+            return;
+          }
+          ajax
+            .post(
+              '/debitCard/getBankNameByCardNo',
+              { bankCardNo },
+              {
+                headers: {
+                  'content-type': 'application/x-www-form-urlencoded',
+                },
+              }
+            )
+            .then((res) => {
+              loading.hide();
+              if (res.code === 0 && res.data) {
+                this.countInfo.bankName = res.data.bank_name;
+                this.countInfo.bankCode = res.data.bank_code;
+              } else {
+                this.$toast.text(res.message);
+              }
+            });
+        });
+    },
     openAddressSwitch() {
+      if (this.isReadonly) {
+        return;
+      }
       this.addressVisible = true;
     },
     closeSwitch() {
       this.addressVisible = false;
     },
     setChooseValueCustmer(chooseData) {
-      let str = chooseData.map((item) => item.value).join('-');
-      this.cityCustmer = str;
-      this.countInfo.workProvinceName = chooseData[0].bank_area;
-      this.countInfo.workCityName = chooseData[1].bank_city;
+      console.log(chooseData[1]);
+      this.countInfo.bankAddress = chooseData[0].value + chooseData[1].value;
     },
     closeUpdateChooseValueCustmer(self, chooseData) {
       console.log(self, chooseData);
@@ -203,8 +298,11 @@ export default {
       this.bankPickerVisible = false;
     },
     cellClick() {
-      if (!this.countInfo.bankName) {
-        this.$toast.text('请选择开户城市');
+      if (this.isReadonly) {
+        return;
+      }
+      if (!this.countInfo.bankAddress) {
+        this.$toast.text('请选择城市所在地');
         return;
       }
       const provinceInfo = this.custmerCityData[0].find(({ value }) =>
@@ -260,80 +358,72 @@ export default {
       }, 1000);
     },
     handleSubmit() {
-      // if (this.isReadonly) {
-      //   const _this = this;
-      //   this.$dialog({
-      //     title: '温馨提示',
-      //     content: '确定要修改收款账号信息么？',
-      //     onOkBtn() {
-      //       //确定按钮点击事件
-      //       _this.isReadonly = false;
-      //       _this.countInfo.bankCardNo = _this.countInfo.bankCardNoCopy;
-      //       _this.countInfo.bankCardMobile = _this.countInfo.bankCardMobileCopy;
-      //       this.close(); //关闭对话框
-      //     },
-      //     onCancelBtn(event) {
-      //       console.log(event);
-      //       //取消按钮点击事件，默认行为关闭对话框
-      //       //return false;  //阻止默认“关闭对话框”的行为
-      //     },
-      //   });
-      // } else {
-      // 表单校验
-      if (!this.countInfo.bankCardNo) {
-        this.$toast.text('请输入银行卡号');
-        return;
-      }
-      if (!this.countInfo.bankName) {
-        this.$toast.text('请输入开户银行名称');
-        return;
-      }
-      if (this.countInfo.branchBankName === '请输入') {
-        this.$toast.text('请输入银行网点');
-        return;
-      }
-      if (!this.countInfo.bankAddress) {
-        this.$toast.text('请输入银行所在地');
-        return;
-      }
-      if (!this.countInfo.bankCardMobile) {
-        this.$toast.text('请输入预留手机号');
-        return;
-      }
-      if (!regexpMap.regexp_mobile.test(this.countInfo.bankCardMobile)) {
-        this.$toast.text('请输入正确的手机号码');
-        return;
-      }
-      if (!this.countInfo.smCode) {
-        this.$toast.text('请输入验证码');
-        return;
-      }
-      if (!regexpMap.regexp_captcha.test(this.countInfo.smCode)) {
-        this.$toast.text('请输入正确的验证码');
-        return;
-      }
-      const info = {};
-      for (const key in this.countInfo) {
-        if (this.countInfo[key]) {
-          info[key] = `${this.countInfo[key]}`.replace(/\s/g, '');
+      if (this.isReadonly) {
+        this.isReadonly = false;
+        this.countInfo.bankCardNo = this.countInfo.bankCardNoCopy;
+        this.countInfo.bankCardMobile = this.countInfo.bankCardMobileCopy;
+      } else {
+        // 表单校验
+        if (!this.countInfo.bankCardNo) {
+          this.$toast.text('请输入银行卡号');
+          return;
         }
-      }
-      const list = ['bankCardNo', 'bankName', 'bankAddress'];
-      list.forEach((key) => {
-        this.countInfo[key] = `${this.countInfo[key]}`.replace(/\s/g, '');
-      });
-      ajax
-        .post('/debitCard/updateSettleCardAndPhotos', this.countInfo)
-        .then((res) => {
-          if (res.code === 0) {
-            this.$toast.text('修改成功');
-            const { bankCardNo } = this.bankInfo;
-            this.bankInfo.bankCardNo =
-              bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
-          } else {
-            this.$toast.text(res.msg);
+        if (!this.countInfo.bankName) {
+          this.$toast.text('请输入开户银行名称');
+          return;
+        }
+        if (this.countInfo.branchBankName === '请输入') {
+          this.$toast.text('请输入银行网点');
+          return;
+        }
+        if (!this.countInfo.bankAddress) {
+          this.$toast.text('请输入银行所在地');
+          return;
+        }
+        if (!this.countInfo.bankCardMobile) {
+          this.$toast.text('请输入预留手机号');
+          return;
+        }
+        if (!regexpMap.regexp_mobile.test(this.countInfo.bankCardMobile)) {
+          this.$toast.text('请输入正确的手机号码');
+          return;
+        }
+        if (!this.countInfo.smCode) {
+          this.$toast.text('请输入验证码');
+          return;
+        }
+        if (!regexpMap.regexp_captcha.test(this.countInfo.smCode)) {
+          this.$toast.text('请输入正确的验证码');
+          return;
+        }
+        const info = {};
+        for (const key in this.countInfo) {
+          if (this.countInfo[key]) {
+            info[key] = `${this.countInfo[key]}`.replace(/\s/g, '');
           }
+        }
+        const list = ['bankCardNo', 'bankName'];
+        list.forEach((key) => {
+          this.countInfo[key] = `${this.countInfo[key]}`.replace(/\s/g, '');
         });
+        ajax
+          .post('/debitCard/updateSettleCardAndPhotos', this.countInfo)
+          .then((res) => {
+            if (res.code === 0) {
+              this.$toast.text('修改成功');
+              this.isReadonly = true;
+              const { bankCardNo, bankCardMobile } = this.bankInfo;
+              this.countInfo.bankCardNoCopy = bankCardNo;
+              this.countInfo.bankCardNo =
+                bankCardNo.slice(0, 3) + '***********' + bankCardNo.slice(-4);
+              this.countInfo.bankCardMobileCopy = bankCardMobile;
+              this.countInfo.bankCardMobile =
+                bankCardMobile.slice(0, 3) + '****' + bankCardMobile.slice(-4);
+            } else {
+              this.$toast.text(res.msg);
+            }
+          });
+      }
     },
   },
 };
@@ -343,6 +433,25 @@ export default {
 .count_page {
   font-size: 14px;
   padding-top: 20px;
+  .iinpu_ophne {
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    .flexx1 {
+      flex: 1;
+      border: none;
+    }
+    .upload_item img {
+      margin-left: 0;
+    }
+    // .phongg {
+    //   display: block;
+    //   width: 17px;
+    //   margin-left: 20px;
+    // }
+  }
   .my_input {
     background-color: #fff;
     padding: 2px 20px;
@@ -359,17 +468,29 @@ export default {
     border-bottom: 1px solid #f7f7f7;
     .nut-cell-box {
       background-image: none;
+      .nut-cell-left {
+        width: 110px;
+        flex: none;
+      }
+      .nut-cell-right {
+        flex: 1;
+        display: flex;
+      }
+      .nut-cell-desc {
+        display: block;
+        flex: 1;
+        max-width: 210px;
+        color: #000;
+        font-size: 14px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-break: break-all;
+      }
     }
-    .nut-cell-desc {
-      display: inline-block;
-      max-width: 230px;
-      color: #000;
-      font-size: 14px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      word-break: break-all;
-    }
+  }
+  .efwefwe .nut-textinput-clear {
+    right: 20px;
   }
   .input_wrap {
     padding: 0 20px;

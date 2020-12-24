@@ -119,11 +119,11 @@ export default {
           {
             payAmount: '',
             payStatus: 0,
-            payTime: new Date(),
+            payTime: '',
             period: 0,
             repayAmount: '',
             repayStatus: 0,
-            repayTime: new Date(),
+            repayTime: '',
             taskTime: '',
           },
         ],
@@ -151,7 +151,7 @@ export default {
       if (!itemStr) return;
       const item = JSON.parse(itemStr);
 
-      item.detailList.forEach((item) => {
+      item.detailList.forEach(item => {
         const payTime = formatTime(
           new Date(item.payTime),
           'yyyy-MM-dd hh:mm'
@@ -211,9 +211,9 @@ export default {
             'content-type': 'application/x-www-form-urlencoded',
           },
         })
-        .then((res) => {
+        .then(res => {
           if (res.code === 0) {
-            res.data.detailList.forEach((item) => {
+            res.data.detailList.forEach(item => {
               item.payStatusStr =
                 item.payStatus == 0
                   ? '待执行'
@@ -255,7 +255,7 @@ export default {
           const params = {
             taskId: _this.item.taskId,
           };
-          ajax.post('/repay/stopPlan', params).then((res) => {
+          ajax.post('/repay/stopPlan', params).then(res => {
             if (res.code === 0) {
               __this.close(); //关闭对话框
               // 区分 还款记录 进来还是 还款确认进来

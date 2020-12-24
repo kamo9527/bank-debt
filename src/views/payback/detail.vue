@@ -17,7 +17,8 @@
             <p class="bank_no">尾号:{{ item.bankCardNo.slice(-4) }}</p>
           </span>
         </span>
-        <span class="lable">{{
+        <span class="lable">{{ item.statusDesc }}</span>
+        <!-- <span class="lable">{{
           item.status == 0
             ? '待执行'
             : item.status == 1
@@ -25,7 +26,7 @@
             : item.status == 2
             ? '执行成功'
             : '手动终止计划'
-        }}</span>
+        }}</span> -->
       </div>
       <div class="process">
         <nut-circleprogress
@@ -76,7 +77,7 @@
           <div class="left">
             <span></span>
             <span>{{ detail.repayTime }}</span>
-            <span>还款:{{ detail.payAmount }}</span>
+            <span>还款:{{ detail.repayAmount }}</span>
           </div>
           <span class="right">{{ detail.repayStatusStr }}</span>
         </div>
@@ -359,6 +360,7 @@ export default {
         }
       }
       .lable {
+        max-width: 150px;
         font-size: 15px;
         color: #4574f2;
       }

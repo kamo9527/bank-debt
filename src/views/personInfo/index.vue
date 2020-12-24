@@ -158,10 +158,14 @@ export default {
     this.personInfo = cache.getLocalStorageData('person_info');
     ajax.post('/account/info', {}).then((res) => {
       if (res.code === 0) {
-        const { merchantInfoQueryResult } = res.data;
+        const { merchantInfoQueryResult, merchantDebitQueryResult } = res.data;
         this.auditStatus = merchantInfoQueryResult.auditStatus;
-        this.mobile = merchantInfoQueryResult.mobile;
-        this.userName = merchantInfoQueryResult.userName;
+        this.mobile =
+          merchantInfoQueryResult.mobile ||
+          merchantDebitQueryResult.bankCardMobile;
+        this.userName =
+          merchantInfoQueryResult.userName ||
+          merchantDebitQueryResult.bankAccountName;
       } else {
         this.$toast.text(res.msg);
       }

@@ -61,7 +61,7 @@ export default {
         } else {
           reject('');
         }
-      });
+      }).catch(() => {});
     },
     livingBodyQuery() {
       return new Promise((resolve, reject) => {

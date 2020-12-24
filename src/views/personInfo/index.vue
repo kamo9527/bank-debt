@@ -1,7 +1,7 @@
 <template>
   <section class="page_w person_page">
     <div class="person_top">
-      <div class="person_title">我的</div>
+      <div class="person_title"></div>
       <div class="person_detail">
         <img
           class="person_icon"
@@ -224,6 +224,7 @@ export default {
       no-repeat;
     background-size: cover;
     .person_title {
+      height: 30px;
       padding-top: 20px;
       color: #fff;
       font-size: 18px;

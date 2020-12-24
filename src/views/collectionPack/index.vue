@@ -237,6 +237,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .collection_page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   .collection_title {
     text-align: center;
     padding: 20px 0 40px;

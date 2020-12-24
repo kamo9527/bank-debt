@@ -17,7 +17,22 @@
             <p class="bank_no">尾号:{{ item.bankCardNo.slice(-4) }}</p>
           </span>
         </span>
-        <span class="lable">{{ item.statusDesc }}</span>
+        <span class="right">
+          <p class="lable">
+            {{
+              item.status == 0
+                ? '待执行'
+                : item.status == 1
+                ? '分期还款中'
+                : item.status == 2
+                ? '执行成功'
+                : '分期还款失败'
+            }}
+          </p>
+          <p class="desc_lable">还款失败：{{ item.statusDesc }}</p>
+        </span>
+
+        <!-- <span class="lable">{{ item.statusDesc }}</span> -->
         <!-- <span class="lable">{{
           item.status == 0
             ? '待执行'
@@ -359,10 +374,18 @@ export default {
           color: #999999;
         }
       }
-      .lable {
+      .right {
         max-width: 150px;
-        font-size: 15px;
-        color: #4574f2;
+        text-align: right;
+        .lable {
+          font-size: 15px;
+          color: #4574f2;
+        }
+        .desc_lable {
+          margin-top: 14.5px;
+          font-size: 12px;
+          color: #c8527a;
+        }
       }
     }
     .process {

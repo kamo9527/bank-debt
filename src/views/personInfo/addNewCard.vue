@@ -214,14 +214,11 @@ export default {
         this.$toast.text('请输入正确的手机号码');
         return;
       }
-      const info = {};
-      for (const key in this.cardInfo) {
-        if (this.cardInfo[key]) {
-          info[key] = this.cardInfo[key].replace(/\s/g, '');
-        }
-      }
-      console.log(info);
-      ajax.post('/account/bind', info).then((res) => {
+      const list = ['bankCardNo', 'bankName', 'bankCardMobile'];
+      list.forEach((key) => {
+        this.cardInfo[key] = `${this.cardInfo[key]}`.replace(/\s/g, '');
+      });
+      ajax.post('/account/bind', this.cardInfo).then((res) => {
         if (res.code === 0) {
           this.$toast.text('添加成功');
           this.$router.go(-1);

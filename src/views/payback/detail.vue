@@ -172,7 +172,7 @@ export default {
       if (!itemStr) return;
       const item = JSON.parse(itemStr);
 
-      item.detailList.forEach(item => {
+      item.detailList.forEach((item) => {
         const payTime = formatTime(
           new Date(item.payTime),
           'yyyy-MM-dd hh:mm'
@@ -191,23 +191,19 @@ export default {
           item.payStatus == 0
             ? '待执行'
             : item.payStatus == 1
-            ? '扣款中'
-            : item.payStatus == 2
-            ? '成功'
-            : item.payStatus == 3
-            ? '失败'
-            : '';
+              ? '扣款中'
+              : item.payStatus == 2
+                ? '成功'
+                : item.payStatus == 3 ? '失败' : '';
 
         item.repayStatusStr =
           item.repayStatus == 0
             ? '待执行'
             : item.repayStatus == 1
-            ? '还款中'
-            : item.repayStatus == 2
-            ? '成功'
-            : item.repayStatus == 3
-            ? '失败'
-            : '';
+              ? '还款中'
+              : item.repayStatus == 2
+                ? '成功'
+                : item.repayStatus == 3 ? '失败' : '';
       });
       this.item = item;
     },
@@ -232,30 +228,26 @@ export default {
             'content-type': 'application/x-www-form-urlencoded',
           },
         })
-        .then(res => {
+        .then((res) => {
           if (res.code === 0) {
-            res.data.detailList.forEach(item => {
+            res.data.detailList.forEach((item) => {
               item.payStatusStr =
                 item.payStatus == 0
                   ? '待执行'
                   : item.payStatus == 1
-                  ? '扣款中'
-                  : item.payStatus == 2
-                  ? '成功'
-                  : item.payStatus == 3
-                  ? '失败'
-                  : '';
+                    ? '扣款中'
+                    : item.payStatus == 2
+                      ? '成功'
+                      : item.payStatus == 3 ? '失败' : '';
 
               item.repayStatusStr =
                 item.repayStatus == 0
                   ? '待执行'
                   : item.repayStatus == 1
-                  ? '还款中'
-                  : item.repayStatus == 2
-                  ? '成功'
-                  : item.repayStatus == 3
-                  ? '失败'
-                  : '';
+                    ? '还款中'
+                    : item.repayStatus == 2
+                      ? '成功'
+                      : item.repayStatus == 3 ? '失败' : '';
             });
             this.item = res.data;
           } else {
@@ -276,14 +268,10 @@ export default {
           const params = {
             taskId: _this.item.taskId,
           };
-          ajax.post('/repay/stopPlan', params).then(res => {
+          ajax.post('/repay/stopPlan', params).then((res) => {
             if (res.code === 0) {
               __this.close(); //关闭对话框
-              // 区分 还款记录 进来还是 还款确认进来
-              if (_this.isRefundPack) {
-                _this.$router.push('/payback_stopResult');
-              }
-              // this.list = res.data;
+              _this.$router.push('/payback_stopResult');
             } else {
               _this.$toast.text(res.msg);
             }

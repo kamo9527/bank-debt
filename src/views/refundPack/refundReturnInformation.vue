@@ -112,24 +112,26 @@ export default {
     this.queryInfo.bankCardNo = bankCardNo;
     this.params.cardId = cardId;
     this.params.channelId = channelId;
-    ajax.post('/area/list', {}).then((res) => {
-      if (res.code === 0) {
-        const resData = res.data;
-        const col2 = [];
-        resData.forEach((item) => {
-          item.label = item.bank_area_code;
-          item.value = item.bank_area;
-          item.city_list.forEach((city) => {
-            city.label = city.bank_city_code;
-            city.value = city.bank_city;
-          });
-          col2.push(item.city_list);
-        });
-        this.custmerCityData = [resData, col2[0]];
-      } else {
-        this.$toast.text(res.msg);
-      }
-    });
+    // ajax.post('/area/list', {}).then((res) => {
+    //   if (res.code === 0) {
+    //     const resData = res.data;
+    //     const col2 = [];
+    //     resData.forEach((item) => {
+    //       item.label = item.bank_area_code;
+    //       item.value = item.bank_area;
+    //       item.city_list.forEach((city) => {
+    //         city.label = city.bank_city_code;
+    //         city.value = city.bank_city;
+    //       });
+    //       col2.push(item.city_list);
+    //     });
+    //     this.custmerCityData = [resData, col2[0]];
+    //   } else {
+    //     this.$toast.text(res.msg);
+    //   }
+    // });
+
+    this.getPermanentAddressList();
   },
   methods: {
     switchPicker() {
@@ -152,8 +154,8 @@ export default {
       console.log(chooseData);
       let str = chooseData.map((item) => item.value).join('-');
       this.cityCustmer = str;
-      this.params.province = chooseData[0].bank_area_code.replace(/\s/g, '');
-      this.params.cityCode = chooseData[1].bank_city_code.replace(/\s/g, '');
+      this.params.province = chooseData[0].provinceCode.replace(/\s/g, '');
+      this.params.cityCode = chooseData[1].cityCode.replace(/\s/g, '');
     },
     closeUpdateChooseValueCustmer(self, chooseData) {
       console.log(self, chooseData);
@@ -177,7 +179,7 @@ export default {
         let { label, value } = resValue;
         console.log(label, value);
         setTimeout(() => {
-          var resItems = resValue.city_list;
+          var resItems = resValue.cityLists;
           if (resItems && resItems.length) {
             this.$set(this.custmerCityData, 1, resItems);
             self.updateChooseValue(self, index + 1, resItems[0]);
@@ -185,6 +187,28 @@ export default {
         }, 100);
       }
     },
+    getPermanentAddressList() {
+      ajax.post('/repay/permanentAddressList', {}).then((res) => {
+        if (res.code === 0) {
+          const resData = res.data;
+          const col2 = [];
+          resData.forEach((item) => {
+            item.label = item.provinceCode;
+            item.value = item.provinceName;
+            item.cityLists.forEach((city) => {
+              city.label = city.cityCode;
+              city.value = city.cityName;
+            });
+            col2.push(item.cityLists);
+          });
+          this.custmerCityData = [resData, col2[0]];
+          console.log('this.custmerCityData', this.custmerCityData);
+        } else {
+          this.$toast.text(res.msg);
+        }
+      });
+    },
+
     handleSubmit() {
       if (!this.params.lastRepaymentDate) {
         this.$toast.text('请输入最后还款日');

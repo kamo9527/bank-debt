@@ -362,6 +362,9 @@ export default {
         this.isReadonly = false;
         this.countInfo.bankCardNo = this.countInfo.bankCardNoCopy;
         this.countInfo.bankCardMobile = this.countInfo.bankCardMobileCopy;
+
+        this.countInfo.bankAddress = '';
+        this.countInfo.branchBankName = '';
       } else {
         // 表单校验
         if (!this.countInfo.bankCardNo) {
@@ -372,14 +375,18 @@ export default {
           this.$toast.text('请输入开户银行名称');
           return;
         }
-        if (this.countInfo.branchBankName === '请输入') {
-          this.$toast.text('请输入银行网点');
-          return;
-        }
         if (!this.countInfo.bankAddress) {
           this.$toast.text('请输入银行所在地');
           return;
         }
+        if (
+          this.countInfo.branchBankName === '请输入' ||
+          this.countInfo.branchBankName === ''
+        ) {
+          this.$toast.text('请输入银行网点');
+          return;
+        }
+
         if (!this.countInfo.bankCardMobile) {
           this.$toast.text('请输入预留手机号');
           return;

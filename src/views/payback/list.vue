@@ -49,7 +49,19 @@
               : '手动终止计划'
           }}</span>
           <div class="process">
-            <nut-circleprogress
+            <circleProgress
+              :percent="(item.finishPeriodCount / item.periodCount) * 100"
+              :rd="50"
+              :strokeWidth="6"
+              :trailWidth="6"
+            >
+              <div class="inner">
+                <p>已还款</p>
+                <p>{{ item.finishInsteadAmount }}</p>
+                <p>{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
+              </div>
+            </circleProgress>
+            <!-- <nut-circleprogress
               :progress="(item.finishPeriodCount / item.periodCount) * 100"
               :is-auto="true"
               strokeInnerWidth="6"
@@ -65,7 +77,7 @@
                 <p>{{ item.finishInsteadAmount }}</p>
                 <p>{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
               </div>
-            </nut-circleprogress>
+            </nut-circleprogress> -->
           </div>
         </li>
       </ul>
@@ -77,6 +89,7 @@
 // @ is an alias to /src
 import ajax from '@/rest/ajax';
 import { formatTime } from '@/utils/common';
+import circleProgress from '@/components/circleProgress';
 
 export default {
   name: 'payback_list',
@@ -100,7 +113,7 @@ export default {
         pageNum: this.pageNum,
         endDate: this.endDate,
       };
-      ajax.post('/repay/getTaskHistory', params).then(res => {
+      ajax.post('/repay/getTaskHistory', params).then((res) => {
         if (res.code === 0) {
           this.list = res.data;
         } else {
@@ -127,7 +140,7 @@ export default {
         pageNum: ++this.pageNum,
         endDate: this.endDate,
       };
-      ajax.post('/repay/getTaskHistory', params).then(res => {
+      ajax.post('/repay/getTaskHistory', params).then((res) => {
         if (res.code === 0) {
           if (this.list.length < this.pageSize) this.isUnMore = true;
 
@@ -145,6 +158,9 @@ export default {
       this.isUnMore = false;
       this.getList();
     },
+  },
+  components: {
+    circleProgress,
   },
 };
 </script>

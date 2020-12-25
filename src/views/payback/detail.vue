@@ -29,30 +29,30 @@
                 : '分期还款失败'
             }}
           </p>
-          <p class="desc_lable">
+          <p class="desc_lable" v-if="item.status != 2">
             {{ item.statusDesc ? '还款失败：' + item.statusDesc : '' }}
           </p>
         </span>
-
-        <!-- <span class="lable">{{ item.statusDesc }}</span> -->
-        <!-- <span class="lable">{{
-          item.status == 0
-            ? '待执行'
-            : item.status == 1
-            ? '分期还款中'
-            : item.status == 2
-            ? '执行成功'
-            : '手动终止计划'
-        }}</span> -->
       </div>
       <div class="process">
-        <nut-circleprogress
+        <circleProgress
+          :percent="(item.finishPeriodCount / item.periodCount) * 100"
+          :rd="63"
+        >
+          <div class="inner">
+            <p>已还款</p>
+            <p>{{ item.finishInsteadAmount }}</p>
+            <p>第{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
+          </div>
+        </circleProgress>
+
+        <!-- <nut-circleprogress
           :progress="(item.finishPeriodCount / item.periodCount) * 100"
           :is-auto="true"
           :progress-option="{
             radius: 56,
             backColor: '#f0f0f0',
-            progressColor: 'red',
+            progressColor: '#396df0',
           }"
         >
           <div class="inner">
@@ -60,7 +60,7 @@
             <p>{{ item.finishInsteadAmount }}</p>
             <p>{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
           </div>
-        </nut-circleprogress>
+        </nut-circleprogress -->
       </div>
       <div class="footer">
         <span>
@@ -102,15 +102,15 @@
     </ul>
 
     <template v-if="!isRecordEnter && (item.status == 1 || item.status == 3)">
-      <div class="mock-bottom"></div>
       <div class="btn-wrap">
         <span class="btn" @click="stopPlan" v-if="item.status == 1"
           >终止计划</span
         >
-        <span class="btn" @click="createPlan" v-if="item.status == 3"
+        <span class="btn create" @click="createPlan" v-if="item.status == 3"
           >重新创建分期计划</span
         >
       </div>
+      <div class="mock-bottom"></div>
     </template>
   </div>
 </template>
@@ -119,6 +119,7 @@
 // @ is an alias to /src
 import { formatTime } from '@/utils/common';
 import ajax from '@/rest/ajax';
+import circleProgress from '@/components/circleProgress';
 
 export default {
   name: 'payback_detail',
@@ -163,7 +164,6 @@ export default {
     this.bankCardNo = this.$route.query.bankCardNo;
     this.isRefundPack = this.$route.query.isRefundPack;
     this.isRecordEnter = this.$route.query.isRecordEnter;
-
     this.getTaskById();
   },
   methods: {
@@ -290,6 +290,9 @@ export default {
       });
     },
   },
+  components: {
+    circleProgress,
+  },
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -380,6 +383,7 @@ export default {
     }
     .process {
       margin-top: 10px;
+      margin-bottom: 16px;
       display: flex;
       justify-content: center;
       .inner {
@@ -517,10 +521,12 @@ export default {
     flex-shrink: 0;
   }
   .btn-wrap {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
+    // position: fixed;
+    // left: 0;
+    // bottom: 0;
+    margin-top: 10px;
+    // width: 100%;
+    width: 375px;
     height: 81px;
     display: flex;
     align-items: center;
@@ -535,8 +541,11 @@ export default {
       font-size: 18px;
       font-weight: bold;
       color: #ffffff;
-      background: url('~@/assets/images/login/login/btn_bg@2x.png') no-repeat;
+      background: url('~@/assets/images/payback/btn_bg@2x.png') no-repeat;
       background-size: 100% 100%;
+      &.create {
+        font-size: 15px;
+      }
     }
   }
 }

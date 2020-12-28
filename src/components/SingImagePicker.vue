@@ -76,9 +76,23 @@ export default {
       const fileArr = Array.from(file);
       const key = this.imgKey;
       fileArr.splice(this.max);
+      let quality = 1;
+      if (file.size <= 1 * 1024 * 1024) {
+        quality = 1;
+      } else if (1 * 1024 * 1024 < file.size && file.size <= 2 * 1024 * 1024) {
+        quality = 0.7;
+      } else if (2 * 1024 * 1024 < file.size && file.size <= 3 * 1024 * 1024) {
+        quality = 0.5;
+      } else if (3 * 1024 * 1024 < file.size && file.size <= 4 * 1024 * 1024) {
+        quality = 0.3;
+      } else if (4 * 1024 * 1024 < file.size && file.size <= 5 * 1024 * 1024) {
+        quality = 0.2;
+      } else if (5 * 1024 * 1024 < file.size) {
+        quality = 0.1;
+      }
       fileArr.forEach((item) => {
-        lrz(item)
-          .then(function(rst) {
+        lrz(item, { quality })
+          .then(function (rst) {
             // 处理成功会执行
             const { base64, file, origin } = rst;
             const newFile = new File([file], origin.name, {
@@ -91,11 +105,11 @@ export default {
               file: newFile,
             });
           })
-          .catch(function(err) {
+          .catch(function (err) {
             // 处理失败会执行
             console.log(err);
           })
-          .always(function() {
+          .always(function () {
             // 不管是成功失败，都会执行
           });
       });

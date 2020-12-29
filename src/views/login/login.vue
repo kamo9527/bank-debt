@@ -138,6 +138,7 @@ export default {
   align-items: center;
   flex-direction: column;
   background-color: #fff;
+  font-size: 14px;
   .title {
     margin-top: 144px;
     margin-bottom: 21px;

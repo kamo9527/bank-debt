@@ -75,7 +75,7 @@ export default {
         bankName: this.bankName,
         bank_city_code: this.bankInfo.bank_city_code,
       };
-      ajax.post('/bankBranch/search', params).then(res => {
+      ajax.post('/bankBranch/search', params).then((res) => {
         if (res.code === 0) {
           this.list = res.data.branchResult.slice(0, 100);
           this.isSearch = true;
@@ -150,7 +150,7 @@ export default {
     height: 35px;
     display: flex;
     align-items: center;
-    border: 0.5px solid #dbdbdb;
+    border: 1px solid #dbdbdb;
     border-radius: 2px;
     padding: 0 17.5px;
     box-sizing: border-box;

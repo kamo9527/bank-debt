@@ -502,7 +502,9 @@ export default {
         localStorage.removeItem('certif_step2_data');
 
         const featureImage = await this.getBase64Image(
-          `https://api.shumaidata.com/v2/life/check/image?imageId=${livingQueryData.feature_image_id}`
+          `https://api.shumaidata.com/v2/life/check/image?imageId=${
+            livingQueryData.feature_image_id
+          }`
         );
         const livingCheckData = await this.livingBodyCheck(featureImage);
         if (livingCheckData.code == 200) {
@@ -569,11 +571,11 @@ export default {
       return new Promise((resolve, reject) => {
         const img = document.createElement('img');
         img.setAttribute('crossOrigin', 'anonymous');
-        img.onload = function () {
+        img.onload = function() {
           const data = getBase64Image(img);
           resolve(data);
         };
-        img.onerror = function (err) {
+        img.onerror = function(err) {
           reject(err);
         };
         img.src = url;
@@ -794,6 +796,7 @@ export default {
       display: flex;
       align-items: center;
       border-bottom: 0.5px solid #999999;
+      // background: #f00;
       span {
         width: 115px;
         font-size: 11px;
@@ -802,7 +805,8 @@ export default {
       }
       input {
         height: 18px;
-        width: 203.5px;
+        width: 100px;
+        flex: 1;
         outline: none;
       }
       .input {

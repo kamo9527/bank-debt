@@ -9,6 +9,7 @@
       </span>
       <span>卡信息认证</span>
     </div> -->
+    <img class="bg" src="~@/assets/images/certif/step1/bg@2x.png" />
     <div class="step">
       <img class="step_img" src="~@/assets/images/certif/step2/step@2x.png" />
     </div>
@@ -170,9 +171,9 @@ export default {
     };
   },
   async mounted() {
-    this.getList();
-    this.initDataByStorage();
-    this.checkLivingBody();
+    // this.getList();
+    // this.initDataByStorage();
+    // this.checkLivingBody();
   },
   methods: {
     getList() {
@@ -679,11 +680,12 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 .certif_step2 {
+  position: relative;
   height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
-  background: url('"~@/assets/images/certif/step1/bg@2x.png') no-repeat;
+  // background: url('~@/assets/images/certif/step1/bg@2x.png') no-repeat;
   // background-size: 100% auto;
   background-size: 100% 197px;
   background-color: #fff;
@@ -691,6 +693,14 @@ export default {
   padding-bottom: 28.5px;
   div {
     line-height: 1;
+  }
+  .bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 197px;
+    z-index: 1;
   }
   .title {
     position: fixed;
@@ -733,6 +743,7 @@ export default {
   .step {
     margin-top: 22px;
     position: relative;
+    z-index: 3;
     .step_img {
       width: 252px;
       height: 32px;
@@ -740,6 +751,7 @@ export default {
   }
 
   .step_desc {
+    position: relative;
     margin-top: 13px;
     width: 217px;
     font-size: 12px;
@@ -748,8 +760,11 @@ export default {
     justify-content: space-between;
     font-weight: bold;
     color: #ffffff;
+    z-index: 3;
   }
   .tips {
+    position: relative;
+    z-index: 3;
     margin-top: 16px;
     font-size: 9px;
     color: #ffffff;

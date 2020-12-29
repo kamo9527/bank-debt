@@ -327,4 +327,7 @@ export default {
     background-color: #3375f2;
   }
 }
+.nut-textinput-label {
+  white-space: nowrap;
+}
 </style>

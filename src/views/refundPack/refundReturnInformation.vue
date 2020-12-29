@@ -93,6 +93,7 @@ export default {
       queryInfo: {
         bankName: '',
         bankCardNo: '',
+        channelName: '',
       },
       params: {
         province: '',
@@ -107,9 +108,10 @@ export default {
   },
   mounted() {
     const fefwefff = cache.getLocalStorageData('my_return_information') || {};
-    const { cardId, channelId, bankName, bankCardNo } = fefwefff;
+    const { cardId, channelId, bankName, bankCardNo, channelName } = fefwefff;
     this.queryInfo.bankName = bankName;
     this.queryInfo.bankCardNo = bankCardNo;
+    this.queryInfo.channelName = channelName;
     this.params.cardId = cardId;
     this.params.channelId = channelId;
     // ajax.post('/area/list', {}).then((res) => {
@@ -232,7 +234,9 @@ export default {
       ajax.post('/repay/generatePlan', info).then((res) => {
         if (res.code === 0) {
           const taskId = res.data.taskId;
-          this.$router.push(`/payback_GDetail?taskId=${taskId}`);
+          this.$router.push(
+            `/payback_GDetail?taskId=${taskId}&pageTitle=${this.queryInfo.channelName}`
+          );
         } else {
           this.$toast.text(res.msg);
         }
@@ -283,14 +287,8 @@ export default {
     }
     .my_input .nut-textinput-label {
       display: block;
-      width: 150px;
+      width: 170px;
       text-align: left;
-    }
-    .input_width {
-      height: 100%;
-    }
-    .input_width input {
-      max-width: 90px;
     }
     .my_cellxx {
       background-color: #fff;

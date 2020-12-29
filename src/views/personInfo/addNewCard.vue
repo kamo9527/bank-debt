@@ -14,7 +14,7 @@
       <div class="iinpu_ophne">
         <nut-textinput
           class="my_input flexx1"
-          label="信用卡卡号"
+          label="信用卡号"
           placeholder="请输入卡号或扫描信用卡"
           :hasBorder="false"
           @blur="onBlur"
@@ -244,7 +244,7 @@ export default {
     font-size: 18px;
   }
   .basic_info {
-    margin: -40px 25px 0;
+    margin: -40px 20px 0;
     padding: 20px 20px 15px;
     background: url('~@/assets/images/personInfo/add_car@2x.png') center
       no-repeat;
@@ -260,7 +260,8 @@ export default {
     }
   }
   .operate_input {
-    padding: 20px 30px;
+    box-sizing: border-box;
+    padding: 20px 25px;
     font-size: 14px;
     .my_input {
       border-bottom: 1px solid #eee;

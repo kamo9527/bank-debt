@@ -15,6 +15,7 @@ if (process.env.NODE_ENV === 'production') {
   // baseUrl = 'http://ydtapi.kuaikuaifu.net/api';
   // baseUrl = 'http://120.79.102.97:9000'; // 开发环境
   // baseUrl = 'http://192.168.0.155:9000'; // 内网测试
-  baseUrl = 'http://newpay.kuaikuaifu.net'; // 生产
+  // baseUrl = 'http://newpay.kuaikuaifu.net'; // 生产
+  baseUrl = '/'; // 相对路径
 }
 export default baseUrl;

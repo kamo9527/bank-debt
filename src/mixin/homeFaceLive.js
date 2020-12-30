@@ -19,9 +19,10 @@ export default {
       const appid = 'ry91863kGesF16ud';
       const app_security = 'ry91863kGesF16udcjdNh4wVtheMJ0Kd';
       // const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
-      const callbackUrl = 'http://newpay.kuaikuaifu.net/livingBodyCallback';
       // const callbackUrl = 'http://newpay.kuaikuaifu.net/livingBodyCallback';
-      // const callbackUrl = `${window.location.origin}/livingBodyCallback`;
+      // const callbackUrl = 'http://newpay.kuaikuaifu.net/livingBodyCallback';
+      const callbackUrl = `${window.location.origin}/livingBodyCallback`;
+
       const returnUrl = encodeURIComponent(window.location.href);
       const complexity = '1';
       const timestamp = new Date().getTime();
@@ -39,14 +40,15 @@ export default {
           // this.initDataByStorage();
           localStorage.removeItem('faceLiving');
           const livingQueryData = await this.livingBodyQuery();
-          if (livingQueryData.code != 0) {
-            this.$toast.text(livingQueryData.msg);
+          if (!livingQueryData) {
+            // this.$toast.text('人脸识别结果已失效，请重试');
             return;
           }
-          if (!livingQueryData.data.passed) {
+          if (!livingQueryData.passed) {
             this.$toast.text('人脸检测不通过，请重试');
             return;
           }
+
           const featureImage = await this.getBase64Image(
             `https://api.shumaidata.com/v2/life/check/image?imageId=${livingQueryData.feature_image_id}`
           );
@@ -62,7 +64,9 @@ export default {
         } else {
           reject('');
         }
-      }).catch(() => {});
+      }).catch(e => {
+        console.log(e);
+      });
     },
     livingBodyQuery() {
       return new Promise((resolve, reject) => {
@@ -79,9 +83,9 @@ export default {
           })
           .then(res => {
             if (res.code === 0) {
-              resolve(res);
+              resolve(res.data);
             } else {
-              // this.$toast.text(res.msg);
+              this.$toast.text(res.msg);
               resolve('');
             }
           })

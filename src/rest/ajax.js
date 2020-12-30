@@ -3,7 +3,7 @@
  * ajax request help
  */
 import Fly from 'flyio/dist/npm/fly';
-// import cache from '@/utils/cache';
+import cache from '@/utils/cache';
 import { Toast } from '@nutui/nutui';
 
 import baseUrl from './config';
@@ -45,9 +45,10 @@ fly.interceptors.response.use(
       toast.hide();
     }
     const { code } = response.data;
-    if (code === 8017 || code === 8014) {
-      // cache.clearLocalStorageData('person_info');
-      // cache.clearLocalStorageData('signKey');
+    if (code === 8017 || code === 8014 || code === 20) {
+      cache.clearLocalStorageData('person_info');
+      cache.clearLocalStorageData('signKey');
+      window.location.href = '#/login_login';
       // const next = window.location.hash.slice(1);
       // window.location.href = `/login_login?next=${next}`;
     }

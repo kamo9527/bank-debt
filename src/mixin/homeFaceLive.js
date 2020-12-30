@@ -4,18 +4,11 @@ import md5 from '@/utils/md5';
 export default {
   data() {
     return {
-      // customerShareData: {},
-      // customerCoupon: {},
-      // promoterId: '',
-      // p: 0,
-      // dataSource: 3, //分享券来源
+      uid: '',
     };
   },
   methods: {
     gotoFaceLive() {
-      const person_info = localStorage.getItem('person_info');
-      const personInfo = JSON.parse(person_info);
-
       const appid = 'ry91863kGesF16ud';
       const app_security = 'ry91863kGesF16udcjdNh4wVtheMJ0Kd';
       // const callbackUrl = 'http://120.79.102.97:9000/livingBodyCallback';
@@ -27,17 +20,33 @@ export default {
       const complexity = '1';
       const timestamp = new Date().getTime();
       const sign = md5.hex_md5(`${appid}&${timestamp}&${app_security}`);
-      const uid = personInfo.merchantId;
+      const uid =
+        'zhaih' +
+        Math.random()
+          .toString(36)
+          .substr(2);
       const title = '账无忧';
 
-      localStorage.setItem('faceLiving', new Date().getTime());
+      localStorage.setItem(
+        'faceLiving',
+        JSON.stringify({
+          t: new Date().getTime(),
+          uid,
+        })
+      );
       location.href = `https://lifeh5.shumaidata.com/index.html#/?appid=${appid}&callbackUrl=${callbackUrl}&returnUrl=${returnUrl}&complexity=${complexity}&timestamp=${timestamp}&sign=${sign}&uid=${uid}&title=${title}`;
     },
     checkLivingBody() {
       return new Promise(async (resolve, reject) => {
-        const faceLiving = localStorage.getItem('faceLiving') || 0;
-        if (new Date().getTime() - faceLiving < 1000 * 60 * 10) {
-          // this.initDataByStorage();
+        const faceLivingStr = localStorage.getItem('faceLiving') || null;
+        const faceLiving = JSON.parse(faceLivingStr);
+        if (!faceLiving) return;
+        const faceLivingTime = faceLiving.t || 0;
+        if (
+          faceLiving &&
+          new Date().getTime() - faceLivingTime < 1000 * 60 * 10
+        ) {
+          this.uid = faceLiving.uid;
           localStorage.removeItem('faceLiving');
           const livingQueryData = await this.livingBodyQuery();
           if (!livingQueryData) {
@@ -70,10 +79,10 @@ export default {
     },
     livingBodyQuery() {
       return new Promise((resolve, reject) => {
-        const person_info = localStorage.getItem('person_info');
-        const personInfo = JSON.parse(person_info);
+        // const person_info = localStorage.getItem('person_info');
+        // const personInfo = JSON.parse(person_info);
         const params = {
-          uid: personInfo.merchantId,
+          uid: this.uid,
         };
         ajax
           .post('/livingBodyQuery', params, {
@@ -105,8 +114,6 @@ export default {
         const params = {
           idCardNo: merchantDebitQueryResult.identity,
           name: merchantDebitQueryResult.bankAccountName,
-          // idCardNo: '441723199103292031',
-          // name: '冯国威',
           image,
         };
         ajax
@@ -117,7 +124,14 @@ export default {
           })
           .then(res => {
             if (res.code === 0) {
-              resolve(res.data);
+              // resolve(res.data);
+              const score = res.data.data.score;
+              if (score >= 0.45) {
+                resolve(res.data);
+              } else {
+                this.$toast.text(res.data.data.msg);
+                resolve('');
+              }
             } else {
               resolve('');
             }

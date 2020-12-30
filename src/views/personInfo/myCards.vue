@@ -21,6 +21,8 @@
         alt=""
       />
     </div>
+    <button @click="handleSubmit" class="my_btn">添加信用卡</button>
+
   </section>
 </template>
 
@@ -81,6 +83,9 @@ export default {
             this.$toast.text(res.msg);
           }
         });
+    },
+    handleSubmit() {
+      this.$router.push('/add_new_card');
     },
   },
 };

@@ -17,70 +17,80 @@
       @loadMore="loadMoreVert"
       @pulldown="pulldown"
     >
-      <ul class="card_list" slot="list">
-        <li
-          class="item"
-          v-for="(item, index) in list"
-          :key="index"
-          @click="gotoDetail(item)"
-        >
-          <div class="header">
-            <img class="bank_icon" :src="item.bankCode | getBankLogo" />
-            <span class="bank_name">{{ item.bankName }}</span>
-            <span class="bank_no">尾号:{{ item.bankCardNo.slice(-4) }}</span>
-          </div>
-          <div class="body">
-            <span class="body_left">
-              <p>{{ item.insteadAmount }}</p>
-              <p class="desc">还款总额</p>
-            </span>
-            <span class="body_right">
-              <p>{{ item.finishTime }}</p>
-              <p class="desc">完成还款时间</p>
-            </span>
-          </div>
-          <span class="lable">{{
-            item.status == 0
-              ? '待执行'
-              : item.status == 1
-              ? '分期还款中'
-              : item.status == 2
-              ? '执行成功'
-              : '手动终止计划'
-          }}</span>
-          <div class="process">
-            <circleProgress
-              :percent="(item.finishPeriodCount / item.periodCount) * 100"
-              :rd="50"
-              :strokeWidth="6"
-              :trailWidth="6"
-            >
-              <div class="inner">
-                <p>已还款</p>
-                <p>{{ item.finishInsteadAmount }}</p>
-                <p>{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
-              </div>
-            </circleProgress>
-            <!-- <nut-circleprogress
-              :progress="(item.finishPeriodCount / item.periodCount) * 100"
-              :is-auto="true"
-              strokeInnerWidth="6"
-              :progress-option="{
-                radius: 48,
-                strokeOutWidth: 6,
-                backColor: '#f0f0f0',
-                progressColor: 'red',
-              }"
-            >
-              <div class="inner">
-                <p>已还款</p>
-                <p>{{ item.finishInsteadAmount }}</p>
-                <p>{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
-              </div>
-            </nut-circleprogress> -->
-          </div>
-        </li>
-      </ul>
+      <div slot="list">
+        <ul class="card_list">
+          <li
+            class="item"
+            v-for="(item, index) in list"
+            :key="index"
+            @click="gotoDetail(item)"
+          >
+            <div class="header">
+              <img class="bank_icon" :src="item.bankCode | getBankLogo" />
+              <span class="bank_name">{{ item.bankName }}</span>
+              <span class="bank_no">尾号:{{ item.bankCardNo.slice(-4) }}</span>
+            </div>
+            <div class="body">
+              <span class="body_left">
+                <p>{{ item.insteadAmount }}</p>
+                <p class="desc">还款总额</p>
+              </span>
+              <span class="body_right">
+                <p>{{ item.finishTime }}</p>
+                <p class="desc">完成还款时间</p>
+              </span>
+            </div>
+            <span class="lable">{{
+              item.status == 0
+                ? '待执行'
+                : item.status == 1
+                ? '分期还款中'
+                : item.status == 2
+                ? '执行成功'
+                : '手动终止计划'
+            }}</span>
+            <div class="process">
+              <circleProgress
+                :percent="(item.finishPeriodCount / item.periodCount) * 100"
+                :rd="50"
+                :strokeWidth="6"
+                :trailWidth="6"
+              >
+                <div class="inner">
+                  <p>已还款</p>
+                  <p>{{ item.finishInsteadAmount }}</p>
+                  <p>{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
+                </div>
+              </circleProgress>
+              <!-- <nut-circleprogress
+                :progress="(item.finishPeriodCount / item.periodCount) * 100"
+                :is-auto="true"
+                strokeInnerWidth="6"
+                :progress-option="{
+                  radius: 48,
+                  strokeOutWidth: 6,
+                  backColor: '#f0f0f0',
+                  progressColor: 'red',
+                }"
+              >
+                <div class="inner">
+                  <p>已还款</p>
+                  <p>{{ item.finishInsteadAmount }}</p>
+                  <p>{{ item.finishPeriodCount }}/{{ item.periodCount }}期</p>
+                </div>
+              </nut-circleprogress> -->
+            </div>
+          </li>
+        </ul>
+
+        <div class="no_list" v-if="list.length === 0">
+          <img
+            class="igmegeger"
+            src="~@/assets/images/personInfo/no_list.png"
+            alt=""
+          />
+        </div>
+      </div>
     </nut-scroller>
   </div>
 </template>
@@ -116,6 +126,7 @@ export default {
       ajax.post('/repay/getTaskHistory', params).then((res) => {
         if (res.code === 0) {
           this.list = res.data;
+          // this.list = [];
         } else {
           this.$toast.text(res.msg);
         }
@@ -291,19 +302,31 @@ export default {
           p:nth-child(1) {
             font-size: 15px;
             color: #333333;
+            white-space: nowrap;
           }
           p:nth-child(2) {
             font-size: 14px;
             font-weight: bold;
             color: #f0aa01;
+            white-space: nowrap;
           }
           p:nth-child(3) {
             font-size: 15px;
             color: #d51523;
+            white-space: nowrap;
           }
         }
       }
     }
+  }
+}
+.no_list {
+  padding-top: 80px;
+  .igmegeger {
+    margin: 0 auto;
+    display: block;
+    width: 106px;
+    height: 106px;
   }
 }
 </style>

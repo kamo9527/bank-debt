@@ -171,8 +171,8 @@ export default {
     };
   },
   async mounted() {
-    // this.getList();
-    // this.initDataByStorage();
+    this.getList();
+    this.initDataByStorage();
     // this.checkLivingBody();
   },
   methods: {

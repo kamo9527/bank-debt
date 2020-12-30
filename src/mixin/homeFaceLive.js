@@ -39,11 +39,11 @@ export default {
           // this.initDataByStorage();
           localStorage.removeItem('faceLiving');
           const livingQueryData = await this.livingBodyQuery();
-          if (!livingQueryData) {
-            this.$toast.text('人脸识别结果已失效，请重试');
+          if (livingQueryData.code != 0) {
+            this.$toast.text(livingQueryData.msg);
             return;
           }
-          if (!livingQueryData.passed) {
+          if (!livingQueryData.data.passed) {
             this.$toast.text('人脸检测不通过，请重试');
             return;
           }
@@ -79,7 +79,7 @@ export default {
           })
           .then(res => {
             if (res.code === 0) {
-              resolve(res.data);
+              resolve(res);
             } else {
               // this.$toast.text(res.msg);
               resolve('');

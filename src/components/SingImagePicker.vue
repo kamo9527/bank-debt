@@ -119,16 +119,15 @@ export default {
 </script>
 <style lang="less" scoped>
 .sing_image_picker {
-  width: 40px;
+  // width: 40px;
   position: relative;
   .phongg {
     display: block;
     width: 17px;
-    margin-left: 20px;
   }
   .mgegergger {
     position: absolute;
-    width: 40px;
+    width: 17px;
     opacity: 0;
     top: 0;
     left: 0;

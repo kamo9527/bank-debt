@@ -101,7 +101,7 @@ const routes = [
     path: '/payback_GDetail',
     name: 'payback_GDetail',
     meta: {
-      title: '代还款确认（G入口）',
+      title: '还款入口',
     },
     component: () =>
       import(
@@ -225,6 +225,17 @@ const routes = [
     component: () =>
       import(
         /* webpackChunkName: "person_info" */ '../views/personInfo/myFee.vue'
+      ),
+  },
+  {
+    path: '/my_cards',
+    name: 'myCardsPage',
+    meta: {
+      title: '我的付款卡',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "person_info" */ '../views/personInfo/myCards.vue'
       ),
   },
   {

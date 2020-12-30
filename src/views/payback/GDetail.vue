@@ -122,6 +122,7 @@ export default {
   mounted() {
     // this.initData();
     this.taskId = this.$route.query.taskId;
+    document.title = this.$route.query.pageTitle;
     this.getTaskById();
   },
   methods: {
@@ -130,7 +131,7 @@ export default {
       if (!itemStr) return;
       const item = JSON.parse(itemStr);
 
-      item.detailList.forEach(item => {
+      item.detailList.forEach((item) => {
         const payTime = formatTime(
           new Date(item.payTime),
           'yyyy-MM-dd hh:mm'
@@ -179,9 +180,9 @@ export default {
             'content-type': 'application/x-www-form-urlencoded',
           },
         })
-        .then(res => {
+        .then((res) => {
           if (res.code === 0) {
-            res.data.detailList.forEach(item => {
+            res.data.detailList.forEach((item) => {
               const payTime = formatTime(
                 new Date(item.payTime),
                 'yyyy-MM-dd hh:mm'
@@ -237,7 +238,7 @@ export default {
           const params = {
             taskId: _this.taskId,
           };
-          ajax.post('/repay/confirmPlan', params).then(res => {
+          ajax.post('/repay/confirmPlan', params).then((res) => {
             if (res.code === 0) {
               __this.close(); //关闭对话框
               // _this.$toast.text('确认成功');

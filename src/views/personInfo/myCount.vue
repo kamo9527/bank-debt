@@ -441,6 +441,7 @@ export default {
   font-size: 14px;
   padding-top: 20px;
   .iinpu_ophne {
+    padding-right: 20px;
     background-color: #fff;
     display: flex;
     justify-content: space-between;

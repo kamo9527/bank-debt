@@ -3,10 +3,8 @@
     <nut-cell
       class="my_cell"
       :title="queryInfo.bankName"
-      :sub-title="
-        `${queryInfo.bankCardNo.slice(0, 3)}***********
-            ${queryInfo.bankCardNo.slice(-4)}`
-      "
+      :sub-title="`${queryInfo.bankCardNo.slice(0, 3)}***********
+            ${queryInfo.bankCardNo.slice(-4)}`"
     />
     <div
       class="my_chanel"
@@ -65,7 +63,7 @@ export default {
   methods: {
     getList() {
       const info = this.queryInfo;
-      ajax.post('/repay/channelList', info).then(res => {
+      ajax.post('/repay/channelList', info).then((res) => {
         if (res.code === 0) {
           this.refundChannelList = res.data;
         } else {
@@ -77,18 +75,23 @@ export default {
       const pagea = { ...info, ...this.queryInfo };
       pagea.from = 'h5';
       // 交互说明：选择渠道需判断是否要开通业务，需开通跳到开通业务界面，不需要开通业务跳到填写代还信息页
-      ajax.post('/repay/channelListSelect', pagea).then(res => {
+      ajax.post('/repay/channelListSelect', pagea).then((res) => {
         if (res.code === 0) {
           const { status, bindingUrl } = res.data;
           if (status === '0') {
             this.channelData = bindingUrl;
             this.showMore = true;
             let _this = this;
-            window.addEventListener('message', function(e) {
+            window.addEventListener('message', function (e) {
               const a = e.data + '';
               if (a === '2' || a === '3') {
+                const ddd = {
+                  2: '开通成功',
+                  3: '开通失败',
+                };
                 _this.showMore = false;
                 _this.getList();
+                _this.$toast.text(ddd[a]);
               }
             });
           } else {

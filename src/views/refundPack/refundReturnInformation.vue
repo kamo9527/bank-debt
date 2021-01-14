@@ -75,7 +75,7 @@ const StartDate = formatTime(
   'yyyy-MM-dd'
 );
 const EndDate = formatTime(
-  new Date(toDay + 22 * 24 * 60 * 60 * 1000),
+  new Date(toDay + 51 * 24 * 60 * 60 * 1000),
   'yyyy-MM-dd'
 );
 export default {

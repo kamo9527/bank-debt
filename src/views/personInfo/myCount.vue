@@ -293,7 +293,7 @@ export default {
       if (!item) return;
       if (item.name && item.allied_bank_code) {
         this.countInfo.branchBankName = item.name;
-        this.countInfo.bankCode = item.allied_bank_code;
+        this.countInfo.alliedBankCode = item.allied_bank_code;
       }
       this.bankPickerVisible = false;
     },
